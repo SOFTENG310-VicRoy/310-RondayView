@@ -2,4 +2,13 @@
 plugins {
     id 'com.android.application' version '8.0.2' apply false
     id 'com.android.library' version '8.0.2' apply false
+    id "org.sonarqube" version "4.2.1.3168"
+}
+
+sonar {
+  properties {
+    property "sonar.projectKey", "SOFTENG310-VicRoy_310-RondayView"
+    property "sonar.organization", "softeng310-vicroy"
+    property "sonar.host.url", "https://sonarcloud.io"
+  }
 }
