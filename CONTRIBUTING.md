@@ -39,7 +39,8 @@ Dont think this is relevant to us because we have pre defined tasks and I am not
 
 Our backend logic is all in java so please use java and not kotlin!
 
-We also value having a consistent style in our program, this is to minimise confusion and keep everything looking neat and consistent! As such we will be 
+We also value having a consistent style in our program, this is to minimise confusion and keep everything looking neat and consistent! As such we will be following
+googles style guide for java programs shown at this link: https://google.github.io/styleguide/javaguide.html
 
 ## Our Vision
 
