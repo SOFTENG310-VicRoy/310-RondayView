@@ -31,10 +31,10 @@ jobs:
         run: ./gradlew clean build test
 
       - name: Upload Code Coverage
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: cov-app
-          path: coverage/lcov.info
+          path: cov-app.info
 
       - name: 🔊 Save PR number (for SonarCloud)
         if: github.event_name == 'pull_request'
