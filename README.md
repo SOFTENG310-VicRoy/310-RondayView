@@ -40,3 +40,9 @@ SOFTWARE.
 ## Help
 
 For additional help, questions, or suggestions, please feel free to contact the team at VicRoy by emailing us at vroyale374@gmail.com
+
+## Attributions and Contributing Guidelines
+
+$$ add names of group members $$
+
+Contributing Guidelines can be found here CONTRIBUTING.md (THIS SHOULD BE A LINK)
