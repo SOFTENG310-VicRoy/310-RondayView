@@ -38,3 +38,4 @@ jobs:
         with:
           name: cov-app
           path: coverage/lcov.info
+        run: ./gradlew build
