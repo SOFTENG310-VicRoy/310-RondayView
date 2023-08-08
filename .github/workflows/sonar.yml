@@ -1,0 +1,65 @@
+# based on https://community.sonarsource.com/t/how-to-use-sonarcloud-with-a-forked-repository-on-github/7363/30
+# for some reason this is heinously complicated
+
+name: Sonarcloud
+
+on:
+  workflow_run:
+    workflows: [Build]
+    types: [completed]
+
+jobs:
+  sonarcloud:
+    name: Sonarcloud
+    runs-on: ubuntu-latest
+
+    # sonarcloud only runs on the main repo, not forks
+    if: github.repository == 'SOFTENG310-VicRoy/310-RondayView'
+
+    steps:
+      - name: 🛎️ Checkout
+        uses: actions/checkout@v2
+        with:
+          repository: ${{ github.event.workflow_run.head_repository.full_name }}
+          ref: ${{ github.event.workflow_run.head_branch }}
+          fetch-depth: 0
+
+      - name: 📶 Download code coverage
+        uses: actions/github-script@v5
+        with:
+          script: |
+            const allArtifacts = await github.rest.actions.listWorkflowRunArtifacts({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              run_id: context.payload.workflow_run.id,
+            });
+
+            let matchArtifact = allArtifacts.data.artifacts.filter((artifact) => {
+              return artifact.name == "cov-app"
+            })[0];
+            let download = await github.rest.actions.downloadArtifact({
+               owner: context.repo.owner,
+               repo: context.repo.repo,
+               artifact_id: matchArtifact.id,
+               archive_format: 'zip',
+            });
+            let fs = require('fs');
+            fs.writeFileSync(`${process.env.GITHUB_WORKSPACE}/cov-app.zip`, Buffer.from(download.data));
+
+      - name: Unzip code coverage
+        run: unzip cov-app.zip -d coverage
+
+      - name: Change wrapper permissions
+        run: chmod +x gradlew
+
+      - name: SonarCloud Scan
+        uses: sonarsource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        with:
+          args: >
+            -Dsonar.scm.revision=${{ github.event.workflow_run.head_sha }}
+            -Dsonar.pullrequest.key=${{ github.event.workflow_run.pull_requests[0].number }}
+            -Dsonar.pullrequest.branch=${{ github.event.workflow_run.pull_requests[0].head.ref }}
+            -Dsonar.pullrequest.base=${{ github.event.workflow_run.pull_requests[0].base.ref }}
