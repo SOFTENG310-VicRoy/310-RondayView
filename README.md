@@ -4,11 +4,14 @@ RondayView (pronounced as “Rendezvous”) is an innovative and compelling mobi
 
 ## Instalation
 
-*
+Have Android Studio installed
 
-## Usage
+Download and follow installation instructions from this link: https://developer.android.com/studio
 
-*
+Please also watch this video for Android Studio setup to make sure your machine is ready to run this project! 
+[https://www.youtube.com/results?sp=mAEB&search_query=how+to+set+up+android+studio](https://www.youtube.com/watch?v=K5z5OIKVmCQ&list=PLg3oSHawmeXjxwAfTM6Ck_Lz55l_P7lnG&index=3&t=1243s)
+
+After you have installed Android Studio, simply clone this repo and open it in Android Studio!
 
 ## Licence
 
@@ -33,10 +36,6 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-
-## Contributing
-
-*
 
 ## Help
 
