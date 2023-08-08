@@ -30,11 +30,11 @@ jobs:
       - name: Build and Test with Gradle
         run: ./gradlew clean build test
 
-      - name: Upload Code Coverage
-        uses: actions/upload-artifact@v3
+      - name: 🔊 Upload app code coverage to GitHub Artifacts (for SonarCloud)
+        uses: actions/upload-artifact@v2
         with:
           name: cov-app
-          path: cov-app.info
+          path: app/build/reports/jacoco/test/html/index.html
 
       - name: 🔊 Save PR number (for SonarCloud)
         if: github.event_name == 'pull_request'
