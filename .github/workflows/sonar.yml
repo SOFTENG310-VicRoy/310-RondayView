@@ -32,7 +32,7 @@ jobs:
             });
 
             let matchArtifact = allArtifacts.data.artifacts.filter((artifact) => {
-              return artifact.name == "cov-app"
+              return artifact.name == "Package"
             })[0];
             let download = await github.rest.actions.downloadArtifact({
                owner: context.repo.owner,
@@ -41,10 +41,10 @@ jobs:
                archive_format: 'zip',
             });
             let fs = require('fs');
-            fs.writeFileSync(`${process.env.GITHUB_WORKSPACE}/cov-app.zip`, Buffer.from(download.data));
+            fs.writeFileSync(`${process.env.GITHUB_WORKSPACE}/Package.zip`, Buffer.from(download.data));
 
       - name: Unzip code coverage
-        run: unzip cov-app.zip -d coverage
+        run: unzip Package.zip -d coverage
 
       - name: SonarCloud Scan
         if: github.event.workflow_run.event == 'pull_request'
