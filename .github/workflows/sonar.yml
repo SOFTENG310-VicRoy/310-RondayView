@@ -9,7 +9,7 @@ on:
     types: [completed]
 
 jobs:
-  sonarcloud:
+  on-success:
     name: Sonarcloud
     runs-on: ubuntu-latest
 
