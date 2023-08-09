@@ -37,7 +37,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: Package
-          path: app/libs
+          path: app/build
 
       - name: 🔊 Save PR number (for SonarCloud)
         if: github.event_name == 'pull_request'
