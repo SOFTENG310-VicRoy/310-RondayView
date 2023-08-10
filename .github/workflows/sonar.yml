@@ -47,7 +47,7 @@ jobs:
             fs.writeFileSync(`${process.env.GITHUB_WORKSPACE}/Package.zip`, Buffer.from(download.data));
 
       - name: Unzip code coverage
-        run: unzip Package.zip -d /app/build/jacoco/testDebugUnitTest.xml
+        run: unzip Package.zip -d ./app/build/jacoco
 
       - name: Download PR number
         if: github.event.workflow_run.event == 'pull_request'
@@ -91,6 +91,6 @@ jobs:
             -Dsonar.tests=app/src/test/java
             -Dsonar.java.coveragePlugin=jacoco
             -Dsonar.coverage.exclusions=**/cypress/**/*.*
-            -Dsonar.coverage.jacoco.xmlReportPaths=app/build/reports/jacoco/testDebugUnitTestCoverage/testDebugUnitTestCoverage.xml
+            -Dsonar.coverage.jacoco.xmlReportPaths=app/build/reports/jacoco/testDebugUnitTestCoverage/testDebugUnitTestCoverage.exec
             -Dsonar.projectKey=SOFTENG310-VicRoy_310-RondayView
             -Dsonar.organization=softeng310-vicroy
