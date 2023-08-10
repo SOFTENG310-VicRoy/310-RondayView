@@ -45,7 +45,23 @@ jobs:
             fs.writeFileSync(`${process.env.GITHUB_WORKSPACE}/Package.zip`, Buffer.from(download.data));
 
       - name: Unzip code coverage
-        run: unzip Package.zip -d coverage
+        run: unzip Package.zip
 
-      - name: SonarCloud Scan
-        run: ./gradlew build sonar --info
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: 17
+          distribution: 'zulu' # Alternative distribution options are available
+
+      - name: Run sonar
+        uses: gradle/gradle-build-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        with:
+          arguments: sonar -x coverage
+            -Dsonar.scm.provider=git
+            -Dsonar.pullrequest.key=${{ github.event.workflow_run.pull_requests[0].number }}
+            -Dsonar.pullrequest.base=${{ github.event.workflow_run.pull_requests[0].base.ref }}
+            -Dsonar.pullrequest.branch=${{ github.event.workflow_run.pull_requests[0].head.ref }}
+            -Dorg.gradle.jvmargs=-Xmx1g
