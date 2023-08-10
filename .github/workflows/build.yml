@@ -35,7 +35,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: Package
-          path: app/build/reports/tests/testDebugUnitTest/index.html
+          path: /app/build/jacoco/testDebugUnitTest.exec
 
       - name: Save PR number (for SonarCloud)
         if: github.event_name == 'pull_request'
