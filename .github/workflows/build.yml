@@ -15,8 +15,6 @@ jobs:
     steps:
       - name: Check out source repository
         uses: actions/checkout@v3
-        with:
-          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
 
       - name: Set up JDK 17
         uses: actions/setup-java@v3
@@ -37,13 +35,13 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: Package
-          path: app/build
+          path: app/build/reports/tests/testDebugUnitTest/index.html
 
-      - name: 🔊 Save PR number (for SonarCloud)
+      - name: Save PR number (for SonarCloud)
         if: github.event_name == 'pull_request'
         run: echo ${{ github.event.number }} > PR_NUMBER.txt
 
-      - name: 🔊 Upload PR number to GitHub Artifacts (for SonarCloud)
+      - name: Upload PR number to GitHub Artifacts (for SonarCloud)
         if: github.event_name == 'pull_request'
         uses: actions/upload-artifact@v3
         with:
