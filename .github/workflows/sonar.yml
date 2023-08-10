@@ -24,29 +24,6 @@ jobs:
           ref: ${{ github.event.workflow_run.head_branch }}
           fetch-depth: 0
 
-      - name: Set up JDK 17
-        uses: actions/setup-java@v3
-        with:
-          java-version: 17
-          distribution: 'zulu' # Alternative distribution options are available
-
-      - name: Cache SonarCloud packages
-        uses: actions/cache@v3
-        with:
-          path: ~/.sonar/cache
-          key: ${{ runner.os }}-sonar
-          restore-keys: ${{ runner.os }}-sonar
-
-      - name: Cache Gradle packages
-        uses: actions/cache@v3
-        with:
-          path: ~/.gradle/caches
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
-          restore-keys: ${{ runner.os }}-gradle
-
-      - name: Change wrapper permissions
-        run: chmod +x gradlew
-
       - name: Download code coverage
         uses: actions/github-script@v5
         with:
@@ -70,7 +47,7 @@ jobs:
             fs.writeFileSync(`${process.env.GITHUB_WORKSPACE}/Package.zip`, Buffer.from(download.data));
 
       - name: Unzip code coverage
-        run: unzip Package.zip -d /app/build/jacoco
+        run: unzip Package.zip -d /app/build/jacoco/testDebugUnitTest.xml
 
       - name: Download PR number
         if: github.event.workflow_run.event == 'pull_request'
@@ -110,6 +87,10 @@ jobs:
             -Dsonar.pullrequest.key=${{ fromJson(steps.get_pr_data.outputs.data).number }}
             -Dsonar.pullrequest.branch=${{ fromJson(steps.get_pr_data.outputs.data).head.ref }}
             -Dsonar.pullrequest.base=${{ fromJson(steps.get_pr_data.outputs.data).base.ref }}
-            -Dsonar.jacoco.reportPaths=./app/build/jacoco/testDebugUnitTest.exec
+            -Dsonar.sources=app/src/main/java
+            -Dsonar.tests=app/src/test/java
+            -Dsonar.java.coveragePlugin=jacoco
+            -Dsonar.coverage.exclusions=**/cypress/**/*.*
+            -Dsonar.coverage.jacoco.xmlReportPaths=app/build/reports/jacoco/testDebugUnitTestCoverage/testDebugUnitTestCoverage.xml
             -Dsonar.projectKey=SOFTENG310-VicRoy_310-RondayView
             -Dsonar.organization=softeng310-vicroy

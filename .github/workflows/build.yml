@@ -31,11 +31,11 @@ jobs:
       - name: Run build with Gradle Wrapper
         run: ./gradlew build
 
-      - name: Upload artifact (for SonarCloud)
-        uses: actions/upload-artifact@v3
+      - name: Upload Jacoco Test Report
+        uses: actions/upload-artifact@v2
         with:
           name: Package
-          path: /app/build/jacoco/testDebugUnitTest.exec
+          path: app/build/reports/jacoco/testDebugUnitTest
 
       - name: Save PR number (for SonarCloud)
         if: github.event_name == 'pull_request'
