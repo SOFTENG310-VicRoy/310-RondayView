@@ -1,7 +1,7 @@
 # based on https://community.sonarsource.com/t/how-to-use-sonarcloud-with-a-forked-repository-on-github/7363/30
 # for some reason this is heinously complicated
 
-name: Sonarcloud
+name: Sonar
 
 on:
   workflow_run:
@@ -9,8 +9,8 @@ on:
     types: [completed]
 
 jobs:
-  on-success:
-    name: Sonarcloud
+  sonar:
+    name: Sonar
     runs-on: ubuntu-latest
 
     steps:
