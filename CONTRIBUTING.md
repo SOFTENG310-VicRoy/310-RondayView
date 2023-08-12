@@ -72,8 +72,11 @@ All of these features are detailed more in the GitHub Issues tab so you can chec
 
 ## High Level Design/Architecture Information
 
+Class Diagram
+![Class Diagram](contributingIMGS/classDiagram.png)
+
 $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$4
-Jackson & Devesh Part
+Devesh Part
 $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$4
 
 ## How to Get in Touch
