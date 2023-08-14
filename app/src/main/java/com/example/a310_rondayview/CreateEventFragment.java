@@ -101,7 +101,7 @@ public class CreateEventFragment extends Fragment {
                 selectPhoto.launch("image/*");
             }
         });
-        
+
         return view;
     }
 }

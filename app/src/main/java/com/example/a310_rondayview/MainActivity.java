@@ -13,6 +13,8 @@ public class MainActivity extends AppCompatActivity {
 
     ActivityMainBinding binding;
 
+    // on line 22 ("replaceFragment(new CreateEventFragment());") replace CreateEventFragment with
+    // the homepage once the homepage is made
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -20,6 +22,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
         replaceFragment(new CreateEventFragment());
 
+        // to add a new actiity to the fragment navbar, add an elseif statement here linking the
+        // navbar button to the desired activity
         binding.bottomNavigationView.setOnItemSelectedListener(item -> {
             if (item.getItemId() == R.id.create) {
                 replaceFragment(new CreateEventFragment());
