@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "99359334524",
+    "project_id": "rondayview-872b4",
+    "storage_bucket": "rondayview-872b4.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:99359334524:android:d9eb649f83c76534e4a9f9",
+        "android_client_info": {
+          "package_name": "com.example.a310_rondayview"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "99359334524-jeapv1heb0jm6hj2o3ocl2o57mai4aqp.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.a310_rondayview",
+            "certificate_hash": "6744d1ce0f0fba71c1bddcb25ece03eebb958efa"
+          }
+        },
+        {
+          "client_id": "99359334524-48coohj0uijsf8n67fr55v4qqekoefl5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAbu7ZH9D-S3cCavD5ILs4DbG8_y4XKmDM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "99359334524-48coohj0uijsf8n67fr55v4qqekoefl5.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
