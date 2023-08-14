@@ -13,7 +13,7 @@ public class MainActivity extends AppCompatActivity {
 
     ActivityMainBinding binding;
 
-    // on line 22 ("replaceFragment(new CreateEventFragment());") replace CreateEventFragment with
+    // on line 23 ("replaceFragment(new CreateEventFragment());") replace CreateEventFragment with
     // the homepage once the homepage is made
     @Override
     protected void onCreate(Bundle savedInstanceState) {
