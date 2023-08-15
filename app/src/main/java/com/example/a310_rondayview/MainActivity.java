@@ -44,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
 
             return true;
         });
-      
+
         // example
         firestore = FirebaseFirestore.getInstance();
 
@@ -63,8 +63,6 @@ public class MainActivity extends AppCompatActivity {
         fragmentTransaction.replace(R.id.frame_layout, fragment);
         fragmentTransaction.commit();
     }
-
-}
 
     private void addNewEvent(Map<String, Object> eventData) {
         firestore.collection("events").add(eventData)
