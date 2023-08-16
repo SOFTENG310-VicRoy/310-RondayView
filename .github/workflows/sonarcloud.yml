@@ -62,7 +62,6 @@ jobs:
         with:
           path: ./PR_NUMBER.txt
 
-
       - name: 📶 Download PR info
         if: github.event.workflow_run.event == 'pull_request'
         uses: octokit/request-action@v2.x
@@ -74,7 +73,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: 🔊 SonarCloud Scan (for PRs)
+      - name: 🔊 SonarCloud Scan
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
