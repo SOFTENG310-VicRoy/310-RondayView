@@ -41,7 +41,11 @@ jacoco {
     toolVersion "0.8.0"
 }
 
-task jacocoTestReport(type: JacocoReport) {
+tasks.withType(Test) {
+    jacoco.includeNoLocationClasses = true
+}
+
+task jacocoTestReport(type: JacocoReport, dependsOn: ['testDebugUnitTest']) {
     executionData fileTree(project.rootDir.absolutePath).include("**/build/jacoco/*.exec")
 
     subprojects.each {
