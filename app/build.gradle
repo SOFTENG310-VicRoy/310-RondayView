@@ -1,6 +1,6 @@
 plugins {
     id 'com.android.application'
-    id "jacoco"
+    id 'jacoco'
 }
 
 android {
@@ -22,10 +22,34 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
+        debug {
+            testCoverageEnabled = true
+        }
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+jacoco {
+    toolVersion "0.8.0"
+}
+
+task jacocoTestReport(type: JacocoReport) {
+    executionData fileTree(project.rootDir.absolutePath).include("**/build/jacoco/*.exec")
+
+    subprojects.each {
+        sourceSets it.sourceSets.main
+    }
+
+    reports {
+        xml {
+            true
+        }
+        html {
+            true
+        }
     }
 }
 
