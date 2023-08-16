@@ -18,7 +18,11 @@ suggestions so if you do have a lightbulb moment, feel free to send us an email 
 
 ## Setting Up a Pull Request
 
-$$ More Info Needed Here $$
+From your local copy of RondayView, make sure all of the changes you make are on a new branch!
+
+After you are happy with all of your changes, do a git push from your branch to github. From your forked repo go into "Pull requests" in the navbar and click on the green "New pull request" button.
+
+***FORGOT HOW TO DO
 
 From there, one of out team members here at VicRoy will review your pull requestand give you some constructive feedback. Once it all looks good to go, we would be honoured to merge your contribution!
 
@@ -34,6 +38,7 @@ And watch this video to see how to set up Android Studio: https://www.youtube.co
 
 Our backend logic is all in java so please use java and not kotlin!
 
+*****CHANGE THIS PERHAPS
 We also value having a consistent style in our program, this is to minimise confusion and keep everything looking neat and consistent! As such we will be following
 googles style guide for java programs shown at this link: https://google.github.io/styleguide/javaguide.html
 
