@@ -5,8 +5,8 @@ name: Sonarcloud
 
 on:
   workflow_run:
-    workflows: [Build]
-    types: [completed]
+    workflows: [ Build ]
+    types: [ completed ]
 
 jobs:
   sonarcloud:
