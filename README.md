@@ -9,9 +9,20 @@ Have Android Studio installed
 Download and follow installation instructions from this link: https://developer.android.com/studio
 
 Please also watch this video for Android Studio setup to make sure your machine is ready to run this project! 
-[https://www.youtube.com/results?sp=mAEB&search_query=how+to+set+up+android+studio](https://www.youtube.com/watch?v=K5z5OIKVmCQ&list=PLg3oSHawmeXjxwAfTM6Ck_Lz55l_P7lnG&index=3&t=1243s)
+[Setting Up Android Studio](https://www.youtube.com/watch?v=K5z5OIKVmCQ&list=PLg3oSHawmeXjxwAfTM6Ck_Lz55l_P7lnG&index=3&t=1243s)
 
-After you have installed Android Studio, simply clone this repo and open it in Android Studio!
+After you have installed Android Studio, fork this repo by simply clicking the fork button in the top right of the screen.
+
+![Fork Repo button](image.png)
+
+From your new forked repo, simple clone the project to your machine.
+
+    Copy the repo URL (click the green "Code" button and copy the link)
+    Opeining the command prompt
+    Navigate to the file that you want the project in
+    Enter the command (git clone [repo link])
+
+Now you have a personal copy of RondayView that you can work on!
 
 ## Licence
 
@@ -43,6 +54,13 @@ For additional help, questions, or suggestions, please feel free to contact the 
 
 ## Attributions and Contributing Guidelines
 
-$$ add names of group members $$
+A big thank you to the team and VicRoy that have worked hard on RondayView and brought the project to the community!
 
-Contributing Guidelines can be found here CONTRIBUTING.md (THIS SHOULD BE A LINK)
+    Jackson Schofield
+    Ben Martin
+    Devesh Duptala
+    Ariel Wang
+    Emily Zou
+    Michael Hardy
+
+Contributing Guidelines can be found here: [Contributing Document](CONTRIBUTING)

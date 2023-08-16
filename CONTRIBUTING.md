@@ -16,9 +16,15 @@ In your bug report please include the following
 We have created a roadmap for the project and what features we would like to add as the project progresses. However, we are always open to new ideas and cool 
 suggestions so if you do have a lightbulb moment, feel free to send us an email at vroyale374@gmail.com telling us all about it!
 
-## Setting Up a Pull Request
+## Submitting Up a Pull Request
 
-$$ More Info Needed Here $$
+From your local copy of RondayView, make sure all of the changes you make are on a new branch!
+
+After you are happy with all of your changes, do a git push from your branch to github. From your forked repo go into "Pull requests" in the navbar and click on the green "New pull request" button.
+
+Select the branch that you want to create the pull request for and GitHub will let you know if there are any merge conflicts. If there are merge conflicts, it will give you some suggestions on how to solve them. Once it is able to merge, you can click the "Create pull request" button. 
+
+Write a short paragraph describing what you have done in the pull request and which issue it addresses.
 
 From there, one of out team members here at VicRoy will review your pull requestand give you some constructive feedback. Once it all looks good to go, we would be honoured to merge your contribution!
 
@@ -30,12 +36,30 @@ Follow this link to download Android Studio: https://developer.android.com/studi
 
 And watch this video to see how to set up Android Studio: https://www.youtube.com/results?sp=mAEB&search_query=how+to+set+up+android+studio
 
+Once you have opened the project, you can run it by clicking the green triangular play button on the top right of the screen, and the app will open up in your android emulator. Alternitavely, if you have an android phone, you can run the app on your physical device by following these instructions: https://developer.android.com/studio/run/device
+
 ## Technical Requirements for Contributions
 
 Our backend logic is all in java so please use java and not kotlin!
 
+*****CHANGE THIS PERHAPS
 We also value having a consistent style in our program, this is to minimise confusion and keep everything looking neat and consistent! As such we will be following
 googles style guide for java programs shown at this link: https://google.github.io/styleguide/javaguide.html
+
+Also, our branch documentation style is as follows
+
+    Start the branch with one of these tags 
+
+        feat - for feature
+        fix - for bug fix
+        test - for testing additions
+        docs - documentation update
+
+    Then add a /
+
+    Then a relevant title for your branch all in lower case with words seperated by dashes -
+
+Here is an example of a branch name: feat/creating-home-UI
 
 ## Our Vision
 
@@ -76,8 +100,14 @@ Class Diagram
 ![Class Diagram](contributingIMGS/classDiagram.png)
 
 $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$4
-Devesh Part
+Deveshs Database Diagram
 $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$4
+
+## Project Ground Rules
+
+We at VicRoy strongly support inclusivity for all peoples as well as fostering a harrasment and bully free environment. This means that comments on pull requests should be constructive, helpful and kind. We ask that you avoid condecending words such as "obvious", "easy", or "simply" and avoid making comments personal. Please keep in mind that we are all at different stages in our journey and are all learning. Respect is important to us, so please treat eachother as you would like to be treated.
+
+For more information on our policies and ground rules, have a look at out [Code of Conduct](CODE_OF_CONDUCT).
 
 ## How to Get in Touch
 
