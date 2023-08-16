@@ -1,8 +1,7 @@
 plugins {
     id 'com.android.application'
     id 'jacoco'
-    id("com.android.application")
-    id("com.google.gms.google-services")
+    id "com.google.gms.google-services"
 }
 
 android {
@@ -33,7 +32,7 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 
-    buildFeatures{
+    buildFeatures {
         viewBinding true
     }
 }
