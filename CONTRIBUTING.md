@@ -100,7 +100,7 @@ Class Diagram
 ![Class Diagram](contributingIMGS/classDiagram.png)
 
 $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$4
-Devesh Part
+Deveshs Database Diagram
 $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$4
 
 ## Project Ground Rules
