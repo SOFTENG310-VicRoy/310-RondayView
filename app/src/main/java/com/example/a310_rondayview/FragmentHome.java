@@ -30,6 +30,8 @@ public class FragmentHome extends Fragment {
     private TextView eventDescriptionTextView;
     private ImageView eventImageView;
 
+    private ImageView eventClubPFPImageView;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_home, container, false);
@@ -38,7 +40,7 @@ public class FragmentHome extends Fragment {
         View eventCardView = rootView.findViewById(R.id.eventCardView);
 
         // Find the included layout within the CardView
-        View eventContainer = eventCardView.findViewById(R.id.event_container); // Make sure this ID matches the ID of the included layout
+        View eventContainer = eventCardView.findViewById(R.id.event_container);
 
         // Find views within the included layout
         clubNameTextView = eventContainer.findViewById(R.id.clubNameTextView);
@@ -47,6 +49,7 @@ public class FragmentHome extends Fragment {
         timeTextView = eventContainer.findViewById(R.id.dateTimeTextView);
         eventDescriptionTextView = eventContainer.findViewById(R.id.eventDescriptionTextView);
         eventImageView = eventContainer.findViewById(R.id.eventImageView);
+        eventClubPFPImageView = eventContainer.findViewById(R.id.profileImageView);
 
         // Fetch data from Firestore
         FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -60,11 +63,11 @@ public class FragmentHome extends Fragment {
                             document.getString("description"),
                             document.getString("location"),
                             document.getTimestamp("dateTime"),
-                            document.getString("imageURL")
+                            document.getString("imageURL"),
+                            document.getString("eventClubProfilePicture")
                     );
                     events.add(event);
                 }
-
                 // Updating UI with the first event
                 updateUI();
             }
@@ -106,6 +109,7 @@ public class FragmentHome extends Fragment {
 
             eventDescriptionTextView.setText(event.description);
             Glide.with(this).load(event.imageURL).into(eventImageView);
+            Glide.with(this).load(event.eventClubProfilePicture).into(eventClubPFPImageView);
         }
     }
 }

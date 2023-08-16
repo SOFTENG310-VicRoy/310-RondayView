@@ -11,8 +11,9 @@ public class Event {
     String location;
     Timestamp dateTime; // firestore default timestamp
     String imageURL;
+    String eventClubProfilePicture;
 
-    public Event(String eventID, String clubName, String title, String description, String location, Timestamp dateTime, String imageURL) {
+    public Event(String eventID, String clubName, String title, String description, String location, Timestamp dateTime, String imageURL, String eventClubProfilePicture) {
         this.eventID = eventID;
         this.clubName = clubName;
         this.title = title;
@@ -20,6 +21,7 @@ public class Event {
         this.location = location;
         this.dateTime = dateTime;
         this.imageURL = imageURL;
+        this.eventClubProfilePicture = eventClubProfilePicture;
     }
 
     void updateDetails(){}
