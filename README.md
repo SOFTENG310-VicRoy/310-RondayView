@@ -63,4 +63,4 @@ A big thank you to the team and VicRoy that have worked hard on RondayView and b
     Emily Zou
     Michael Hardy
 
-Contributing Guidelines can be found here CONTRIBUTING.md (THIS SHOULD BE A LINK)
+Contributing Guidelines can be found here: [Contributing Document](CONTRIBUTING)
