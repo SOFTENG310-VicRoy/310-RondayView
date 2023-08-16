@@ -21,6 +21,7 @@ import android.widget.ImageView;
  */
 public class CreateEventFragment extends Fragment {
 
+
     ActivityResultLauncher<String> selectPhoto;
 
     private class ViewHolder {
