@@ -36,6 +36,7 @@
                 android:textColor="@color/white"
                 android:gravity="center_vertical"
                 android:text="Club Name"
+                android:layout_gravity="center"
                 android:textStyle="bold" />
 
         </LinearLayout>
