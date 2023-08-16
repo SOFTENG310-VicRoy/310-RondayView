@@ -47,6 +47,9 @@ jobs:
       - name: 📂 Unzip code coverage
         run: unzip code-coverage.zip -d coverage
 
+      - name: Change wrapper permissions
+        run: chmod +x gradlew
+
       - name: 📶 Download PR number
         if: github.event.workflow_run.event == 'pull_request'
         uses: dawidd6/action-download-artifact@v2
@@ -77,4 +80,4 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: ./gradlew build sonar
+        run: ./gradlew sonar
