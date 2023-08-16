@@ -23,7 +23,6 @@
                 android:id="@+id/profileImageView"
                 android:layout_width="64dp"
                 android:layout_height="64dp"
-                android:src="@drawable/profile_picture"
                 android:scaleType="centerCrop"
                 android:layout_gravity="center_vertical"
                 android:layout_marginEnd="16dp" />
@@ -33,11 +32,10 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:textSize="22sp"
+                android:textColor="@color/white"
                 android:gravity="center_vertical"
-                android:layout_gravity="center"
-
                 android:text="Club Name"
-                android:textSize="18sp"
                 android:textStyle="bold" />
 
         </LinearLayout>
@@ -48,7 +46,7 @@
             android:layout_width="match_parent"
             android:layout_height="300dp"
             android:scaleType="centerCrop"
-            android:src="@drawable/default_event_image" />
+            />
 
         <LinearLayout
             android:id="@+id/eventDetailsLayout"
@@ -62,19 +60,26 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Event Title"
+                android:textSize="26sp"
+                android:textColor="@color/white"
                 android:textStyle="bold" />
+            <TextView
+                android:id="@+id/dateTimeTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="22sp"
+                android:textColor="@color/white"
+                android:text="Time + Date" />
 
             <TextView
                 android:id="@+id/locationTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textSize="22sp"
+                android:textColor="@color/white"
                 android:text="Location" />
 
-            <TextView
-                android:id="@+id/timeTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Time" />
+
 
             <ScrollView
                 android:layout_width="match_parent"
@@ -84,6 +89,8 @@
                     android:id="@+id/eventDescriptionTextView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:textSize="16sp"
+                    android:textColor="@color/white"
                     android:text="Event Description" />
             </ScrollView>
 
