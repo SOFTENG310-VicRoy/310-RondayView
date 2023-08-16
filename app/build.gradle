@@ -1,7 +1,7 @@
 plugins {
     id 'com.android.application'
-    id 'jacoco'
     id "com.google.gms.google-services"
+    id 'jacoco'
 }
 
 android {
@@ -37,15 +37,7 @@ android {
     }
 }
 
-jacoco {
-    toolVersion "0.8.0"
-}
-
-tasks.withType(Test) {
-    jacoco.includeNoLocationClasses = true
-}
-
-task jacocoTestReport(type: JacocoReport, dependsOn: ['testDebugUnitTest']) {
+task jacocoTestReport(type: JacocoReport) {
     executionData fileTree(project.rootDir.absolutePath).include("**/build/jacoco/*.exec")
 
     subprojects.each {
