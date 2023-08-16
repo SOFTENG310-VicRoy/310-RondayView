@@ -89,7 +89,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:
-          arguments: sonar -x coverage
+          arguments: sonar
             -Dsonar.scm.provider=git
             -Dsonar.pullrequest.key=${{ fromJson(steps.get_pr_data.outputs.data).number }}
             -Dsonar.pullrequest.branch=${{ fromJson(steps.get_pr_data.outputs.data).head.ref }}
@@ -103,7 +103,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:
-          arguments: sonar -x coverage
+          arguments: sonar
             -Dsonar.scm.provider=git
             -Dsonar.pullrequest.branch.name=${{ github.event.workflow_run.head_branch }}
             -Dorg.gradle.jvmargs=-Xmx1g
