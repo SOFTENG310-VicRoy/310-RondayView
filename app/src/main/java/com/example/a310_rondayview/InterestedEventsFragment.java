@@ -82,6 +82,12 @@ public class InterestedEventsFragment extends Fragment {
         recyclerview = view.findViewById(R.id.recyclerView);
         recyclerview.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerview.setHasFixedSize(true);
+
+        Events fakeEvent1 = new Events(R.drawable.ic_launcher_background, "Fake Event1", "This is a fake event");
+        eventsArrayList.add(fakeEvent1);
+        Events fakeEvent2 = new Events(R.drawable.ic_launcher_background, "Fake Event2", "This is a fake event too");
+        eventsArrayList.add(fakeEvent2);
+
         InterestedEventsAdapter interestedEventsAdapter = new InterestedEventsAdapter(getContext(), eventsArrayList);
         recyclerview.setAdapter(interestedEventsAdapter);
         interestedEventsAdapter.notifyDataSetChanged();

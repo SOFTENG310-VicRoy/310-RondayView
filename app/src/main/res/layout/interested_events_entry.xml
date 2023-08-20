@@ -63,7 +63,7 @@
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:padding="20dp"
-                android:background="null"
+                android:background="@null"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@drawable/baseline_favorite_80" />

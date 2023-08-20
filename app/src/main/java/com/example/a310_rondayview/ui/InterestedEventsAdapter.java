@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
@@ -28,12 +29,14 @@ public class InterestedEventsAdapter extends RecyclerView.Adapter<InterestedEven
     @androidx.annotation.NonNull
     @Override
     public InterestedEventsViewHolder onCreateViewHolder(@androidx.annotation.NonNull ViewGroup parent, int viewType) {
+        // Inflates the layout for individual list items
         View view = LayoutInflater.from(context).inflate(R.layout.interested_events_entry, parent, false);
         return new InterestedEventsViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@androidx.annotation.NonNull InterestedEventsViewHolder holder, int position) {
+        // Binds data to the UI elements in each list item
         Events events = eventsArrayList.get(position);
         holder.eventImageView.setImageResource(events.eventImage);
         holder.titleTextView.setText(events.eventTitle);
@@ -45,9 +48,11 @@ public class InterestedEventsAdapter extends RecyclerView.Adapter<InterestedEven
         return eventsArrayList.size();
     }
 
+
+    // ViewHolder class to hold references to UI elements for a list item
     public static class InterestedEventsViewHolder extends RecyclerView.ViewHolder{
 
-        ShapeableImageView eventImageView;
+        ImageView eventImageView;
         TextView titleTextView;
         TextView descriptionTextView;
 
