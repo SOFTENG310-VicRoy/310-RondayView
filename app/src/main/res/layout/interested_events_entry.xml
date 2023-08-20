@@ -58,14 +58,15 @@
 
              </LinearLayout>
 
-             <ImageView
-                 android:id="@+id/heartImage"
+            <ImageButton
+                android:id="@+id/heartImage"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:padding="20dp"
+                android:background="null"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/baseline_heart_24" />
+                app:srcCompat="@drawable/baseline_favorite_80" />
 
             <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/guideline2"
