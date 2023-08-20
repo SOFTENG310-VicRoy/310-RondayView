@@ -7,6 +7,10 @@ android {
     namespace 'com.example.a310_rondayview'
     compileSdk 33
 
+    lint {
+        baseline = file("lint-baseline.xml")
+    }
+
     defaultConfig {
         applicationId "com.example.a310_rondayview"
         minSdk 24
