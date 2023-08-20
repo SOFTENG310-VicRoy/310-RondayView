@@ -33,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
     // the homepage once the homepage is made
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        firestore = FirebaseFirestore.getInstance();
         super.onCreate(savedInstanceState);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
@@ -56,9 +57,6 @@ public class MainActivity extends AppCompatActivity {
 
             return true;
         });
-
-
-        firestore = FirebaseFirestore.getInstance();
 
     }
 

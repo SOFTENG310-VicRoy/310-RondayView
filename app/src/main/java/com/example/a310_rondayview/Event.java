@@ -3,17 +3,19 @@ package com.example.a310_rondayview;
 
 import com.google.firebase.Timestamp;
 
+import java.util.Date;
+
 public class Event {
     String eventID;
     String clubName;
     String title;
     String description;
     String location;
-    Timestamp dateTime; // firestore default timestamp
+    Date dateTime; // firestore default timestamp
     String imageURL;
     String eventClubProfilePicture;
 
-    public Event(String eventID, String clubName, String title, String description, String location, Timestamp dateTime, String imageURL, String eventClubProfilePicture) {
+    public Event(String eventID, String clubName, String title, String description, String location, Date dateTime, String imageURL, String eventClubProfilePicture) {
         this.eventID = eventID;
         this.clubName = clubName;
         this.title = title;

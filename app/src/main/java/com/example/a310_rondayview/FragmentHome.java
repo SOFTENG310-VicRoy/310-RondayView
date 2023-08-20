@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.Timestamp;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -62,7 +63,7 @@ public class FragmentHome extends Fragment {
                             document.getString("title"),
                             document.getString("description"),
                             document.getString("location"),
-                            document.getTimestamp("dateTime"),
+                            document.getTimestamp("dateTime").toDate(),
                             document.getString("imageURL"),
                             document.getString("eventClubProfilePicture")
                     );
@@ -97,12 +98,9 @@ public class FragmentHome extends Fragment {
             eventTitleTextView.setText(event.title);
             locationTextView.setText(event.location);
 
-            // Convert the Timestamp to a Date object
-            Date date = event.dateTime.toDate();
-
             // Format the date and time as a single string
             SimpleDateFormat dateTimeFormat = new SimpleDateFormat("d' 'MMMM yyyy, hh:mm a");
-            String dateTimeString = dateTimeFormat.format(date);
+            String dateTimeString = dateTimeFormat.format(event.dateTime);
 
             // Set the formatted date and time in the UI
             timeTextView.setText(dateTimeString);
