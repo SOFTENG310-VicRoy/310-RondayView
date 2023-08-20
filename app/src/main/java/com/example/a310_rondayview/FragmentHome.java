@@ -56,8 +56,7 @@ public class FragmentHome extends Fragment {
         db.collection("events").get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 for (QueryDocumentSnapshot document : task.getResult()) {
-                    EventDTO eventDTO = document.toObject(EventDTO.class);
-                    Event event = eventDTO.toEvent();
+                    Event event = document.toObject(Event.class);
                     events.add(event);
                 }
                 // Updating UI with the first event
@@ -85,13 +84,15 @@ public class FragmentHome extends Fragment {
     private void updateUI() {
         if (currentEventIndex < events.size()) {
             Event event = events.get(currentEventIndex);
-            clubNameTextView.setText(event.getClubName());
+            if (clubNameTextView != null) {
+                clubNameTextView.setText(event.getClubName());
+            }
             eventTitleTextView.setText(event.getTitle());
             locationTextView.setText(event.getLocation());
 
             // Format the date and time as a single string
             SimpleDateFormat dateTimeFormat = new SimpleDateFormat("d' 'MMMM yyyy, hh:mm a");
-            String dateTimeString = dateTimeFormat.format(event.getDateTime());
+            String dateTimeString = dateTimeFormat.format(event.getDateTime().toDate());
 
             // Set the formatted date and time in the UI
             timeTextView.setText(dateTimeString);

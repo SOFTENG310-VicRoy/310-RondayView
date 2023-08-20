@@ -26,7 +26,7 @@ public class Event {
         return location;
     }
 
-    public Date getDateTime() {
+    public Timestamp getDateTime() {
         return dateTime;
     }
 
@@ -43,11 +43,15 @@ public class Event {
     private String title;
     private String description;
     private String location;
-    private Date dateTime; // firestore default timestamp
+    private Timestamp dateTime; // firestore default timestamp
     private String imageURL;
     private String eventClubProfilePicture;
 
-    public Event(String eventID, String clubName, String title, String description, String location, Date dateTime, String imageURL, String eventClubProfilePicture) {
+    public Event() {
+        // Default constructor for Firestore deserialization
+    }
+
+    public Event(String eventID, String clubName, String title, String description, String location, Timestamp dateTime, String imageURL, String eventClubProfilePicture) {
         this.eventID = eventID;
         this.clubName = clubName;
         this.title = title;
