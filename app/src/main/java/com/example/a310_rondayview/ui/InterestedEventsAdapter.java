@@ -10,20 +10,20 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.a310_rondayview.R;
-import com.google.android.material.imageview.ShapeableImageView;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class InterestedEventsAdapter extends RecyclerView.Adapter<InterestedEventsAdapter.InterestedEventsViewHolder> {
 
     Context context;
     ArrayList<Events> eventsArrayList;
 
-    public InterestedEventsAdapter(Context context, ArrayList<Events> eventsArrayList) {
+    public InterestedEventsAdapter(Context context, List<Events> eventsArrayList) {
         this.context = context;
-        this.eventsArrayList = eventsArrayList;
+        this.eventsArrayList = (ArrayList<Events>) eventsArrayList;
     }
 
     @androidx.annotation.NonNull
