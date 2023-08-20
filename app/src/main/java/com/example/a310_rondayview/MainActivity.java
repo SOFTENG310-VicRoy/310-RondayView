@@ -6,8 +6,11 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.ImageButton;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -33,15 +36,23 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        replaceFragment(new CreateEventFragment());
 
-        // to add a new activity to the fragment navbar, add an elseif statement here linking the
-        // navbar button to the desired activity
+        replaceFragment(new FragmentHome());
+        ImageButton heartButton = findViewById(R.id.heartButton);
+        heartButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, LikedActivity.class);
+                startActivity(intent);
+            }
+        });
         binding.bottomNavigationView.setOnItemSelectedListener(item -> {
             if (item.getItemId() == R.id.create) {
                 replaceFragment(new CreateEventFragment());
+            } else if (item.getItemId() == R.id.browse) {
+                replaceFragment(new FragmentHome());
             } else if (item.getItemId() == R.id.account) {
-                replaceFragment(new InterestedEventsFragment());
+                replaceFragment(new FragmentAccount());
             }
 
             return true;
