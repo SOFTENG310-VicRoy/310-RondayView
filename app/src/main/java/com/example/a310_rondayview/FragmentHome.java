@@ -11,7 +11,6 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.Timestamp;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -57,16 +56,8 @@ public class FragmentHome extends Fragment {
         db.collection("events").get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 for (QueryDocumentSnapshot document : task.getResult()) {
-                    Event event = new Event(
-                            document.getId(),
-                            document.getString("clubName"),
-                            document.getString("title"),
-                            document.getString("description"),
-                            document.getString("location"),
-                            document.getTimestamp("dateTime").toDate(),
-                            document.getString("imageURL"),
-                            document.getString("eventClubProfilePicture")
-                    );
+                    EventDTO eventDTO = document.toObject(EventDTO.class);
+                    Event event = eventDTO.toEvent();
                     events.add(event);
                 }
                 // Updating UI with the first event
@@ -94,20 +85,20 @@ public class FragmentHome extends Fragment {
     private void updateUI() {
         if (currentEventIndex < events.size()) {
             Event event = events.get(currentEventIndex);
-            clubNameTextView.setText(event.clubName);
-            eventTitleTextView.setText(event.title);
-            locationTextView.setText(event.location);
+            clubNameTextView.setText(event.getClubName());
+            eventTitleTextView.setText(event.getTitle());
+            locationTextView.setText(event.getLocation());
 
             // Format the date and time as a single string
             SimpleDateFormat dateTimeFormat = new SimpleDateFormat("d' 'MMMM yyyy, hh:mm a");
-            String dateTimeString = dateTimeFormat.format(event.dateTime);
+            String dateTimeString = dateTimeFormat.format(event.getDateTime());
 
             // Set the formatted date and time in the UI
             timeTextView.setText(dateTimeString);
 
-            eventDescriptionTextView.setText(event.description);
-            Glide.with(this).load(event.imageURL).into(eventImageView);
-            Glide.with(this).load(event.eventClubProfilePicture).into(eventClubPFPImageView);
+            eventDescriptionTextView.setText(event.getDescription());
+            Glide.with(this).load(event.getImageURL()).into(eventImageView);
+            Glide.with(this).load(event.getEventClubProfilePicture()).into(eventClubPFPImageView);
         }
     }
 }
