@@ -31,7 +31,7 @@ public class InterestedEventsAdapter extends RecyclerView.Adapter<InterestedEven
     @Override
     public InterestedEventsViewHolder onCreateViewHolder(@androidx.annotation.NonNull ViewGroup parent, int viewType) {
         // Inflates the layout for individual list items
-        View view = LayoutInflater.from(context).inflate(R.layout.interested_events_entry, parent, false);
+        View view = LayoutInflater.from(context).inflate(R.layout.interested_events_card, parent, false);
         return new InterestedEventsViewHolder(view);
     }
 

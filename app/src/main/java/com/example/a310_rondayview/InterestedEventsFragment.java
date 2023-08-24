@@ -17,8 +17,18 @@ import java.util.List;
 
 public class InterestedEventsFragment extends Fragment {
 
-    // the fragment initialization parameters
-    private List<Event> eventsList;
+    List<Event> eventsList;
+
+    private class ViewHolder {
+
+        RecyclerView interestedRecyclerView;
+
+        public ViewHolder(View view) {
+            interestedRecyclerView = view.findViewById(R.id.interested_events_recycler_view);
+        }
+    }
+
+    InterestedEventsFragment.ViewHolder vh;
 
     public InterestedEventsFragment() {
         // Required empty public constructor
@@ -28,23 +38,27 @@ public class InterestedEventsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_interested_events, container, false);
+        View view = inflater.inflate(R.layout.fragment_interested_events, container, false);
+
+        vh = new ViewHolder(view);
+
+        return view;
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // load in the list of favourited events from the database here
+        // load in the list of interested events from the database
+        eventsList = FireBaseUserDataManager.getInstance().InterestedEvents;
 
         // setup the recycler view
-        RecyclerView recyclerview = view.findViewById(R.id.recyclerView);
-        recyclerview.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerview.setHasFixedSize(true);
+        vh.interestedRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        vh.interestedRecyclerView.setHasFixedSize(true);
 
         // populate the recycler view
         InterestedEventsAdapter interestedEventsAdapter = new InterestedEventsAdapter(getContext(), eventsList);
-        recyclerview.setAdapter(interestedEventsAdapter);
+        vh.interestedRecyclerView.setAdapter(interestedEventsAdapter);
         interestedEventsAdapter.notifyDataSetChanged();
     }
 }

@@ -31,8 +31,6 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseFirestore firestore;
     private FirebaseAuth mAuth;
 
-    // TODO ("replaceFragment(new CreateEventFragment());") replace CreateEventFragment with
-    // the homepage once the homepage is made
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
