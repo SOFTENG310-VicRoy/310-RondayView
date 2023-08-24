@@ -56,6 +56,7 @@ Here is an example of a branch name: feat/creating-home-ui
 In order to prevent your branches getting out of date, it is important to regularly pull changes from the upstream main branch. The instructions to do this via rebasing are detailed below:
 
 1) Sync the main branch on your fork with the main branch from the upstream using this button on your fork
+
 ![Synce Fork Button](docImages/img.png)
 
 2) On your local main branch, then pull these changes using
