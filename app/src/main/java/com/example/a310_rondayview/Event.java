@@ -1,15 +1,18 @@
 package com.example.a310_rondayview;
 
+import com.google.firebase.firestore.DocumentId;
+
 import java.util.Date;
 
 public class Event {
 
+    @DocumentId
     private String eventID;
     private String clubName;
     private String title;
     private String description;
     private String location;
-    private Date dateTime; // firestore default timestamp
+    private Date dateTime;
     private String imageURL;
     private String eventClubProfilePicture;
 
