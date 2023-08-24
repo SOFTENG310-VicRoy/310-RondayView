@@ -37,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
         replaceFragment(new FragmentHome());
         ImageButton heartButton = findViewById(R.id.heartButton);
         heartButton.setOnClickListener(new View.OnClickListener() {
