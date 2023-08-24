@@ -1,8 +1,5 @@
 package com.example.a310_rondayview;
 
-
-import com.google.firebase.Timestamp;
-
 import java.util.Date;
 
 public class Event {
@@ -26,7 +23,7 @@ public class Event {
         return location;
     }
 
-    public Timestamp getDateTime() {
+    public Date getDateTime() {
         return dateTime;
     }
 
@@ -43,7 +40,7 @@ public class Event {
     private String title;
     private String description;
     private String location;
-    private Timestamp dateTime; // firestore default timestamp
+    private Date dateTime; // firestore default timestamp
     private String imageURL;
     private String eventClubProfilePicture;
 
@@ -51,7 +48,7 @@ public class Event {
         // Default constructor for Firestore deserialization
     }
 
-    public Event(String eventID, String clubName, String title, String description, String location, Timestamp dateTime, String imageURL, String eventClubProfilePicture) {
+    public Event(String eventID, String clubName, String title, String description, String location, Date dateTime, String imageURL, String eventClubProfilePicture) {
         this.eventID = eventID;
         this.clubName = clubName;
         this.title = title;
@@ -61,9 +58,4 @@ public class Event {
         this.imageURL = imageURL;
         this.eventClubProfilePicture = eventClubProfilePicture;
     }
-
-    void updateDetails(){}
-    void delete(){}
-
-
 }
