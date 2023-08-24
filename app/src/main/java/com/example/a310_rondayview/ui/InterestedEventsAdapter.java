@@ -15,7 +15,6 @@ import com.example.a310_rondayview.R;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class InterestedEventsAdapter extends RecyclerView.Adapter<InterestedEventsAdapter.InterestedEventsViewHolder> {
@@ -23,9 +22,9 @@ public class InterestedEventsAdapter extends RecyclerView.Adapter<InterestedEven
     Context context;
     List<Event> eventsList;
 
-    public InterestedEventsAdapter(Context context, List<Event> eventsArrayList) {
+    public InterestedEventsAdapter(Context context, List<Event> eventsList) {
         this.context = context;
-        this.eventsList = (ArrayList<Event>) eventsArrayList;
+        this.eventsList = eventsList;
     }
 
     @androidx.annotation.NonNull
