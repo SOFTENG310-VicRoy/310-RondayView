@@ -21,11 +21,11 @@ import java.util.List;
 public class InterestedEventsAdapter extends RecyclerView.Adapter<InterestedEventsAdapter.InterestedEventsViewHolder> {
 
     Context context;
-    ArrayList<Event> eventsArrayList;
+    List<Event> eventsList;
 
     public InterestedEventsAdapter(Context context, List<Event> eventsArrayList) {
         this.context = context;
-        this.eventsArrayList = (ArrayList<Event>) eventsArrayList;
+        this.eventsList = (ArrayList<Event>) eventsArrayList;
     }
 
     @androidx.annotation.NonNull
@@ -39,7 +39,7 @@ public class InterestedEventsAdapter extends RecyclerView.Adapter<InterestedEven
     @Override
     public void onBindViewHolder(@androidx.annotation.NonNull InterestedEventsViewHolder holder, int position) {
         // Binds data to the UI elements in each list item
-        Event event = eventsArrayList.get(position);
+        Event event = eventsList.get(position);
 
         Glide.with(holder.itemView.getContext()).load(event.getImageURL()).into(holder.eventImageView);
         holder.titleTextView.setText(event.getTitle());
@@ -48,7 +48,7 @@ public class InterestedEventsAdapter extends RecyclerView.Adapter<InterestedEven
 
     @Override
     public int getItemCount() {
-        return eventsArrayList.size();
+        return eventsList.size();
     }
 
 
