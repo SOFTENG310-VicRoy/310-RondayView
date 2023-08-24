@@ -92,7 +92,7 @@ public class FragmentHome extends Fragment {
 
             // Format the date and time as a single string
             SimpleDateFormat dateTimeFormat = new SimpleDateFormat("d' 'MMMM yyyy, hh:mm a");
-            String dateTimeString = dateTimeFormat.format(event.getDateTime().toDate());
+            String dateTimeString = dateTimeFormat.format(event.getDateTime());
 
             // Set the formatted date and time in the UI
             timeTextView.setText(dateTimeString);

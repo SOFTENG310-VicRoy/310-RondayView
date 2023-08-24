@@ -1,13 +1,38 @@
 package com.example.a310_rondayview;
 
-
-import com.google.firebase.Timestamp;
+import com.google.firebase.firestore.DocumentId;
 
 import java.util.Date;
 
 public class Event {
-    public String getEventID() {
-        return eventID;
+
+    @DocumentId
+    private String eventId;
+    private String clubName;
+    private String title;
+    private String description;
+    private String location;
+    private Date dateTime;
+    private String imageURL;
+    private String eventClubProfilePicture;
+
+    public Event() {
+        // Default constructor for Firestore deserialization
+    }
+
+    public Event(String eventId, String clubName, String title, String description, String location, Date dateTime, String imageURL, String eventClubProfilePicture) {
+        this.eventId = eventId;
+        this.clubName = clubName;
+        this.title = title;
+        this.description = description;
+        this.location = location;
+        this.dateTime = dateTime;
+        this.imageURL = imageURL;
+        this.eventClubProfilePicture = eventClubProfilePicture;
+    }
+
+    public String getEventId() {
+        return eventId;
     }
 
     public String getClubName() {
@@ -26,7 +51,7 @@ public class Event {
         return location;
     }
 
-    public Timestamp getDateTime() {
+    public Date getDateTime() {
         return dateTime;
     }
 
@@ -37,33 +62,4 @@ public class Event {
     public String getEventClubProfilePicture() {
         return eventClubProfilePicture;
     }
-
-    private String eventID;
-    private String clubName;
-    private String title;
-    private String description;
-    private String location;
-    private Timestamp dateTime; // firestore default timestamp
-    private String imageURL;
-    private String eventClubProfilePicture;
-
-    public Event() {
-        // Default constructor for Firestore deserialization
-    }
-
-    public Event(String eventID, String clubName, String title, String description, String location, Timestamp dateTime, String imageURL, String eventClubProfilePicture) {
-        this.eventID = eventID;
-        this.clubName = clubName;
-        this.title = title;
-        this.description = description;
-        this.location = location;
-        this.dateTime = dateTime;
-        this.imageURL = imageURL;
-        this.eventClubProfilePicture = eventClubProfilePicture;
-    }
-
-    void updateDetails(){}
-    void delete(){}
-
-
 }
