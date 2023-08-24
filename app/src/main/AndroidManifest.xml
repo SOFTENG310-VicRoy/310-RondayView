@@ -22,6 +22,9 @@
             </intent-filter>
         </activity>
         <activity android:name=".LikedActivity"/>
+        <activity android:name=".SignUpActivity"/>
+        <activity android:name=".SignInActivity"/>
+
 
     </application>
     <uses-permission android:name="android.permission.INTERNET" />
