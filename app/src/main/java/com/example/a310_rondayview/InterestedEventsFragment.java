@@ -13,12 +13,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.a310_rondayview.ui.InterestedEventsAdapter;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class InterestedEventsFragment extends Fragment {
 
     // the fragment initialization parameters
-    private ArrayList<Event> eventsArrayList;
+    private List<Event> eventsList;
 
     public InterestedEventsFragment() {
         // Required empty public constructor
@@ -43,7 +43,7 @@ public class InterestedEventsFragment extends Fragment {
         recyclerview.setHasFixedSize(true);
 
         // populate the recycler view
-        InterestedEventsAdapter interestedEventsAdapter = new InterestedEventsAdapter(getContext(), eventsArrayList);
+        InterestedEventsAdapter interestedEventsAdapter = new InterestedEventsAdapter(getContext(), eventsList);
         recyclerview.setAdapter(interestedEventsAdapter);
         interestedEventsAdapter.notifyDataSetChanged();
     }
