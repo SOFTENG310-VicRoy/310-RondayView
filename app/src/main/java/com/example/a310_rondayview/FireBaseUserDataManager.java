@@ -35,49 +35,6 @@ public class FireBaseUserDataManager {
         return InstanceHolder.instance;
     }
 
-    public void addInterestedEvent(Event event) {
-        // Get the current Firebase Auth instance
-        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
-
-        FirebaseUser currentUser = firebaseAuth.getCurrentUser();
-
-        // Check if a user is signed in
-        if (currentUser != null) {
-            String uid = currentUser.getUid();
-
-            // Use the UID to add the event to the users' Firestore collection
-            db.collection(USERSCOLLECTION)
-                    .document(uid)
-                    .collection(INTERESTEDEVENTSCOLLECTION)
-                    .document(event.getEventId())
-                    .set(event);
-        } else {
-            Log.e(TAG, SIGNINERROR);
-        }
-    }
-
-    public void removeInterestedEvent(Event event) {
-        // Get the current Firebase Auth instance
-        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
-
-        FirebaseUser currentUser = firebaseAuth.getCurrentUser();
-
-        // Check if a user is signed in
-        if (currentUser != null) {
-            String uid = currentUser.getUid();
-
-            // Use the UID to remove the event from the users' Firestore collection
-            db.collection(USERSCOLLECTION)
-                    .document(uid)
-                    .collection(INTERESTEDEVENTSCOLLECTION)
-                    .document(event.getEventId())
-                    .delete();
-        } else {
-            // Handle the case where no user is signed in
-            Log.e(TAG, SIGNINERROR);
-        }
-    }
-
     public void getInterestedEvents() {
         FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
 
@@ -129,5 +86,47 @@ public class FireBaseUserDataManager {
         }
     }
 
+    public void addInterestedEvent(Event event) {
+        // Get the current Firebase Auth instance
+        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+
+        FirebaseUser currentUser = firebaseAuth.getCurrentUser();
+
+        // Check if a user is signed in
+        if (currentUser != null) {
+            String uid = currentUser.getUid();
+
+            // Use the UID to add the event to the users' Firestore collection
+            db.collection(USERSCOLLECTION)
+                    .document(uid)
+                    .collection(INTERESTEDEVENTSCOLLECTION)
+                    .document(event.getEventId())
+                    .set(event);
+        } else {
+            Log.e(TAG, SIGNINERROR);
+        }
+    }
+
+    public void removeInterestedEvent(Event event) {
+        // Get the current Firebase Auth instance
+        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+
+        FirebaseUser currentUser = firebaseAuth.getCurrentUser();
+
+        // Check if a user is signed in
+        if (currentUser != null) {
+            String uid = currentUser.getUid();
+
+            // Use the UID to remove the event from the users' Firestore collection
+            db.collection(USERSCOLLECTION)
+                    .document(uid)
+                    .collection(INTERESTEDEVENTSCOLLECTION)
+                    .document(event.getEventId())
+                    .delete();
+        } else {
+            // Handle the case where no user is signed in
+            Log.e(TAG, SIGNINERROR);
+        }
+    }
 }
 

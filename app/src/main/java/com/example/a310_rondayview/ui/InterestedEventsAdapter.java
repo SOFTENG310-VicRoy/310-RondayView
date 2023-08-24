@@ -47,13 +47,13 @@ public class InterestedEventsAdapter extends RecyclerView.Adapter<InterestedEven
         // Binds data to the UI elements in each list item
         Event event = eventsList.get(position);
 
+        // Set up the animation for the heart being clicked
         ScaleAnimation scaleAnimation = new ScaleAnimation(0.7f, 1.0f, 0.7f, 1.0f, Animation.RELATIVE_TO_SELF, 0.7f, Animation.RELATIVE_TO_SELF, 0.7f);
         scaleAnimation.setDuration(500);
         BounceInterpolator bounceInterpolator = new BounceInterpolator();
         scaleAnimation.setInterpolator(bounceInterpolator);
 
         ToggleButton heartButton = holder.itemView.findViewById(R.id.heart_button);
-
         heartButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
@@ -61,8 +61,8 @@ public class InterestedEventsAdapter extends RecyclerView.Adapter<InterestedEven
                 Animation fadeOut = AnimationUtils.loadAnimation(context, R.anim.fade_out);
                 holder.itemView.startAnimation(fadeOut);
 
-                // Delay the removal of the item to match the animation duration
-                // Code snippet adapted from CHAT-GPT
+                // Delay the removal of the item to match the card animation duration
+                // Code snippet adapted from OpenAI. (2023). ChatGPT (Aug 24 version) [Large language model]. https://chat.openai.com/chat
                 holder.itemView.postDelayed(new Runnable() {
                     @Override
                     public void run() {
@@ -70,9 +70,9 @@ public class InterestedEventsAdapter extends RecyclerView.Adapter<InterestedEven
                         FireBaseUserDataManager.getInstance().getInterestedEvents();
                         compoundButton.startAnimation(scaleAnimation);
 
-                        // Get the position of the item in the list
+                        // These are needed in order to show the event has been removed straight away
+                        // Without this, the event does not disappear
                         int position = eventsList.indexOf(event);
-                        // Remove the item from the adapter's data
                         if (position != -1) {
                             eventsList.remove(position);
                             notifyDataSetChanged();
@@ -95,7 +95,7 @@ public class InterestedEventsAdapter extends RecyclerView.Adapter<InterestedEven
 
 
     // ViewHolder class to hold references to UI elements for a list item
-    public static class InterestedEventsViewHolder extends RecyclerView.ViewHolder{
+    public static class InterestedEventsViewHolder extends RecyclerView.ViewHolder {
 
         ImageView eventImageView;
         TextView titleTextView;
@@ -103,7 +103,7 @@ public class InterestedEventsAdapter extends RecyclerView.Adapter<InterestedEven
         ToggleButton heartButton;
 
 
-        public InterestedEventsViewHolder(@NonNull View itemView){
+        public InterestedEventsViewHolder(@NonNull View itemView) {
             super(itemView);
             eventImageView = itemView.findViewById(R.id.coverImage);
             titleTextView = itemView.findViewById(R.id.titleText);
