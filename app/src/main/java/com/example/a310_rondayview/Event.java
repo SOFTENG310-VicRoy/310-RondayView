@@ -3,6 +3,31 @@ package com.example.a310_rondayview;
 import java.util.Date;
 
 public class Event {
+
+    private String eventID;
+    private String clubName;
+    private String title;
+    private String description;
+    private String location;
+    private Date dateTime; // firestore default timestamp
+    private String imageURL;
+    private String eventClubProfilePicture;
+
+    public Event() {
+        // Default constructor for Firestore deserialization
+    }
+
+    public Event(String eventID, String clubName, String title, String description, String location, Date dateTime, String imageURL, String eventClubProfilePicture) {
+        this.eventID = eventID;
+        this.clubName = clubName;
+        this.title = title;
+        this.description = description;
+        this.location = location;
+        this.dateTime = dateTime;
+        this.imageURL = imageURL;
+        this.eventClubProfilePicture = eventClubProfilePicture;
+    }
+
     public String getEventID() {
         return eventID;
     }
@@ -33,29 +58,5 @@ public class Event {
 
     public String getEventClubProfilePicture() {
         return eventClubProfilePicture;
-    }
-
-    private String eventID;
-    private String clubName;
-    private String title;
-    private String description;
-    private String location;
-    private Date dateTime; // firestore default timestamp
-    private String imageURL;
-    private String eventClubProfilePicture;
-
-    public Event() {
-        // Default constructor for Firestore deserialization
-    }
-
-    public Event(String eventID, String clubName, String title, String description, String location, Date dateTime, String imageURL, String eventClubProfilePicture) {
-        this.eventID = eventID;
-        this.clubName = clubName;
-        this.title = title;
-        this.description = description;
-        this.location = location;
-        this.dateTime = dateTime;
-        this.imageURL = imageURL;
-        this.eventClubProfilePicture = eventClubProfilePicture;
     }
 }
