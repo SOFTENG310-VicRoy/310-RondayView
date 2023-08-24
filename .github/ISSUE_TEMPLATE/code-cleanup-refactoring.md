@@ -11,7 +11,7 @@ assignees: ''
 State the path to which files need refactoring.
 
 **What refactoring is needed?**
-A brief description of what refactoring is needed.
+A description of the type of refactoring that needs to be undertaken.
 
 **Why is the refactoring is needed?**
 A brief description of the purpose for refactoring.
