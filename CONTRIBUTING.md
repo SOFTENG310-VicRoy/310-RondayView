@@ -45,6 +45,7 @@ Also, our branch documentation style is as follows
         feat/ - for feature
         fix/ - for bug fix
         test/ - for testing additions
+        refactor/ - for refactoring code (not adding anything new)
         docs/ - documentation update
 
     Then a relevant title for your branch all in lower case with words seperated by dashes (-)
