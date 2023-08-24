@@ -33,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
     // the homepage once the homepage is made
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        firestore = FirebaseFirestore.getInstance();
         super.onCreate(savedInstanceState);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
@@ -58,16 +59,6 @@ public class MainActivity extends AppCompatActivity {
             return true;
         });
 
-        // example
-        firestore = FirebaseFirestore.getInstance();
-
-        // Data to be added to the new document
-        Map<String, Object> newEventData = new HashMap<>();
-        newEventData.put("eventName", "Dummy Test");
-        newEventData.put("eventDate", "Test Date");
-
-        addNewEvent(newEventData);
-
     }
 
     private void replaceFragment(Fragment fragment) {
@@ -75,21 +66,5 @@ public class MainActivity extends AppCompatActivity {
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.frame_layout, fragment);
         fragmentTransaction.commit();
-    }
-
-    private void addNewEvent(Map<String, Object> eventData) {
-        firestore.collection("events").add(eventData)
-                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                    @Override
-                    public void onSuccess(DocumentReference documentReference) {
-                        Log.d(TAG, "New event added successfully");
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.e(TAG, "Error adding new event", e);
-                    }
-                });
     }
 }

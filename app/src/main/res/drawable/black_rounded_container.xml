@@ -1,0 +1,5 @@
+<!-- res/drawable/black_rounded_container.xml -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <solid android:color="#000000" /> <!-- Black color -->
+    <corners android:radius="16dp" /><!-- Radius for rounded corners -->
+</shape>
