@@ -20,8 +20,7 @@ public class Event {
         // Default constructor for Firestore deserialization
     }
 
-    public Event(String eventId, String clubName, String title, String description, String location, Date dateTime, String imageURL, String eventClubProfilePicture) {
-        this.eventId = eventId;
+    public Event(String clubName, String title, String description, String location, Date dateTime, String imageURL, String eventClubProfilePicture) {
         this.clubName = clubName;
         this.title = title;
         this.description = description;
