@@ -7,7 +7,7 @@ import java.util.Date;
 public class Event {
 
     @DocumentId
-    private String eventID;
+    private String eventId;
     private String clubName;
     private String title;
     private String description;
@@ -20,8 +20,8 @@ public class Event {
         // Default constructor for Firestore deserialization
     }
 
-    public Event(String eventID, String clubName, String title, String description, String location, Date dateTime, String imageURL, String eventClubProfilePicture) {
-        this.eventID = eventID;
+    public Event(String eventId, String clubName, String title, String description, String location, Date dateTime, String imageURL, String eventClubProfilePicture) {
+        this.eventId = eventId;
         this.clubName = clubName;
         this.title = title;
         this.description = description;
@@ -31,8 +31,8 @@ public class Event {
         this.eventClubProfilePicture = eventClubProfilePicture;
     }
 
-    public String getEventID() {
-        return eventID;
+    public String getEventId() {
+        return eventId;
     }
 
     public String getClubName() {
