@@ -35,7 +35,7 @@ public class InterestedEventsFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // load in the list of favourited events from there database here
+        // load in the list of favourited events from the database here
 
         // setup the recycler view
         RecyclerView recyclerview = view.findViewById(R.id.recyclerView);
