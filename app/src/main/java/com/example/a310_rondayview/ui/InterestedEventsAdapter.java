@@ -4,13 +4,20 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.view.animation.BounceInterpolator;
+import android.view.animation.ScaleAnimation;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.a310_rondayview.Event;
+import com.example.a310_rondayview.FireBaseUserDataManager;
 import com.example.a310_rondayview.R;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -40,6 +47,42 @@ public class InterestedEventsAdapter extends RecyclerView.Adapter<InterestedEven
         // Binds data to the UI elements in each list item
         Event event = eventsList.get(position);
 
+        ScaleAnimation scaleAnimation = new ScaleAnimation(0.7f, 1.0f, 0.7f, 1.0f, Animation.RELATIVE_TO_SELF, 0.7f, Animation.RELATIVE_TO_SELF, 0.7f);
+        scaleAnimation.setDuration(500);
+        BounceInterpolator bounceInterpolator = new BounceInterpolator();
+        scaleAnimation.setInterpolator(bounceInterpolator);
+
+        ToggleButton heartButton = holder.itemView.findViewById(R.id.heart_button);
+
+        heartButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+
+                Animation fadeOut = AnimationUtils.loadAnimation(context, R.anim.fade_out);
+                holder.itemView.startAnimation(fadeOut);
+
+                // Delay the removal of the item to match the animation duration
+                // Code snippet adapted from CHAT-GPT
+                holder.itemView.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        FireBaseUserDataManager.getInstance().removeInterestedEvent(event);
+                        FireBaseUserDataManager.getInstance().getInterestedEvents();
+                        compoundButton.startAnimation(scaleAnimation);
+
+                        // Get the position of the item in the list
+                        int position = eventsList.indexOf(event);
+                        // Remove the item from the adapter's data
+                        if (position != -1) {
+                            eventsList.remove(position);
+                            notifyDataSetChanged();
+                        }
+                        holder.heartButton.setChecked(true);
+                    }
+                }, fadeOut.getDuration());
+            }
+        });
+
         Glide.with(holder.itemView.getContext()).load(event.getImageURL()).into(holder.eventImageView);
         holder.titleTextView.setText(event.getTitle());
         holder.descriptionTextView.setText(event.getDescription());
@@ -57,13 +100,15 @@ public class InterestedEventsAdapter extends RecyclerView.Adapter<InterestedEven
         ImageView eventImageView;
         TextView titleTextView;
         TextView descriptionTextView;
+        ToggleButton heartButton;
+
 
         public InterestedEventsViewHolder(@NonNull View itemView){
             super(itemView);
             eventImageView = itemView.findViewById(R.id.coverImage);
             titleTextView = itemView.findViewById(R.id.titleText);
             descriptionTextView = itemView.findViewById(R.id.descriptionText);
-
+            heartButton = itemView.findViewById(R.id.heart_button);
         }
     }
 }

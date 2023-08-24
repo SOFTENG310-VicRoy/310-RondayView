@@ -59,15 +59,18 @@
 
              </LinearLayout>
 
-            <ImageButton
-                android:id="@+id/heartImage"
+            <ToggleButton
+                android:id="@+id/heart_button"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:padding="20dp"
-                android:background="@null"
+                android:checked="true"
+                android:text=""
+                android:textOff=""
+                android:textOn=""
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/baseline_favorite_80" />
+                android:background="@drawable/interested_button" />
 
             <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/guideline2"
