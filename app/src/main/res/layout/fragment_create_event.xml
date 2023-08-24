@@ -39,7 +39,7 @@
                         android:src="@drawable/baseline_person_24" />
 
                     <EditText
-                        android:id="@+id/edit_text_username"
+                        android:id="@+id/club_name"
                         android:layout_width="match_parent"
                         android:layout_height="48dp"
                         android:layout_marginBottom="8dp"
@@ -49,7 +49,7 @@
                 </LinearLayout>
 
                 <ImageView
-                    android:id="@+id/event_image_img"
+                    android:id="@+id/event_image"
                     android:layout_width="300dp"
                     android:layout_height="300dp"
                     android:scaleType="centerCrop"
@@ -63,6 +63,7 @@
 
 
                 <EditText
+                    android:id="@+id/event_title"
                     android:layout_width="match_parent"
                     android:layout_height="48dp"
                     android:layout_marginBottom="8dp"
@@ -70,7 +71,7 @@
                     android:inputType="text" />
 
                 <EditText
-                    android:id="@+id/editTextText"
+                    android:id="@+id/location"
                     android:layout_width="match_parent"
                     android:layout_height="48dp"
                     android:ems="10"
@@ -85,7 +86,7 @@
                     android:orientation="horizontal">
 
                     <EditText
-                        android:id="@+id/editTextDate2"
+                        android:id="@+id/date"
                         android:layout_width="wrap_content"
                         android:layout_height="48dp"
                         android:layout_marginRight="10dp"
@@ -95,7 +96,7 @@
                         android:inputType="date" />
 
                     <EditText
-                        android:id="@+id/editTextTime"
+                        android:id="@+id/time"
                         android:layout_width="wrap_content"
                         android:layout_height="48dp"
                         android:layout_marginLeft="10dp"
@@ -107,7 +108,7 @@
                 </LinearLayout>
 
                 <EditText
-                    android:id="@+id/editTextTextMultiLine"
+                    android:id="@+id/description"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:ems="10"
@@ -128,15 +129,17 @@
                 android:orientation="horizontal">
 
                 <Button
+                    android:id="@+id/clear_btn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
                     android:layout_weight="1"
-                    android:text="Cancel"
+                    android:text="Clear"
                     android:textSize="24dp" />
 
                 <Button
+                    android:id="@+id/post_btn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"

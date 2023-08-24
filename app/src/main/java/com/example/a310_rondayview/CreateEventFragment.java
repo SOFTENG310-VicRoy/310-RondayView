@@ -6,13 +6,31 @@ import android.os.Bundle;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
+
+import com.example.a310_rondayview.data.event.EventsFirestoreManager;
+import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.util.Date;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -22,14 +40,34 @@ import android.widget.ImageView;
 public class CreateEventFragment extends Fragment {
 
     ActivityResultLauncher<String> selectPhoto;
+    private Uri imageUri;
+    private FirebaseStorage storage;
+    private StorageReference mStorageRef;
+    Date date;
 
     private class ViewHolder {
-        Button choose_image_btn;
-        ImageView event_image_img;
+        EditText clubName;
+        EditText eventTitle;
+        EditText location;
+        EditText date;
+        EditText time;
+        EditText description;
+        ImageView eventImage;
+        Button chooseImageBtn;
+
+        Button postBtn;
+
 
         public ViewHolder(View view) {
-            choose_image_btn = view.findViewById(R.id.choose_image_btn);
-            event_image_img = view.findViewById(R.id.event_image_img);
+            clubName = view.findViewById(R.id.club_name);
+            eventTitle = view.findViewById(R.id.event_title);
+            location = view.findViewById(R.id.location);
+            date = view.findViewById(R.id.date);
+            time = view.findViewById(R.id.time);
+            description = view.findViewById(R.id.description);
+            eventImage = view.findViewById(R.id.event_image);
+            chooseImageBtn = view.findViewById(R.id.choose_image_btn);
+            postBtn = view.findViewById(R.id.post_btn);
         }
     }
 
@@ -84,21 +122,68 @@ public class CreateEventFragment extends Fragment {
 
         vh = new ViewHolder(view);
 
+        storage = FirebaseStorage.getInstance();
+        mStorageRef = storage.getReference();
+
         // getting and setting selected image from users camera roll to the event image image view
         selectPhoto = registerForActivityResult(
                 new ActivityResultContracts.GetContent(),
                 new ActivityResultCallback<Uri>() {
                     @Override
                     public void onActivityResult(Uri result) {
-                        vh.event_image_img.setImageURI(result);
+                        imageUri = result;
+                        vh.eventImage.setImageURI(result);
                     }
                 }
         );
 
-        vh.choose_image_btn.setOnClickListener(new View.OnClickListener() {
+        vh.chooseImageBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 selectPhoto.launch("image/*");
+            }
+        });
+
+        vh.postBtn.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+                try {
+                    date = new SimpleDateFormat("dd/MM/yyyy").parse(vh.date.getText().toString());
+                } catch (ParseException e) {
+                    throw new RuntimeException(e);
+                }
+                final StorageReference ref = mStorageRef.child("images/mountains.jpg");
+                ref.putFile(imageUri)
+                        .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                            @Override
+                            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                Toast.makeText(getActivity(), "Event Created", Toast.LENGTH_SHORT).show();
+                                ref.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                    @Override
+                                    public void onSuccess(Uri uri) {
+                                        Uri downloadUrl = uri;
+                                        Event event = new Event(
+                                                vh.clubName.getText().toString(),
+                                                vh.eventTitle.getText().toString(),
+                                                vh.description.getText().toString(),
+                                                vh.location.getText().toString(),
+                                                date,
+                                                vh.time.getText().toString(),
+                                                downloadUrl.toString()
+                                        );
+                                        EventsFirestoreManager.getInstance().addEvent(event);
+                                    }
+                                });
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Toast.makeText(getActivity(), "Try Again", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+
             }
         });
 
