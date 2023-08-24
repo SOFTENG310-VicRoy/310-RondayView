@@ -1,6 +1,7 @@
 package com.example.a310_rondayview.ui;
 
 import android.content.Context;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +10,8 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.example.a310_rondayview.Event;
 import com.example.a310_rondayview.R;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -19,11 +22,11 @@ import java.util.List;
 public class InterestedEventsAdapter extends RecyclerView.Adapter<InterestedEventsAdapter.InterestedEventsViewHolder> {
 
     Context context;
-    ArrayList<Events> eventsArrayList;
+    ArrayList<Event> eventsArrayList;
 
-    public InterestedEventsAdapter(Context context, List<Events> eventsArrayList) {
+    public InterestedEventsAdapter(Context context, List<Event> eventsArrayList) {
         this.context = context;
-        this.eventsArrayList = (ArrayList<Events>) eventsArrayList;
+        this.eventsArrayList = (ArrayList<Event>) eventsArrayList;
     }
 
     @androidx.annotation.NonNull
@@ -37,10 +40,11 @@ public class InterestedEventsAdapter extends RecyclerView.Adapter<InterestedEven
     @Override
     public void onBindViewHolder(@androidx.annotation.NonNull InterestedEventsViewHolder holder, int position) {
         // Binds data to the UI elements in each list item
-        Events events = eventsArrayList.get(position);
-        holder.eventImageView.setImageResource(events.eventImage);
-        holder.titleTextView.setText(events.eventTitle);
-        holder.descriptionTextView.setText(events.eventDescription);
+        Event event = eventsArrayList.get(position);
+
+        Glide.with(holder.itemView.getContext()).load(event.getImageURL()).into(holder.eventImageView);
+        holder.titleTextView.setText(event.getTitle());
+        holder.descriptionTextView.setText(event.getDescription());
     }
 
     @Override

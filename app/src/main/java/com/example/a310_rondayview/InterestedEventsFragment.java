@@ -11,22 +11,18 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.a310_rondayview.ui.Events;
+import com.example.a310_rondayview.Event;
 import com.example.a310_rondayview.ui.InterestedEventsAdapter;
+import com.google.firebase.Timestamp;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 public class InterestedEventsFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-    private ArrayList<Events> eventsArrayList;
+    // the fragment initialization parameters
+    private ArrayList<Event> eventsArrayList;
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
     private int[] eventsImages;
     private String[] eventsTitles;
     private String[] eventsDescriptions;
@@ -37,37 +33,9 @@ public class InterestedEventsFragment extends Fragment {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment CreateEventFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static InterestedEventsFragment newInstance(String param1, String param2) {
-        InterestedEventsFragment fragment = new InterestedEventsFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_interested_events, container, false);
     }
@@ -80,9 +48,9 @@ public class InterestedEventsFragment extends Fragment {
         recyclerview.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerview.setHasFixedSize(true);
 
-        Events fakeEvent1 = new Events(R.drawable.ic_launcher_background, "Fake Event1", "This is a fake event");
+        Event fakeEvent1 = new Event("fakeId1", "WDCC", "Fake Event1", "Web dev club", "UoA", new Timestamp(new Date()), "https://firebasestorage.googleapis.com/v0/b/rondayview-872b4.appspot.com/o/eventImages%2FeventSpeedInterviews.png?alt=media&token=0d878d83-1308-487f-87f4-386f41a99e5f", "https://firebasestorage.googleapis.com/v0/b/rondayview-872b4.appspot.com/o/eventImages%2FSESA.png?alt=media&token=d16dda80-cc0b-4ea6-a4bb-4f9a02fc9fe4");
         eventsArrayList.add(fakeEvent1);
-        Events fakeEvent2 = new Events(R.drawable.ic_launcher_background, "Fake Event2", "This is a fake event too");
+        Event fakeEvent2 = new Event("fakeId2", "SESA","Fake Event2", "Software engineering student association", "UoA", new Timestamp(new Date()), "https://firebasestorage.googleapis.com/v0/b/rondayview-872b4.appspot.com/o/eventImages%2FeventSpeedInterviews.png?alt=media&token=0d878d83-1308-487f-87f4-386f41a99e5f", "https://firebasestorage.googleapis.com/v0/b/rondayview-872b4.appspot.com/o/eventImages%2FSESA.png?alt=media&token=d16dda80-cc0b-4ea6-a4bb-4f9a02fc9fe4");
         eventsArrayList.add(fakeEvent2);
 
         InterestedEventsAdapter interestedEventsAdapter = new InterestedEventsAdapter(getContext(), eventsArrayList);
@@ -104,7 +72,7 @@ public class InterestedEventsFragment extends Fragment {
 
         for (int i = 0; i < eventsTitles.length; i++) {
 
-            Events event = new Events(eventsImages[i], eventsTitles[i], eventsDescriptions[i]);
+            Event event = new Event(); // populate each event with fields from corresponding indices in the arrays
             eventsArrayList.add(event);
         }
     }
