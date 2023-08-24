@@ -1,13 +1,17 @@
 package com.example.a310_rondayview;
 
 import android.os.Bundle;
+
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import com.bumptech.glide.Glide;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -51,6 +55,8 @@ public class FragmentHome extends Fragment {
         eventImageView = eventContainer.findViewById(R.id.eventImageView);
         eventClubPFPImageView = eventContainer.findViewById(R.id.profileImageView);
 
+        FireBaseUserDataManager.getInstance();
+
         // Fetch data from Firestore
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("events").get().addOnCompleteListener(task -> {
@@ -69,7 +75,14 @@ public class FragmentHome extends Fragment {
         Button interestedButton = rootView.findViewById(R.id.interestedButton);
 
         nopeButton.setOnClickListener(v -> nextEvent());
-        interestedButton.setOnClickListener(v -> nextEvent());
+        interestedButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                FireBaseUserDataManager.getInstance().addInterestedEvent(events.get(currentEventIndex));
+                FireBaseUserDataManager.getInstance().getInterestedEvents();
+                nextEvent();
+            }
+        });
 
         return rootView;
     }

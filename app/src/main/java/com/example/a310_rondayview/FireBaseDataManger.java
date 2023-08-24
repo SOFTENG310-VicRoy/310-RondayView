@@ -11,7 +11,4 @@ public class FireBaseDataManger {
     void updateEvent(){}
     void deleteEvent(){}
     void getEvent(){}
-    void getLikedEvents(){}
-
-
 }
