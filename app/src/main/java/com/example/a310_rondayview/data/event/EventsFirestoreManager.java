@@ -5,6 +5,7 @@ import static com.example.a310_rondayview.data.event.EventsFirestoreContract.EVE
 import com.example.a310_rondayview.Event;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -44,5 +45,13 @@ public class EventsFirestoreManager {
     }
     public void getAllEvents(OnCompleteListener<QuerySnapshot> onCompleteListener){
         eventsCollectionReference.get().addOnCompleteListener(onCompleteListener);
+    }
+
+    /**
+     * Adds a listener to the events Firestore collection to receive real time updates
+     * @param eventListener the listener to add
+     */
+    public void addEventsListener(EventListener<QuerySnapshot> eventListener){
+        eventsCollectionReference.addSnapshotListener(eventListener);
     }
 }

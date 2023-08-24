@@ -1,7 +1,11 @@
 package com.example.a310_rondayview;
 
 import android.os.Bundle;
+
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,16 +13,20 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.bumptech.glide.Glide;
-import com.google.firebase.firestore.FirebaseFirestore;
+import com.example.a310_rondayview.data.event.EventsFirestoreManager;
+import com.google.firebase.firestore.DocumentChange;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 public class FragmentHome extends Fragment {
 
+    private static final String TAG = "FragmentHome";
     private List<Event> events = new ArrayList<>();
     private int currentEventIndex = 0;
 
@@ -51,18 +59,46 @@ public class FragmentHome extends Fragment {
         eventImageView = eventContainer.findViewById(R.id.eventImageView);
         eventClubPFPImageView = eventContainer.findViewById(R.id.profileImageView);
 
-        // Fetch data from Firestore
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        db.collection("events").get().addOnCompleteListener(task -> {
+        // Get events from Firestore
+        EventsFirestoreManager.getInstance().getAllEvents(task -> {
             if (task.isSuccessful()) {
                 for (QueryDocumentSnapshot document : task.getResult()) {
-                    Event event = document.toObject(Event.class);
-                    events.add(event);
+                    events = task.getResult().toObjects(Event.class);
                 }
-                // Updating UI with the first event
+                // Update UI with the first event
                 updateUI();
             }
         });
+
+        // Add a listener to the events Firestore collection to receive real time updates
+        EventsFirestoreManager.getInstance().addEventsListener(new EventListener<QuerySnapshot>() {
+           @Override
+           public void onEvent(@Nullable QuerySnapshot snapshots,
+                               @Nullable FirebaseFirestoreException e) {
+
+               if (e != null) {
+                   Log.w(TAG, "Listen failed.", e);
+                   return;
+               }
+
+               for (DocumentChange dc : snapshots.getDocumentChanges()) {
+                   switch (dc.getType()) {
+                       case ADDED:
+                           // if a document was added, add it to events list
+                           Event event = dc.getDocument().toObject(Event.class);
+                           events.add(event);
+                           // update home page?
+                           break;
+                       case MODIFIED:
+                           // TO DO (currently no way to modify events in app)
+                           break;
+                       case REMOVED:
+                           // TO DO (currently no way to delete events in app)
+                           break;
+                   }
+               }
+           }
+       });
 
         // Set up button click listeners
         Button nopeButton = rootView.findViewById(R.id.nopeButton);
