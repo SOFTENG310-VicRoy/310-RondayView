@@ -25,7 +25,7 @@ After you have set up Android Studio, fork this repo by simply clicking the fork
 From your new forked repo, simply clone the project to your machine.
 
     Copy the repo URL (click the green "Code" button and copy the link)
-    Opeining the command prompt
+    Opening the command prompt
     Navigate to the file that you want the project in
     Enter the command (git clone [repo link])
 
@@ -54,19 +54,19 @@ Here is an example of a branch name: feat/creating-home-ui
 
 ## Keeping Branches Up To Date
 
-In order to prevent your branches getting out of date, it is important to regularly pull changes from the upstream main branch. The instructions to do this via rebasing are detailed below:
+In order to prevent your branches getting out of date, it is important to regularly pull changes from the upstream main branch. The instructions to do this via [rebasing](https://www.atlassian.com/git/tutorials/merging-vs-rebasing) are detailed below:
 
 1) Sync the main branch on your fork with the main branch from the upstream using this button on your fork
 
 ![Synce Fork Button](docImages/img.png)
 
-2) On your local main branch, then pull these changes using
+2) Then pull these changes to your local main branch using:
 `git pull`
 
-3) Then rebase your feature branch with your up to date local main using 
+3) Then rebase your feature branch with your up to date local main using:
 `git rebase main`
 
-4) Git pull to finalise the merge of the remote branch into the feature one
+4) Git pull to finalise the merge of the remote branch into the feature branch
 `git pull`
 
 5) Finally, push your changes to your remote branch using
@@ -82,7 +82,7 @@ Write a short paragraph describing what you have done in the pull request and wh
 
 Select the branch that you want to create the pull request for and GitHub will let you know if there are any merge conflicts. If there are merge conflicts, it will give you some suggestions on how to solve them. Once it is able to merge, you will need to wait for the build and SonarCloud analysis to pass.
 
-From there, one of out team members here at VicRoy will review your pull request and give you some constructive feedback. Once it all looks good to go, we would be honoured to merge your contribution!
+From there, one of our team members here at VicRoy will review your pull request and give you some constructive feedback. Once it all looks good to go, we would be honoured to merge your contribution!
 
 ## Our Vision
 
