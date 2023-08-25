@@ -24,6 +24,7 @@ import java.util.List;
 public class FragmentHome extends Fragment {
 
     private List<Event> events = new ArrayList<>();
+    private List<Event> disinterestedEvents = new ArrayList<>();
     private int currentEventIndex = 0;
 
     // Views
@@ -57,13 +58,25 @@ public class FragmentHome extends Fragment {
 
         FireBaseUserDataManager.getInstance();
 
-        // Fetch data from Firestore
+        // Fetch disinterested events from Firestore
         FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("users").get().addOnCompleteListener(task -> {    // is this the correct collection path?
+            if (task.isSuccessful()) {
+                for (QueryDocumentSnapshot document : task.getResult()) {
+                    Event event = document.toObject(Event.class);
+                    disinterestedEvents.add(event);
+                }
+            }
+        });
+
+        // Fetch interested events from Firestore
         db.collection("events").get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 for (QueryDocumentSnapshot document : task.getResult()) {
                     Event event = document.toObject(Event.class);
-                    events.add(event);
+                    if (!eventIsDisinterested(event)) {
+                        events.add(event);
+                    }
                 }
                 // Updating UI with the first event
                 updateUI();
@@ -95,6 +108,14 @@ public class FragmentHome extends Fragment {
         });
 
         return rootView;
+    }
+
+    private boolean eventIsDisinterested(Event event) {
+        if (disinterestedEvents.contains(event)) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     private void nextEvent() {
