@@ -12,14 +12,20 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class SignUpActivity extends AppCompatActivity {
 
     // Firebase Authentication instance
     private FirebaseAuth mAuth;
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
 
@@ -59,10 +65,22 @@ public class SignUpActivity extends AppCompatActivity {
                         FirebaseUser user = mAuth.getCurrentUser();
                         Toast.makeText(SignUpActivity.this, "Registration successful.", Toast.LENGTH_SHORT).show();
 
-                        // Navigate to main activity after successful registration
-                        Intent intent = new Intent(SignUpActivity.this, MainActivity.class);
-                        startActivity(intent);
-                        finish(); // Remove SignUpActivity from back stack
+                        // Store user details in Firestore
+                        Map<String, Object> userMap = new HashMap<>();
+                        userMap.put("email", email);
+                        // Add any other details, for example:
+                        // userMap.put("name", name);
+
+                        db.collection("users").document(user.getUid())
+                                .set(userMap)
+                                .addOnSuccessListener(aVoid -> {
+                                    // Navigate to main activity after successful data storage
+                                    Intent intent = new Intent(SignUpActivity.this, MainActivity.class);
+                                    startActivity(intent);
+                                    finish(); // Remove SignUpActivity from back stack
+                                })
+                                .addOnFailureListener(e -> Toast.makeText(SignUpActivity.this, "Error saving user details.", Toast.LENGTH_SHORT).show());
+
                     } else {
                         // Registration failed, display an error message
                         Toast.makeText(SignUpActivity.this, "Registration failed.", Toast.LENGTH_SHORT).show();
