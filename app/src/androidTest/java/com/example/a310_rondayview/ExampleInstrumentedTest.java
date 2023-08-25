@@ -38,12 +38,13 @@ public class ExampleInstrumentedTest {
     public ActivityScenarioRule<MainActivity> activityScenarioRule = new ActivityScenarioRule<>(MainActivity.class);
 
     @Test
-    public void testRefreshButton() {
-        onView(withId(R.id.refreshButton)).perform(click());
+    public void testNopeButton() {
+        // Perform a click on the nopeButton
+        onView(withId(R.id.nopeButton)).perform(click());
 
-        // Check the expected visibility state of the views
-        onView(withId(R.id.emptyEventsLayout)).check(matches(not(isDisplayed())));
+        // respective views disabled/enabled
         onView(withId(R.id.koloda)).check(matches(isDisplayed()));
         onView(withId(R.id.buttonsContainer)).check(matches(isDisplayed()));
+        onView(withId(R.id.emptyEventsLayout)).check(matches(not(isDisplayed())));
     }
 }
