@@ -5,6 +5,7 @@ import static com.example.a310_rondayview.data.event.EventsFirestoreContract.EVE
 import com.example.a310_rondayview.Event;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -30,6 +31,10 @@ public class EventsFirestoreManager {
 
     public void addEvent(Event event){
         eventsCollectionReference.add(event);
+    }
+
+    public void addEvent(Event event, OnCompleteListener<DocumentReference> onCompleteListener){
+        eventsCollectionReference.add(event).addOnCompleteListener(onCompleteListener);
     }
 
     /**

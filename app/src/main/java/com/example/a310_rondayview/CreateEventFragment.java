@@ -40,7 +40,8 @@ import java.util.Date;
 public class CreateEventFragment extends Fragment {
 
     ActivityResultLauncher<String> selectPhoto;
-    private Uri imageUri;
+    private Uri localImageUri;
+    private Uri downloadImageUri;
     private FirebaseStorage storage;
     private StorageReference mStorageRef;
     Date date;
@@ -131,7 +132,7 @@ public class CreateEventFragment extends Fragment {
                 new ActivityResultCallback<Uri>() {
                     @Override
                     public void onActivityResult(Uri result) {
-                        imageUri = result;
+                        localImageUri = result;
                         vh.eventImage.setImageURI(result);
                     }
                 }
@@ -145,48 +146,86 @@ public class CreateEventFragment extends Fragment {
         });
 
         vh.postBtn.setOnClickListener(new View.OnClickListener() {
-
             @Override
             public void onClick(View view) {
-                try {
-                    date = new SimpleDateFormat("dd/MM/yyyy").parse(vh.date.getText().toString());
-                } catch (ParseException e) {
-                    throw new RuntimeException(e);
-                }
-                final StorageReference ref = mStorageRef.child("images/mountains.jpg");
-                ref.putFile(imageUri)
-                        .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                            @Override
-                            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                                Toast.makeText(getActivity(), "Event Created", Toast.LENGTH_SHORT).show();
-                                ref.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                                    @Override
-                                    public void onSuccess(Uri uri) {
-                                        Uri downloadUrl = uri;
-                                        Event event = new Event(
-                                                vh.clubName.getText().toString(),
-                                                vh.eventTitle.getText().toString(),
-                                                vh.description.getText().toString(),
-                                                vh.location.getText().toString(),
-                                                date,
-                                                vh.time.getText().toString(),
-                                                downloadUrl.toString()
-                                        );
-                                        EventsFirestoreManager.getInstance().addEvent(event);
-                                    }
-                                });
-                            }
-                        })
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Toast.makeText(getActivity(), "Try Again", Toast.LENGTH_SHORT).show();
-                            }
-                        });
+                if (!validateForm()) return;
 
+                try {
+                    date = new SimpleDateFormat("MM/dd/yyyy").parse(vh.date.getText().toString());
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                uploadImage();
+                if (downloadImageUri != null) {
+                    // all data needed to create event is ready
+                    Event event = new Event(
+                            vh.clubName.getText().toString(),
+                            vh.eventTitle.getText().toString(),
+                            vh.description.getText().toString(),
+                            vh.location.getText().toString(),
+                            date,
+                            downloadImageUri.toString(),
+                            "https://firebasestorage.googleapis.com/v0/b/rondayview-872b4.appspot.com/o/placeholders%2Fprofile.png?alt=media&token=f59d6e67-ac6c-46a0-aeb0-370fb38b0d03"
+                    );
+                    EventsFirestoreManager.getInstance().addEvent(event, task -> {
+                        if (task.isSuccessful()) {
+                            Toast.makeText(getActivity(), "Event created", Toast.LENGTH_SHORT).show();
+                            getActivity().getSupportFragmentManager().popBackStack();
+                        } else {
+                            Toast.makeText(getActivity(), "Could not create event", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
             }
         });
 
         return view;
+    }
+
+    private boolean hasText(EditText editText) {
+        String text = editText.getText().toString().trim();
+        editText.setError(null);
+        if (text.length() == 0) {
+            editText.setError("Required");
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Check if each text field is filled
+     * @return true if all fields are filled, false otherwise
+     */
+    private boolean validateForm() {
+        boolean valid = true;
+
+        if (!hasText(vh.clubName)) valid = false;
+        if (!hasText(vh.eventTitle)) valid = false;
+        if (!hasText(vh.location)) valid = false;
+        if (!hasText(vh.date)) valid = false;
+        if (!hasText(vh.time)) valid = false;
+        if (!hasText(vh.description)) valid = false;
+        if (localImageUri == null) {
+            Toast.makeText(getActivity(), "Please select an image", Toast.LENGTH_SHORT).show();
+            valid = false;
+        }
+
+        return valid;
+    }
+
+    /**
+     * Upload the image to Firebase Storage
+     * Sets downloadImageUri field if successful
+     */
+    private void uploadImage() {
+        final StorageReference ref = mStorageRef.child("eventImages/");
+        ref.putFile(localImageUri)
+                .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        ref.getDownloadUrl().addOnSuccessListener(uri -> downloadImageUri = uri);
+                    }
+                })
+                .addOnFailureListener(e -> Toast.makeText(getActivity(), "Could not upload image", Toast.LENGTH_LONG).show());
     }
 }
