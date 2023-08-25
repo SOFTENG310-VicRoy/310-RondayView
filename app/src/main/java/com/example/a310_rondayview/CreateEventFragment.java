@@ -152,7 +152,7 @@ public class CreateEventFragment extends Fragment {
                 if (!validateForm()) return;
 
                 try {
-                    date = new SimpleDateFormat("MM/dd/yyyy").parse(vh.date.getText().toString());
+                    date = new SimpleDateFormat("dd/MM/yyyy").parse(vh.date.getText().toString());
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
@@ -172,7 +172,7 @@ public class CreateEventFragment extends Fragment {
                                             vh.location.getText().toString(),
                                             date,
                                             downloadImageUri.toString(),
-                                            "https://firebasestorage.googleapis.com/v0/b/rondayview-872b4.appspot.com/o/placeholders%2Fprofile.png?alt=media&token=f59d6e67-ac6c-46a0-aeb0-370fb38b0d03"
+                                            "https://firebasestorage.googleapis.com/v0/b/rondayview-872b4.appspot.com/o/placeholders%2Fprofile.png?alt=media&token=3e507e8e-6d77-4b43-b7bb-944bd0e1d60a"
                                     );
                                     EventsFirestoreManager.getInstance().addEvent(event, task -> {
                                         if (task.isSuccessful()) {
