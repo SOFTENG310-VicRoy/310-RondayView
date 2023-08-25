@@ -17,7 +17,6 @@ import com.example.a310_rondayview.data.event.EventsFirestoreManager;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.text.SimpleDateFormat;
@@ -69,36 +68,32 @@ public class FragmentHome extends Fragment {
         });
 
         // Add a listener to the events Firestore collection to receive real time updates
-        EventsFirestoreManager.getInstance().addEventsListener(new EventListener<QuerySnapshot>() {
-           @Override
-           public void onEvent(@Nullable QuerySnapshot snapshots,
-                               @Nullable FirebaseFirestoreException e) {
+        EventsFirestoreManager.getInstance().addEventsListener((snapshots, e) -> {
 
-               if (e != null) {
-                   Log.w(TAG, "Listen failed.", e);
-                   return;
-               }
+            if (e != null) {
+                Log.w(TAG, "Listen failed.", e);
+                return;
+            }
 
-               if (snapshots != null) {
-                   for (DocumentChange dc : snapshots.getDocumentChanges()) {
-                       switch (dc.getType()) {
-                           case ADDED:
-                               // if a document was added, add it to events list
-                               Event event = dc.getDocument().toObject(Event.class);
-                               events.add(event);
-                               // update home page?
-                               break;
-                           case MODIFIED:
-                               // TO DO (currently no way to modify events in app)
-                               break;
-                           case REMOVED:
-                               // TO DO (currently no way to delete events in app)
-                               break;
-                       }
-                   }
-               }
-           }
-       });
+            if (snapshots != null) {
+                for (DocumentChange dc : snapshots.getDocumentChanges()) {
+                    switch (dc.getType()) {
+                        case ADDED:
+                            // if a document was added, add it to events list
+                            Event event = dc.getDocument().toObject(Event.class);
+                            events.add(event);
+                            // update home page?
+                            break;
+                        case MODIFIED:
+                            // TO DO (currently no way to modify events in app)
+                            break;
+                        case REMOVED:
+                            // TO DO (currently no way to delete events in app)
+                            break;
+                    }
+                }
+            }
+        });
 
         // Set up button click listeners
         Button nopeButton = rootView.findViewById(R.id.nopeButton);
