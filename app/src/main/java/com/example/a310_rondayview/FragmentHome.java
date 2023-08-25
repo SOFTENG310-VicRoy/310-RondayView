@@ -59,13 +59,11 @@ public class FragmentHome extends Fragment {
             @Override
             public void onCardSwipedLeft(int i) {
                 handleSwipe(false, i);
-                Toast.makeText(getContext(), "Not Interested", Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onCardSwipedRight(int i) {
                handleSwipe(true, i);
-               Toast.makeText(getContext(), "Interested", Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -168,7 +166,7 @@ public class FragmentHome extends Fragment {
             FireBaseUserDataManager.getInstance().getInterestedEvents();
         }
         nextEvent();
-        Toast.makeText(getContext(), isInterested ? "Swiped Right - Interested" : "Swiped Left - Not Interested", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getContext(), isInterested ? "Interested" : "Not Interested", Toast.LENGTH_SHORT).show();
     }
 
     /**
@@ -181,6 +179,14 @@ public class FragmentHome extends Fragment {
         } else { // if all events run out
            koloda.getKolodaListener().onEmptyDeck();
         }
+    }
+
+    public List<Event> getEvents() {
+        return events;
+    }
+
+    public int getCurrentEventIndex() {
+        return currentEventIndex;
     }
 }
 
