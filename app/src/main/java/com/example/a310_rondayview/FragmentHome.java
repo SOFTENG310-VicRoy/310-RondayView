@@ -62,9 +62,7 @@ public class FragmentHome extends Fragment {
         // Get events from Firestore
         EventsFirestoreManager.getInstance().getAllEvents(task -> {
             if (task.isSuccessful()) {
-                for (QueryDocumentSnapshot document : task.getResult()) {
-                    events = task.getResult().toObjects(Event.class);
-                }
+                events = task.getResult().toObjects(Event.class);
                 // Update UI with the first event
                 updateUI();
             }
