@@ -154,7 +154,8 @@ public class CreateEventFragment extends Fragment {
                 try {
                     date = new SimpleDateFormat("dd/MM/yyyy").parse(vh.date.getText().toString());
                 } catch (ParseException e) {
-                    e.printStackTrace();
+                    vh.date.setError("Invalid date");
+                    return;
                 }
 
                 final StorageReference ref = mStorageRef.child("eventImages/");

@@ -81,20 +81,22 @@ public class FragmentHome extends Fragment {
                    return;
                }
 
-               for (DocumentChange dc : snapshots.getDocumentChanges()) {
-                   switch (dc.getType()) {
-                       case ADDED:
-                           // if a document was added, add it to events list
-                           Event event = dc.getDocument().toObject(Event.class);
-                           events.add(event);
-                           // update home page?
-                           break;
-                       case MODIFIED:
-                           // TO DO (currently no way to modify events in app)
-                           break;
-                       case REMOVED:
-                           // TO DO (currently no way to delete events in app)
-                           break;
+               if (snapshots != null) {
+                   for (DocumentChange dc : snapshots.getDocumentChanges()) {
+                       switch (dc.getType()) {
+                           case ADDED:
+                               // if a document was added, add it to events list
+                               Event event = dc.getDocument().toObject(Event.class);
+                               events.add(event);
+                               // update home page?
+                               break;
+                           case MODIFIED:
+                               // TO DO (currently no way to modify events in app)
+                               break;
+                           case REMOVED:
+                               // TO DO (currently no way to delete events in app)
+                               break;
+                       }
                    }
                }
            }
