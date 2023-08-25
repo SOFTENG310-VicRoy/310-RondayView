@@ -38,9 +38,7 @@
                 android:text="Club Name"
                 android:layout_gravity="center"
                 android:textStyle="bold" />
-
         </LinearLayout>
-
 
         <ImageView
             android:id="@+id/eventImageView"
