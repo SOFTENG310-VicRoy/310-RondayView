@@ -16,7 +16,6 @@ public class SwipeAdapter extends BaseAdapter {
 
     private Context context;
     private List<Event> events;
-
     // Views
     private TextView clubNameTextView;
     private TextView eventTitleTextView;
