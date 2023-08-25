@@ -9,6 +9,7 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -155,27 +156,38 @@ public class CreateEventFragment extends Fragment {
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
-                uploadImage();
-                if (downloadImageUri != null) {
-                    // all data needed to create event is ready
-                    Event event = new Event(
-                            vh.clubName.getText().toString(),
-                            vh.eventTitle.getText().toString(),
-                            vh.description.getText().toString(),
-                            vh.location.getText().toString(),
-                            date,
-                            downloadImageUri.toString(),
-                            "https://firebasestorage.googleapis.com/v0/b/rondayview-872b4.appspot.com/o/placeholders%2Fprofile.png?alt=media&token=f59d6e67-ac6c-46a0-aeb0-370fb38b0d03"
-                    );
-                    EventsFirestoreManager.getInstance().addEvent(event, task -> {
-                        if (task.isSuccessful()) {
-                            Toast.makeText(getActivity(), "Event created", Toast.LENGTH_SHORT).show();
-                            getActivity().getSupportFragmentManager().popBackStack();
-                        } else {
-                            Toast.makeText(getActivity(), "Could not create event", Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                }
+
+                final StorageReference ref = mStorageRef.child("eventImages/");
+                ref.putFile(localImageUri)
+                        .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                            @Override
+                            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                ref.getDownloadUrl().addOnSuccessListener(uri -> {
+                                    downloadImageUri = uri;
+                                    // all data needed to create event is ready
+                                    Event event = new Event(
+                                            vh.clubName.getText().toString(),
+                                            vh.eventTitle.getText().toString(),
+                                            vh.description.getText().toString(),
+                                            vh.location.getText().toString(),
+                                            date,
+                                            downloadImageUri.toString(),
+                                            "https://firebasestorage.googleapis.com/v0/b/rondayview-872b4.appspot.com/o/placeholders%2Fprofile.png?alt=media&token=f59d6e67-ac6c-46a0-aeb0-370fb38b0d03"
+                                    );
+                                    EventsFirestoreManager.getInstance().addEvent(event, task -> {
+                                        if (task.isSuccessful()) {
+                                            Toast.makeText(getActivity(), "Event created", Toast.LENGTH_SHORT).show();
+                                            // not good practice to switch within fragments but for now:
+                                            getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.frame_layout, new CreateEventFragment()).commit();
+                                        } else {
+                                            Toast.makeText(getActivity(), "Could not create event", Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
+                                });
+
+                            }
+                        })
+                        .addOnFailureListener(e -> Toast.makeText(getActivity(), "Could not create event", Toast.LENGTH_LONG).show());
             }
         });
 
@@ -211,21 +223,5 @@ public class CreateEventFragment extends Fragment {
         }
 
         return valid;
-    }
-
-    /**
-     * Upload the image to Firebase Storage
-     * Sets downloadImageUri field if successful
-     */
-    private void uploadImage() {
-        final StorageReference ref = mStorageRef.child("eventImages/");
-        ref.putFile(localImageUri)
-                .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                    @Override
-                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                        ref.getDownloadUrl().addOnSuccessListener(uri -> downloadImageUri = uri);
-                    }
-                })
-                .addOnFailureListener(e -> Toast.makeText(getActivity(), "Could not upload image", Toast.LENGTH_LONG).show());
     }
 }
