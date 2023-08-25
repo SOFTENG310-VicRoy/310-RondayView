@@ -32,8 +32,6 @@ public class CreateEventFragment extends Fragment {
     ActivityResultLauncher<String> selectPhoto;
     private Uri localImageUri;
     private Uri downloadImageUri;
-
-    private StorageReference mStorageRef;
     Date date;
 
     private class ViewHolder {
@@ -107,6 +105,7 @@ public class CreateEventFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        StorageReference mStorageRef;
         FirebaseStorage storage;
 
         // Inflate the layout for this fragment
