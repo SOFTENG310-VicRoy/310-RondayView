@@ -75,10 +75,20 @@ public class FragmentHome extends Fragment {
         Button interestedButton = rootView.findViewById(R.id.interestedButton);
 
         nopeButton.setOnClickListener(v -> nextEvent());
+
         interestedButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 FireBaseUserDataManager.getInstance().addInterestedEvent(events.get(currentEventIndex));
+                FireBaseUserDataManager.getInstance().getInterestedEvents();
+                nextEvent();
+            }
+        });
+
+        nopeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                FireBaseUserDataManager.getInstance().addDisinterestedEvent(events.get(currentEventIndex));
                 FireBaseUserDataManager.getInstance().getInterestedEvents();
                 nextEvent();
             }

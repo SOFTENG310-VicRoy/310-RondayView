@@ -18,6 +18,7 @@ public class FireBaseUserDataManager {
     private static final String TAG = "FireBaseUserDataManager";
     private static final String USERSCOLLECTION = "users";
     private static final String INTERESTEDEVENTSCOLLECTION = "interestedEvents";
+    private static final String DISINTERESTEDEVENTSCOLLECTION = "interestedEvents";
     private static final String SIGNINERROR = "No user is currently signed in.";
 
 
@@ -82,6 +83,26 @@ public class FireBaseUserDataManager {
                     });
         } else {
             // Handle the case where no user is signed in
+            Log.e(TAG, SIGNINERROR);
+        }
+    }
+
+    public void addDisinterestedEvent(Event event) {
+        // Get the current Firebase Auth instance
+        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+        FirebaseUser currentUser = firebaseAuth.getCurrentUser();
+
+        // Check if a user is signed in
+        if (currentUser != null) {
+            String uid = currentUser.getUid();
+
+            // Use the UID to add the event to the users' Firestore collection
+            db.collection(USERSCOLLECTION)
+                    .document(uid)
+                    .collection(DISINTERESTEDEVENTSCOLLECTION)
+                    .document(event.getEventId())
+                    .set(event);
+        } else {
             Log.e(TAG, SIGNINERROR);
         }
     }
