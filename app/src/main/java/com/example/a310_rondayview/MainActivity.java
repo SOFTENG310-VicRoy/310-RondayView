@@ -18,11 +18,8 @@ import com.google.firebase.auth.FirebaseUser;
 public class MainActivity extends AppCompatActivity {
 
     ActivityMainBinding binding;
-    private static final String TAG = "FirestoreTest";
     private FirebaseAuth mAuth;
 
-    // TODO ("replaceFragment(new CreateEventFragment());") replace CreateEventFragment with
-    // the homepage once the homepage is made
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,8 +39,7 @@ public class MainActivity extends AppCompatActivity {
         heartButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, LikedActivity.class);
-                startActivity(intent);
+                replaceFragment(new InterestedEventsFragment());
             }
         });
         binding.bottomNavigationView.setOnItemSelectedListener(item -> {

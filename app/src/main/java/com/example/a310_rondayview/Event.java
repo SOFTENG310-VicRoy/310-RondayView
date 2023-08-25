@@ -61,4 +61,36 @@ public class Event {
     public String getEventClubProfilePicture() {
         return eventClubProfilePicture;
     }
+
+    public void setEventId(String eventId) {
+        this.eventId = eventId;
+    }
+
+    public void setClubName(String clubName) {
+        this.clubName = clubName;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public void setDateTime(Date dateTime) {
+        this.dateTime = dateTime;
+    }
+
+    public void setImageURL(String imageURL) {
+        this.imageURL = imageURL;
+    }
+
+    public void setEventClubProfilePicture(String eventClubProfilePicture) {
+        this.eventClubProfilePicture = eventClubProfilePicture;
+    }
 }

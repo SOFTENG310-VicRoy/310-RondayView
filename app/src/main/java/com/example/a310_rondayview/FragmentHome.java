@@ -1,10 +1,6 @@
 package com.example.a310_rondayview;
 
 import android.os.Bundle;
-
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +8,10 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+
 import com.bumptech.glide.Glide;
 import com.example.a310_rondayview.data.event.EventsFirestoreManager;
 import com.google.firebase.firestore.DocumentChange;
@@ -105,7 +105,14 @@ public class FragmentHome extends Fragment {
         Button interestedButton = rootView.findViewById(R.id.interestedButton);
 
         nopeButton.setOnClickListener(v -> nextEvent());
-        interestedButton.setOnClickListener(v -> nextEvent());
+        interestedButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                FireBaseUserDataManager.getInstance().addInterestedEvent(events.get(currentEventIndex));
+                FireBaseUserDataManager.getInstance().getInterestedEvents();
+                nextEvent();
+            }
+        });
 
         return rootView;
     }
