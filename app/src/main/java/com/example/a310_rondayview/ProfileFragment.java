@@ -52,14 +52,7 @@ public class ProfileFragment extends Fragment {
                 // Create an instance of FragmentAccount
                 FragmentAccount fragmentAccount = new FragmentAccount();
 
-                // Get the Fragment Manager
-                FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
-
-                // Begin a transaction to replace the current fragment with FragmentAccount
-                fragmentManager.beginTransaction()
-                        .replace(R.id.frame_layout, fragmentAccount)
-                        .addToBackStack(null)
-                        .commit();
+                replaceFragmentWith(fragmentAccount);
             }
         });
 
@@ -69,17 +62,25 @@ public class ProfileFragment extends Fragment {
                 // Create an instance of FragmentAccount
                 InterestedEventsFragment interestedEventsFragment = new InterestedEventsFragment();
 
-                // Get the Fragment Manager
-                FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
-
-                // Begin a transaction to replace the current fragment with the interestedEventsFragment
-                fragmentManager.beginTransaction()
-                        .replace(R.id.frame_layout, interestedEventsFragment)
-                        .addToBackStack(null)
-                        .commit();
+                replaceFragmentWith(interestedEventsFragment);
             }
         });
 
         return view;
     }
+
+    // method created to reduce duplicate code in onclicks
+    public void replaceFragmentWith(Fragment replacementFragment){
+
+        // Get the Fragment Manager
+        FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
+
+        // Begin a transaction to replace the current fragment with the interestedEventsFragment
+        fragmentManager.beginTransaction()
+                .replace(R.id.frame_layout, replacementFragment)
+                .addToBackStack(null)
+                .commit();
+
+    }
+
 }
