@@ -77,7 +77,6 @@ public class SwipeAdapter extends BaseAdapter {
 
             // Set the formatted date and time in the UI
             timeTextView.setText(dateTimeString);
-
             eventDescriptionTextView.setText(event.getDescription());
             Glide.with(context).load(event.getImageURL()).into(eventImageView);
             Glide.with(context).load(event.getEventClubProfilePicture()).into(eventClubPFPImageView);
