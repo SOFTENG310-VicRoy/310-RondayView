@@ -2,114 +2,180 @@ package com.example.a310_rondayview;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.TextView;
+import android.widget.LinearLayout;
+import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.yalantis.library.Koloda;
+import com.yalantis.library.KolodaListener;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 public class FragmentHome extends Fragment {
-
+    private SwipeAdapter adapter;
     private List<Event> events = new ArrayList<>();
     private List<Event> disinterestedEvents = new ArrayList<>();
     private int currentEventIndex = 0;
-
-    // Views
-    private TextView clubNameTextView;
-    private TextView eventTitleTextView;
-    private TextView locationTextView;
-    private TextView timeTextView;
-    private TextView eventDescriptionTextView;
-    private ImageView eventImageView;
-
-    private ImageView eventClubPFPImageView;
+    private LinearLayout buttonContainer;
+    private LinearLayout emptyEventsLayout;
+    Koloda koloda;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_home, container, false);
+        // setting up views
+        buttonContainer = rootView.findViewById(R.id.buttonsContainer);
+        emptyEventsLayout = rootView.findViewById(R.id.emptyEventsLayout);
+        // setting up koloda (for the card swipes) - READ MORE HERE: https://github.com/Yalantis/Koloda-Android
+        koloda = rootView.findViewById(R.id.koloda);
+        adapter = new SwipeAdapter(getContext(), events);
+        koloda.setAdapter(adapter);
 
-        // Find the CardView that includes the event container layout
-        View eventCardView = rootView.findViewById(R.id.eventCardView);
+        /**
+         * Koloda interface listener functions, don't need to use ALL
+         */
+        koloda.setKolodaListener(new KolodaListener() {
+            @Override
+            public void onNewTopCard(int i) {
+            }
 
-        // Find the included layout within the CardView
-        View eventContainer = eventCardView.findViewById(R.id.event_container);
+            @Override
+            public void onCardDrag(int i, @NonNull View view, float v) {
+            }
 
-        // Find views within the included layout
-        clubNameTextView = eventContainer.findViewById(R.id.clubNameTextView);
-        eventTitleTextView = eventContainer.findViewById(R.id.eventTitleTextView);
-        locationTextView = eventContainer.findViewById(R.id.locationTextView);
-        timeTextView = eventContainer.findViewById(R.id.dateTimeTextView);
-        eventDescriptionTextView = eventContainer.findViewById(R.id.eventDescriptionTextView);
-        eventImageView = eventContainer.findViewById(R.id.eventImageView);
-        eventClubPFPImageView = eventContainer.findViewById(R.id.profileImageView);
+            @Override
+            public void onCardSwipedLeft(int i) {
+                handleSwipe(false, i);
+            }
 
-        FireBaseUserDataManager.getInstance();
+            @Override
+            public void onCardSwipedRight(int i) {
+               handleSwipe(true, i);
+            }
 
-        // Fetch disinterested events from Firestore
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        db.collection("users").get().addOnCompleteListener(task -> {    // is this the correct collection path?
-            if (task.isSuccessful()) {
-                for (QueryDocumentSnapshot document : task.getResult()) {
-                    Event event = document.toObject(Event.class);
-                    disinterestedEvents.add(event);
+            @Override
+            public void onClickRight(int i) {
+            }
+
+            @Override
+            public void onClickLeft(int i) {
+            }
+
+            //TODO DETAILS PAGE (A2) -> show details of event from dialog
+            @Override
+            public void onCardSingleTap(int i) {
+
+            }
+
+            @Override
+            public void onCardDoubleTap(int i) {
+
+            }
+
+            @Override
+            public void onCardLongPress(int i) {
+
+            }
+
+            @Override
+            public void onEmptyDeck() { // events finished - need method of refreshing!
+                if (currentEventIndex == events.size()-1) {
+                    emptyEventsLayout.setVisibility(View.VISIBLE);
+                    koloda.setVisibility(View.GONE);
+                    buttonContainer.setVisibility(View.GONE);
+                    currentEventIndex = 0;
                 }
             }
         });
 
-        // Fetch interested events from Firestore
-        db.collection("events").get().addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                for (QueryDocumentSnapshot document : task.getResult()) {
-                    Event event = document.toObject(Event.class);
-                    if (!eventIsDisinterested(event)) {
-                        events.add(event);
-                    }
-                }
-                // Updating UI with the first event
-                updateUI();
-            }
-        });
+        // fetching event data
+        fetchEventData();
+        fetchDisinterestedEventData();
 
         // Set up button click listeners
         Button nopeButton = rootView.findViewById(R.id.nopeButton);
         Button interestedButton = rootView.findViewById(R.id.interestedButton);
+        Button refreshButton = rootView.findViewById(R.id.refreshButton);
 
-        nopeButton.setOnClickListener(v -> nextEvent());
-
-        interestedButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                FireBaseUserDataManager.getInstance().addInterestedEvent(events.get(currentEventIndex));
-                FireBaseUserDataManager.getInstance().getInterestedEvents();
-                nextEvent();
-            }
+        // NOT INTERESTED
+        nopeButton.setOnClickListener(v -> {
+            koloda.onButtonClick(false);
+            handleSwipe(false, currentEventIndex);
         });
 
-        nopeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                FireBaseUserDataManager.getInstance().addDisinterestedEvent(events.get(currentEventIndex));
-                FireBaseUserDataManager.getInstance().getDisinterestedEvents();
-                nextEvent();
-            }
+        // INTERESTED
+        interestedButton.setOnClickListener(view -> {
+            koloda.onButtonClick(true);
+            handleSwipe(true, currentEventIndex);
+        });
+
+        // REFRESH PAGE
+        refreshButton.setOnClickListener(view -> {
+            emptyEventsLayout.setVisibility(View.GONE);
+            koloda.setVisibility(View.VISIBLE);
+            buttonContainer.setVisibility(View.VISIBLE);
+            fetchEventData(); // fetch data again
+            koloda.reloadAdapterData();
         });
 
         return rootView;
     }
 
+    /**
+     * Fetches the interested event data from the event collection in DB
+     * COULD store this function in another class (DatabaseService class for SRP)
+     */
+    private void fetchEventData() {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("events").get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                events.clear();
+                for (QueryDocumentSnapshot document : task.getResult()) {
+                    Event event = document.toObject(Event.class);
+                        events.add(event);
+                }
+                // Re-notify the adapter when the event data changed
+                adapter.notifyDataSetChanged();
+            } else {
+                Log.e("Database error", "Fetching of events not working properly");
+            }
+        });
+    }
+
+    /**
+     * Fetches the disinterested event data from the event collection in DB
+     * COULD store this function in another class (DatabaseService class for SRP)
+     */
+    private void fetchDisinterestedEventData() {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("users").get().addOnCompleteListener(task -> {    // is this the correct collection path?
+            if (task.isSuccessful()) {
+                events.clear();
+                for (QueryDocumentSnapshot document : task.getResult()) {
+                    Event event = document.toObject(Event.class);
+                    disinterestedEvents.add(event);
+                }
+                // Re-notify the adapter when the event data changed
+                adapter.notifyDataSetChanged();
+            } else {
+                Log.e("Database error", "Fetching of disinterested events not working properly");
+            }
+        });
+    }
+
+    /**
+     * Checks whether an event is in the disinterested events list
+     */
     private boolean eventIsDisinterested(Event event) {
         if (disinterestedEvents.contains(event)) {
             return true;
@@ -118,33 +184,48 @@ public class FragmentHome extends Fragment {
         }
     }
 
+
+    /**
+     *
+     * @param isInterested - if the user is interested or not
+     * @param index - the particular event index
+     */
+    private void handleSwipe(boolean isInterested, int index) {
+        currentEventIndex = index;
+        if (isInterested) {
+            FireBaseUserDataManager.getInstance().addInterestedEvent(events.get(currentEventIndex));
+            FireBaseUserDataManager.getInstance().getInterestedEvents();
+        } else {
+            FireBaseUserDataManager.getInstance().addDisinterestedEvent(events.get(currentEventIndex));
+            FireBaseUserDataManager.getInstance().getInterestedEvents();
+            FireBaseUserDataManager.getInstance().getDisinterestedEvents();
+            // disinterested events are removed from the browse stack
+            if (eventIsDisinterested(events.get(currentEventIndex))){
+                events.remove(events.get(currentEventIndex));
+            }
+        }
+        nextEvent();
+        Toast.makeText(getContext(), isInterested ? "Interested" : "Not Interested", Toast.LENGTH_SHORT).show();
+    }
+
+    /**
+     * Loads next event
+     */
     private void nextEvent() {
         if (currentEventIndex < events.size() - 1) {
             currentEventIndex++;
-            updateUI();
+            adapter.notifyDataSetChanged();
+        } else { // if all events run out
+           koloda.getKolodaListener().onEmptyDeck();
         }
     }
 
-    private void updateUI() {
-        if (currentEventIndex < events.size()) {
-            Event event = events.get(currentEventIndex);
-            if (clubNameTextView != null) {
-                clubNameTextView.setText(event.getClubName());
-            }
-            eventTitleTextView.setText(event.getTitle());
-            locationTextView.setText(event.getLocation());
+    public List<Event> getEvents() {
+        return events;
+    }
 
-            // Format the date and time as a single string
-            SimpleDateFormat dateTimeFormat = new SimpleDateFormat("d' 'MMMM yyyy, hh:mm a");
-            String dateTimeString = dateTimeFormat.format(event.getDateTime());
-
-            // Set the formatted date and time in the UI
-            timeTextView.setText(dateTimeString);
-
-            eventDescriptionTextView.setText(event.getDescription());
-            Glide.with(this).load(event.getImageURL()).into(eventImageView);
-            Glide.with(this).load(event.getEventClubProfilePicture()).into(eventClubPFPImageView);
-        }
+    public int getCurrentEventIndex() {
+        return currentEventIndex;
     }
 }
 
