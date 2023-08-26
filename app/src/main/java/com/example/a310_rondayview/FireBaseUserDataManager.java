@@ -14,11 +14,12 @@ public class FireBaseUserDataManager {
 
     private final FirebaseFirestore db;
     public List<Event> InterestedEvents = new ArrayList<>();
+    public List<Event> DisinterestedEvents = new ArrayList<>();
 
     private static final String TAG = "FireBaseUserDataManager";
     private static final String USERSCOLLECTION = "users";
     private static final String INTERESTEDEVENTSCOLLECTION = "interestedEvents";
-    private static final String DISINTERESTEDEVENTSCOLLECTION = "interestedEvents";
+    private static final String DISINTERESTEDEVENTSCOLLECTION = "disinterestedEvents";
     private static final String SIGNINERROR = "No user is currently signed in.";
 
 
@@ -26,6 +27,7 @@ public class FireBaseUserDataManager {
         db = FirebaseFirestore.getInstance();
         // On startup, populate the lists
         getInterestedEvents();
+        getDisinterestedEvents();
     }
 
     private static final class InstanceHolder {
@@ -78,7 +80,58 @@ public class FireBaseUserDataManager {
 
                             Log.d(TAG, "Successfully fetched the interested events data: " + events.toString());
                         } else {
-                            Log.e(TAG, "Error fetching data: ", task.getException());
+                            Log.e(TAG, "Error fetching interested events data: ", task.getException());
+                        }
+                    });
+        } else {
+            // Handle the case where no user is signed in
+            Log.e(TAG, SIGNINERROR);
+        }
+    }
+
+    public void getDisinterestedEvents() {
+        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+
+        // Get the currently signed-in user
+        FirebaseUser currentUser = firebaseAuth.getCurrentUser();
+
+        // Check if a user is signed in
+        if (currentUser != null) {
+            String uid = currentUser.getUid();
+
+            // Use the UID to fetch all the users disinterested events and store it in a singleton list
+            db.collection(USERSCOLLECTION)
+                    .document(uid)
+                    .collection(DISINTERESTEDEVENTSCOLLECTION)
+                    .get()
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            List<Event> events = new ArrayList<>();
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                if (document != null && document.exists()) {
+                                    Event event = new Event();
+
+                                    // Assign the appropriate database values to the java object variables
+                                    event.setEventId(document.getId());
+                                    event.setClubName(document.getString("clubName"));
+                                    event.setDateTime(document.getDate("dateTime"));
+                                    event.setDescription(document.getString("description"));
+                                    event.setEventClubProfilePicture(document.getString("eventClubProfilePicture"));
+                                    event.setImageURL(document.getString("imageURL"));
+                                    event.setLocation(document.getString("location"));
+                                    event.setTitle(document.getString("title"));
+
+                                    // Add the Event object to the list of events
+                                    events.add(event);
+                                }
+                            }
+
+                            // Assign the fetched list of Event objects to the appropriate class member variable
+                            DisinterestedEvents = events;
+
+                            Log.d(TAG, "Successfully fetched the disinterested events data: " + events.toString());
+                        } else {
+                            Log.e(TAG, "Error fetching disinterested events data: ", task.getException());
                         }
                     });
         } else {

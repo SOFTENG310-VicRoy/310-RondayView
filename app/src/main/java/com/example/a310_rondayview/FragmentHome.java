@@ -102,7 +102,7 @@ public class FragmentHome extends Fragment {
             @Override
             public void onClick(View view) {
                 FireBaseUserDataManager.getInstance().addDisinterestedEvent(events.get(currentEventIndex));
-                FireBaseUserDataManager.getInstance().getInterestedEvents();
+                FireBaseUserDataManager.getInstance().getDisinterestedEvents();
                 nextEvent();
             }
         });
