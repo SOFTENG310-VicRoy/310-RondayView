@@ -6,6 +6,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,7 +57,7 @@ public class FireBaseUserDataManager {
                     .addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
                             // Assign the fetched list of Event objects to the appropriate class member variable
-                            InterestedEvents = makeEventsList((List<QueryDocumentSnapshot>) task.getResult());
+                            InterestedEvents = makeEventsList(task.getResult());
 
                             Log.d(TAG, "Successfully fetched the interested events data: " + InterestedEvents.toString());
                         } else {
@@ -87,7 +88,7 @@ public class FireBaseUserDataManager {
                     .addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
                             // Assign the fetched list of Event objects to the appropriate class member variable
-                            DisinterestedEvents = makeEventsList((List<QueryDocumentSnapshot>) task.getResult());
+                            DisinterestedEvents = makeEventsList(task.getResult());
 
                             Log.d(TAG, "Successfully fetched the disinterested events data: " + DisinterestedEvents.toString());
                         } else {
@@ -100,7 +101,7 @@ public class FireBaseUserDataManager {
         }
     }
 
-    List<Event> makeEventsList(List<QueryDocumentSnapshot> snapshot) {
+    List<Event> makeEventsList(QuerySnapshot snapshot) {
         List<Event> events = new ArrayList<>();
         for (QueryDocumentSnapshot document : snapshot) {
             if (document != null && document.exists()) {
