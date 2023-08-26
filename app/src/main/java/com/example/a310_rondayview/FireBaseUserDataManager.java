@@ -55,30 +55,10 @@ public class FireBaseUserDataManager {
                     .get()
                     .addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
-                            List<Event> events = new ArrayList<>();
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                if (document != null && document.exists()) {
-                                    Event event = new Event();
-
-                                    // Assign the appropriate database values to the java object variables
-                                    event.setEventId(document.getId());
-                                    event.setClubName(document.getString("clubName"));
-                                    event.setDateTime(document.getDate("dateTime"));
-                                    event.setDescription(document.getString("description"));
-                                    event.setEventClubProfilePicture(document.getString("eventClubProfilePicture"));
-                                    event.setImageURL(document.getString("imageURL"));
-                                    event.setLocation(document.getString("location"));
-                                    event.setTitle(document.getString("title"));
-
-                                    // Add the Event object to the list of events
-                                    events.add(event);
-                                }
-                            }
-
                             // Assign the fetched list of Event objects to the appropriate class member variable
-                            InterestedEvents = events;
+                            InterestedEvents = makeEventsList((List<QueryDocumentSnapshot>) task.getResult());
 
-                            Log.d(TAG, "Successfully fetched the interested events data: " + events.toString());
+                            Log.d(TAG, "Successfully fetched the interested events data: " + InterestedEvents.toString());
                         } else {
                             Log.e(TAG, "Error fetching interested events data: ", task.getException());
                         }
@@ -106,30 +86,10 @@ public class FireBaseUserDataManager {
                     .get()
                     .addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
-                            List<Event> events = new ArrayList<>();
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                if (document != null && document.exists()) {
-                                    Event event = new Event();
-
-                                    // Assign the appropriate database values to the java object variables
-                                    event.setEventId(document.getId());
-                                    event.setClubName(document.getString("clubName"));
-                                    event.setDateTime(document.getDate("dateTime"));
-                                    event.setDescription(document.getString("description"));
-                                    event.setEventClubProfilePicture(document.getString("eventClubProfilePicture"));
-                                    event.setImageURL(document.getString("imageURL"));
-                                    event.setLocation(document.getString("location"));
-                                    event.setTitle(document.getString("title"));
-
-                                    // Add the Event object to the list of events
-                                    events.add(event);
-                                }
-                            }
-
                             // Assign the fetched list of Event objects to the appropriate class member variable
-                            DisinterestedEvents = events;
+                            DisinterestedEvents = makeEventsList((List<QueryDocumentSnapshot>) task.getResult());
 
-                            Log.d(TAG, "Successfully fetched the disinterested events data: " + events.toString());
+                            Log.d(TAG, "Successfully fetched the disinterested events data: " + DisinterestedEvents.toString());
                         } else {
                             Log.e(TAG, "Error fetching disinterested events data: ", task.getException());
                         }
@@ -138,6 +98,29 @@ public class FireBaseUserDataManager {
             // Handle the case where no user is signed in
             Log.e(TAG, SIGNINERROR);
         }
+    }
+
+    List<Event> makeEventsList(List<QueryDocumentSnapshot> snapshot) {
+        List<Event> events = new ArrayList<>();
+        for (QueryDocumentSnapshot document : snapshot) {
+            if (document != null && document.exists()) {
+                Event event = new Event();
+
+                // Assign the appropriate database values to the java object variables
+                event.setEventId(document.getId());
+                event.setClubName(document.getString("clubName"));
+                event.setDateTime(document.getDate("dateTime"));
+                event.setDescription(document.getString("description"));
+                event.setEventClubProfilePicture(document.getString("eventClubProfilePicture"));
+                event.setImageURL(document.getString("imageURL"));
+                event.setLocation(document.getString("location"));
+                event.setTitle(document.getString("title"));
+
+                // Add the Event object to the list of events
+                events.add(event);
+            }
+        }
+        return events;
     }
 
     public void addDisinterestedEvent(Event event) {
