@@ -55,7 +55,7 @@ public class CreateEventFragment extends Fragment {
         }
     }
 
-    ViewHolder vh;
+    CreateEventFragment.ViewHolder vh;
 
     public CreateEventFragment() {
         // Required empty public constructor
