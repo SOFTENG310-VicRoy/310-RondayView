@@ -1,10 +1,6 @@
 package com.example.a310_rondayview;
 
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +9,11 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+
+import com.example.a310_rondayview.data.event.EventsFirestoreManager;
+import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.yalantis.library.Koloda;
@@ -22,6 +23,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FragmentHome extends Fragment {
+
+    private static final String TAG = "FragmentHome";
     private SwipeAdapter adapter;
     private List<Event> events = new ArrayList<>();
     private List<Event> disinterestedEvents = new ArrayList<>();
@@ -102,6 +105,34 @@ public class FragmentHome extends Fragment {
         fetchEventData();
         fetchDisinterestedEventData();
 
+        // Add a listener to the events Firestore collection to receive real time updates
+        EventsFirestoreManager.getInstance().addEventsListener((snapshots, e) -> {
+
+            if (e != null) {
+                Log.w(TAG, "Listen failed.", e);
+                return;
+            }
+
+            if (snapshots != null) {
+                for (DocumentChange dc : snapshots.getDocumentChanges()) {
+                    switch (dc.getType()) {
+                        case ADDED:
+                            // if a document was added, add it to events list
+                            Event event = dc.getDocument().toObject(Event.class);
+                            events.add(event);
+                            // update home page?
+                            break;
+                        case MODIFIED:
+                            // TO DO (currently no way to modify events in app)
+                            break;
+                        case REMOVED:
+                            // TO DO (currently no way to delete events in app)
+                            break;
+                    }
+                }
+            }
+        });
+
         // Set up button click listeners
         Button nopeButton = rootView.findViewById(R.id.nopeButton);
         Button interestedButton = rootView.findViewById(R.id.interestedButton);
@@ -160,7 +191,7 @@ public class FragmentHome extends Fragment {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("users").get().addOnCompleteListener(task -> {    // is this the correct collection path?
             if (task.isSuccessful()) {
-                events.clear();
+                disinterestedEvents.clear();
                 for (QueryDocumentSnapshot document : task.getResult()) {
                     Event event = document.toObject(Event.class);
                     disinterestedEvents.add(event);
