@@ -2,7 +2,7 @@ package com.example.a310_rondayview.data.event;
 
 import static com.example.a310_rondayview.data.event.EventsFirestoreContract.EVENT_COLLECTION_NAME;
 
-import com.example.a310_rondayview.Event;
+import com.example.a310_rondayview.model.Event;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;

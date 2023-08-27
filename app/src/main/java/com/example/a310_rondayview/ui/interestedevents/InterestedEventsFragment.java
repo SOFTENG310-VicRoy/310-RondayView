@@ -1,11 +1,9 @@
-package com.example.a310_rondayview;
+package com.example.a310_rondayview.ui.interestedevents;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CompoundButton;
-import android.widget.ToggleButton;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -13,7 +11,10 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.a310_rondayview.ui.InterestedEventsAdapter;
+import com.example.a310_rondayview.R;
+import com.example.a310_rondayview.data.user.FireBaseUserDataManager;
+import com.example.a310_rondayview.model.Event;
+import com.example.a310_rondayview.ui.adapter.InterestedEventsAdapter;
 
 import java.util.List;
 

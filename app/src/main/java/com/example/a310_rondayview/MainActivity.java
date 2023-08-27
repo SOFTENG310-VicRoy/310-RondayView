@@ -11,6 +11,10 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.example.a310_rondayview.databinding.ActivityMainBinding;
+import com.example.a310_rondayview.ui.account.ProfileFragment;
+import com.example.a310_rondayview.ui.createevent.CreateEventFragment;
+import com.example.a310_rondayview.ui.home.FragmentHome;
+import com.example.a310_rondayview.ui.interestedevents.InterestedEventsFragment;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;

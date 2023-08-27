@@ -1,4 +1,4 @@
-package com.example.a310_rondayview;
+package com.example.a310_rondayview.ui.createevent;
 
 import android.net.Uri;
 import android.os.Bundle;
@@ -14,7 +14,9 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.fragment.app.Fragment;
 
+import com.example.a310_rondayview.R;
 import com.example.a310_rondayview.data.event.EventsFirestoreManager;
+import com.example.a310_rondayview.model.Event;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 

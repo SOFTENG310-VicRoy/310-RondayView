@@ -1,7 +1,8 @@
-package com.example.a310_rondayview;
+package com.example.a310_rondayview.data.user;
 
 import android.util.Log;
 
+import com.example.a310_rondayview.model.Event;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
