@@ -1,8 +1,0 @@
-
-r
-java:S1104"\Make InterestedEvents a static final constant or non-public and provide accessors if needed.(ž„âÎ
-p	java:S116"[Rename this field "InterestedEvents" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ž„âÎ
-®
-java:S6548"˜A Singleton implementation was detected. Make sure the use of the Singleton pattern is required and the implementation is the right one for the context.(±…üJ
-h
-java:S3776&"RRefactor this method to reduce its Cognitive Complexity from 16 to the 15 allowed.(œ¯«È

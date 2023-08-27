@@ -191,7 +191,7 @@ public class FragmentHome extends Fragment {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("users").get().addOnCompleteListener(task -> {    // is this the correct collection path?
             if (task.isSuccessful()) {
-                events.clear();
+                disinterestedEvents.clear();
                 for (QueryDocumentSnapshot document : task.getResult()) {
                     Event event = document.toObject(Event.class);
                     disinterestedEvents.add(event);
