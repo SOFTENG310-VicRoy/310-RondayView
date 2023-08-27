@@ -1,4 +1,4 @@
-package com.example.a310_rondayview.ui;
+package com.example.a310_rondayview.ui.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -16,8 +16,8 @@ import android.widget.ToggleButton;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.example.a310_rondayview.Event;
-import com.example.a310_rondayview.FireBaseUserDataManager;
+import com.example.a310_rondayview.model.Event;
+import com.example.a310_rondayview.data.user.FireBaseUserDataManager;
 import com.example.a310_rondayview.R;
 
 import org.checkerframework.checker.nullness.qual.NonNull;

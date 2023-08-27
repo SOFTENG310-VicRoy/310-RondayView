@@ -1,4 +1,4 @@
-package com.example.a310_rondayview;
+package com.example.a310_rondayview.ui.account;
 
 import android.os.Bundle;
 
@@ -9,6 +9,9 @@ import androidx.fragment.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.example.a310_rondayview.ui.interestedevents.InterestedEventsFragment;
+import com.example.a310_rondayview.R;
 
 public class ProfileFragment extends Fragment {
 

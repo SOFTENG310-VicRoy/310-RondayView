@@ -1,4 +1,4 @@
-package com.example.a310_rondayview;
+package com.example.a310_rondayview.ui.home;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -12,7 +12,11 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import com.example.a310_rondayview.R;
 import com.example.a310_rondayview.data.event.EventsFirestoreManager;
+import com.example.a310_rondayview.data.user.FireBaseUserDataManager;
+import com.example.a310_rondayview.model.Event;
+import com.example.a310_rondayview.ui.adapter.SwipeAdapter;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;

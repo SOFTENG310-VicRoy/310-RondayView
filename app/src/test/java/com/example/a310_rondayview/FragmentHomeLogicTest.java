@@ -3,7 +3,8 @@ package com.example.a310_rondayview;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import org.junit.Before;
+import com.example.a310_rondayview.ui.home.FragmentHome;
+
 import org.junit.Test;
 
 // because of private fields had to limit test cases, but basic ones to ensure its running properly

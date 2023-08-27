@@ -1,4 +1,4 @@
-package com.example.a310_rondayview;
+package com.example.a310_rondayview.model;
 
 import com.google.firebase.firestore.DocumentId;
 

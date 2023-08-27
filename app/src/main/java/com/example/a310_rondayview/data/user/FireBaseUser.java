@@ -1,4 +1,4 @@
-package com.example.a310_rondayview;
+package com.example.a310_rondayview.data.user;
 
 public class FireBaseUser {
     String FireBaseAuth;
