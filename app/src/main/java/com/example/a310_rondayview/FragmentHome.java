@@ -10,24 +10,21 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.yalantis.library.Koloda;
 import com.yalantis.library.KolodaListener;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
 public class FragmentHome extends Fragment {
     private SwipeAdapter adapter;
     private List<Event> events = new ArrayList<>();
+    private List<Event> disinterestedEvents = new ArrayList<>();
     private int currentEventIndex = 0;
     private LinearLayout buttonContainer;
     private LinearLayout emptyEventsLayout;
@@ -103,6 +100,7 @@ public class FragmentHome extends Fragment {
 
         // fetching event data
         fetchEventData();
+        fetchDisinterestedEventData();
 
         // Set up button click listeners
         Button nopeButton = rootView.findViewById(R.id.nopeButton);
@@ -134,7 +132,7 @@ public class FragmentHome extends Fragment {
     }
 
     /**
-     * Fetches the event data from the event collection in DB
+     * Fetches the interested event data from the event collection in DB
      * COULD store this function in another class (DatabaseService class for SRP)
      */
     private void fetchEventData() {
@@ -144,7 +142,7 @@ public class FragmentHome extends Fragment {
                 events.clear();
                 for (QueryDocumentSnapshot document : task.getResult()) {
                     Event event = document.toObject(Event.class);
-                    events.add(event);
+                        events.add(event);
                 }
                 // Re-notify the adapter when the event data changed
                 adapter.notifyDataSetChanged();
@@ -153,6 +151,39 @@ public class FragmentHome extends Fragment {
             }
         });
     }
+
+    /**
+     * Fetches the disinterested event data from the event collection in DB
+     * COULD store this function in another class (DatabaseService class for SRP)
+     */
+    private void fetchDisinterestedEventData() {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("users").get().addOnCompleteListener(task -> {    // is this the correct collection path?
+            if (task.isSuccessful()) {
+                events.clear();
+                for (QueryDocumentSnapshot document : task.getResult()) {
+                    Event event = document.toObject(Event.class);
+                    disinterestedEvents.add(event);
+                }
+                // Re-notify the adapter when the event data changed
+                adapter.notifyDataSetChanged();
+            } else {
+                Log.e("Database error", "Fetching of disinterested events not working properly");
+            }
+        });
+    }
+
+    /**
+     * Checks whether an event is in the disinterested events list
+     */
+    private boolean eventIsDisinterested(Event event) {
+        if (disinterestedEvents.contains(event)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
 
     /**
      *
@@ -164,6 +195,14 @@ public class FragmentHome extends Fragment {
         if (isInterested) {
             FireBaseUserDataManager.getInstance().addInterestedEvent(events.get(currentEventIndex));
             FireBaseUserDataManager.getInstance().getInterestedEvents();
+        } else {
+            FireBaseUserDataManager.getInstance().addDisinterestedEvent(events.get(currentEventIndex));
+            FireBaseUserDataManager.getInstance().getInterestedEvents();
+            FireBaseUserDataManager.getInstance().getDisinterestedEvents();
+            // disinterested events are removed from the browse stack
+            if (eventIsDisinterested(events.get(currentEventIndex))){
+                events.remove(events.get(currentEventIndex));
+            }
         }
         nextEvent();
         Toast.makeText(getContext(), isInterested ? "Interested" : "Not Interested", Toast.LENGTH_SHORT).show();
