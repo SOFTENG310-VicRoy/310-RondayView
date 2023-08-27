@@ -45,7 +45,7 @@ public class EventsFirestoreManager {
         String documentId = event.getEventId();
         eventsCollectionReference.document(documentId).set(event);
     }
-    void deleteEvent(String documentId){
+    public void deleteEvent(String documentId){
         eventsCollectionReference.document(documentId).delete();
     }
     public void getAllEvents(OnCompleteListener<QuerySnapshot> onCompleteListener){
