@@ -121,6 +121,9 @@ All of these features are detailed more in the GitHub issues tab so you can chec
 Class Diagram
 ![Class Diagram](contributingIMGS/classDiagram.png)
 
+Initial Firebase Firestore data schema
+![Data Schema](contributingIMGS/RondayviewDataSchema.png)
+
 ## Project Ground Rules
 
 We at VicRoy strongly support inclusivity for all peoples as well as fostering a harassment and bully free environment. This means that comments on pull requests should be constructive, helpful and kind. We ask that you avoid condescending words such as "obvious", "easy", or "simply" and avoid making comments personal. Please keep in mind that we are all at different stages in our journey and are all learning. Respect is important to us, so please treat each other as you would like to be treated.
