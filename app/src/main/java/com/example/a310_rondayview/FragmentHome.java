@@ -55,12 +55,12 @@ public class FragmentHome extends Fragment {
 
             @Override
             public void onCardSwipedLeft(int i) {
-                handleSwipe(false, i);
+                handleSwipe(false, currentEventIndex);
             }
 
             @Override
             public void onCardSwipedRight(int i) {
-               handleSwipe(true, i);
+               handleSwipe(true, currentEventIndex);
             }
 
             @Override
