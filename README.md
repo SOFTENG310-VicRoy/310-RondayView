@@ -1,8 +1,8 @@
-```text
-============================================================================================
-NOTE FOR MARKERS: Due to insufficient/buggy code coverage tools for Android Studio, our code 
-coverage displays as 0% for sonar despite having implemented tests.
-============================================================================================
+```diff
+- ============================================================================================
+- NOTE FOR MARKERS: Due to insufficient/buggy code coverage tools for Android Studio, our code 
+- coverage displays as 0% for sonar despite having implemented unit tests.
+- ============================================================================================
 ```
 
 # 310-RondayView
