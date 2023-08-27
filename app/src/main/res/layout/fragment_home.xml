@@ -1,56 +1,72 @@
 <!-- res/layout/fragment_home.xml -->
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:layout_gravity="center">
 
-    <androidx.core.widget.NestedScrollView
+    <LinearLayout
+        android:id="@+id/emptyEventsLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/emptyEventsTextView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="You've run out of events!"
+            android:textAlignment="center"
+            android:textSize="18sp" />
+
+        <Button
+            android:id="@+id/refreshButton"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="Refresh"
+            android:layout_marginTop="8dp" />
+    </LinearLayout>
+
+    <com.yalantis.library.Koloda
+        android:id="@+id/koloda"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1">
+        android:layout_weight="1"
+        android:visibility="visible"
+        app:koloda_card_layout="@layout/event_container" />
 
-        <androidx.cardview.widget.CardView
-            android:id="@+id/eventCardView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp">
-            <include
-                android:id="@+id/event_container"
-                layout="@layout/event_container" />
-
-
-        </androidx.cardview.widget.CardView>
-
-    </androidx.core.widget.NestedScrollView>
-
-    <!-- Space for buttons -->
-    <Space
-        android:layout_width="match_parent"
-        android:layout_height="8dp" />
-
-    <!-- Buttons Container -->
     <LinearLayout
         android:id="@+id/buttonsContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
+        android:padding="16dp"
         android:gravity="center">
 
-        <Button
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/nopeButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Nope!" />
+            android:layout_marginEnd="8dp"
+            android:text="Nope!"
+            android:background="@drawable/nope_button_background"
+            android:textColor="#FFFFFF"
+            android:textSize="22sp" />
 
-        <Button
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/interestedButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Interested" />
+            android:layout_marginStart="8dp"
+            android:text="Interested"
+            android:background="@drawable/interested_button_background"
+            android:textColor="#FFFFFF"
+            android:textSize="22sp" />
     </LinearLayout>
-
 </LinearLayout>

@@ -48,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
             } else if (item.getItemId() == R.id.browse) {
                 replaceFragment(new FragmentHome());
             } else if (item.getItemId() == R.id.account) {
-                replaceFragment(new FragmentAccount());
+                replaceFragment(new ProfileFragment());
             }
 
             return true;
