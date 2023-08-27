@@ -1,3 +1,10 @@
+```diff
+- ============================================================================================
+- NOTE FOR MARKERS: Due to insufficient/buggy code coverage tools for Android Studio, our code 
+- coverage displays as 0% for sonar despite having implemented unit tests.
+- ============================================================================================
+```
+
 # 310-RondayView
 
 RondayView (pronounced as “Rendezvous”) is an innovative and compelling mobile app designed to transform the way university students discover, connect and engage with university events. It aims to simplify the event exploration process and create an inclusive and vibrant university and campus community. Please note that this project is associated with the University of Auckland SOFTENG 310.
