@@ -6,4 +6,11 @@
     </style>
 
     <style name="Theme.310RondayView" parent="Base.Theme.310RondayView" />
+
+    <style name="profileButtonsCardStyle">
+        <item name="layout_goneMarginBottom">4dp</item>
+        <item name="cardElevation">8dp</item>
+        <item name="cardCornerRadius">20dp</item>
+        <item name="android:layout_margin">10dp</item>
+    </style>
 </resources>
