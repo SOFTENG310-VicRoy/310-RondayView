@@ -2,6 +2,8 @@ package com.example.a310_rondayview;
 
 import static org.junit.Assert.assertEquals;
 
+import androidx.fragment.app.FragmentManager;
+
 import com.example.a310_rondayview.model.Event;
 import com.example.a310_rondayview.ui.adapter.SwipeAdapter;
 

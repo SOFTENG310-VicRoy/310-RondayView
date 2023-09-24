@@ -8,9 +8,15 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.fragment.app.FragmentManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.bumptech.glide.Glide;
+import com.example.a310_rondayview.model.CurrentEvent;
 import com.example.a310_rondayview.model.Event;
 import com.example.a310_rondayview.R;
+import com.example.a310_rondayview.ui.createevent.CreateEventFragment;
+import com.example.a310_rondayview.ui.detailed.FragmentDetailed;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -28,6 +34,15 @@ public class SwipeAdapter extends BaseAdapter {
     private ImageView eventImageView;
 
     private ImageView eventClubPFPImageView;
+
+    private CurrentEvent currentEvent;
+    private FragmentManager fragmentManager;
+
+    public SwipeAdapter(Context context, List<Event> events, FragmentManager fragmentManager) {
+        this.context = context;
+        this.events = events;
+        this.fragmentManager = fragmentManager;
+    }
 
     public SwipeAdapter(Context context, List<Event> events) {
         this.context = context;
@@ -57,6 +72,7 @@ public class SwipeAdapter extends BaseAdapter {
         } else {
             view = currentView;
         }
+
         Event event = events.get(i);
         // Find views within the included layout
         clubNameTextView = view.findViewById(R.id.clubNameTextView);
@@ -83,6 +99,12 @@ public class SwipeAdapter extends BaseAdapter {
             eventDescriptionTextView.setText(event.getDescription());
             Glide.with(context).load(event.getImageURL()).into(eventImageView);
             Glide.with(context).load(event.getEventClubProfilePicture()).into(eventClubPFPImageView);
+            eventImageView.setOnClickListener(v -> {
+                currentEvent = CurrentEvent.getInstance();
+                currentEvent.setCurrentEvent(event);
+
+                fragmentManager.beginTransaction().replace(R.id.frame_layout, new FragmentDetailed()).commit();
+            });
         }
         return view;
     }
