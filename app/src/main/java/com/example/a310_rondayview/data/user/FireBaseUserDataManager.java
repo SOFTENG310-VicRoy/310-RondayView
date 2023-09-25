@@ -44,7 +44,7 @@ public class FireBaseUserDataManager {
     public void getEvents(Boolean interested) {
         String collection;
 
-        if(interested){
+        if(Boolean.TRUE.equals(interested)){
             collection = INTERESTEDEVENTSCOLLECTION;
         } else {
             collection = DISINTERESTEDEVENTSCOLLECTION;
@@ -78,7 +78,7 @@ public class FireBaseUserDataManager {
             // Handle the case where no user is signed in
             Log.e(TAG, SIGNINERROR);
         }
-        if(interested){
+        if(Boolean.TRUE.equals(interested)){
             InterestedEvents = eventList;
         } else {
             DisinterestedEvents = eventList;
