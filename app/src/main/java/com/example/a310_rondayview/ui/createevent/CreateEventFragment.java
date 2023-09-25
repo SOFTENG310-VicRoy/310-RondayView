@@ -235,10 +235,10 @@ public class CreateEventFragment extends Fragment {
 
     public void showDialog(View view, String dialog)
     {
-        if (dialog == DATE_DIALOG) {
+        if (dialog.equals(DATE_DIALOG)) {
             datePickerDialog.show();
         }
-        else if (dialog == TIME_DIALOG) {
+        else if (dialog.equals(TIME_DIALOG)) {
             TimePickerDialog.OnTimeSetListener onTimeSetListener = new TimePickerDialog.OnTimeSetListener()
             {
                 @Override
@@ -257,7 +257,7 @@ public class CreateEventFragment extends Fragment {
         }
     }
     public void dismissDialog(View view, String dialog) {
-        if (dialog == DATE_DIALOG) {
+        if (dialog.equals(DATE_DIALOG)) {
             datePickerDialog.dismiss();
         }
     }
