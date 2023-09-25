@@ -67,7 +67,7 @@ public class InterestedEventsAdapter extends RecyclerView.Adapter<InterestedEven
                     @Override
                     public void run() {
                         FireBaseUserDataManager.getInstance().removeInterestedEvent(event);
-                        FireBaseUserDataManager.getInstance().getInterestedEvents();
+                        FireBaseUserDataManager.getInstance().getEvents(true);
                         compoundButton.startAnimation(scaleAnimation);
 
                         // These are needed in order to show the event has been removed straight away
