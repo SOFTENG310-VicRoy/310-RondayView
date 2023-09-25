@@ -114,9 +114,9 @@
                     android:ems="10"
                     android:gravity="start|top"
                     android:hint="Description"
-                    android:inputType="textMultiLine"
+                    android:focusableInTouchMode="false"
                     android:lines="5"
-                    android:maxLines="5" />
+                    android:maxLines="5"/>
 
 
             </LinearLayout>
