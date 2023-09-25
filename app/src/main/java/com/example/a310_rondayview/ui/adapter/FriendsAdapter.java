@@ -16,45 +16,50 @@ import android.widget.ToggleButton;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.example.a310_rondayview.model.Event;
-import com.example.a310_rondayview.data.user.FireBaseUserDataManager;
 import com.example.a310_rondayview.R;
+import com.example.a310_rondayview.data.user.FireBaseUserDataManager;
+import com.example.a310_rondayview.model.Event;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.List;
 
-public class InterestedEventsAdapter extends RecyclerView.Adapter<InterestedEventsAdapter.InterestedEventsViewHolder> {
+public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.FriendsViewHolder> {
 
     Context context;
-    List<Event> eventsList;
+    List<String> friendsList;
 
-    public InterestedEventsAdapter(Context context, List<Event> eventsList) {
+    public FriendsAdapter(Context context, List<String> friendsList) {
         this.context = context;
-        this.eventsList = eventsList;
+        this.friendsList = friendsList;
+    }
+
+    public void updateFriendList(List<String> friendsList) {
+        this.friendsList = friendsList;
+        notifyDataSetChanged();
     }
 
     @androidx.annotation.NonNull
     @Override
-    public InterestedEventsViewHolder onCreateViewHolder(@androidx.annotation.NonNull ViewGroup parent, int viewType) {
+    public FriendsViewHolder onCreateViewHolder(@androidx.annotation.NonNull ViewGroup parent, int viewType) {
         // Inflates the layout for individual list items
-        View view = LayoutInflater.from(context).inflate(R.layout.interested_events_card, parent, false);
-        return new InterestedEventsViewHolder(view);
+        View view = LayoutInflater.from(context).inflate(R.layout.friend_card, parent, false);
+        return new FriendsViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@androidx.annotation.NonNull InterestedEventsViewHolder holder, int position) {
+    public void onBindViewHolder(@androidx.annotation.NonNull FriendsViewHolder holder, int position) {
         // Binds data to the UI elements in each list item
-        Event event = eventsList.get(position);
+        String email = friendsList.get(position);
 
-        // Set up the animation for the heart being clicked
+        // Set up the animation for the remove button being clicked
         ScaleAnimation scaleAnimation = new ScaleAnimation(0.7f, 1.0f, 0.7f, 1.0f, Animation.RELATIVE_TO_SELF, 0.7f, Animation.RELATIVE_TO_SELF, 0.7f);
         scaleAnimation.setDuration(500);
         BounceInterpolator bounceInterpolator = new BounceInterpolator();
         scaleAnimation.setInterpolator(bounceInterpolator);
 
-        ToggleButton heartButton = holder.itemView.findViewById(R.id.heart_button);
-        heartButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        ToggleButton removeFriendButton = holder.itemView.findViewById(R.id.remove_friend_button);
+        removeFriendButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
 
@@ -66,49 +71,41 @@ public class InterestedEventsAdapter extends RecyclerView.Adapter<InterestedEven
                 holder.itemView.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        FireBaseUserDataManager.getInstance().removeInterestedEvent(event);
-                        FireBaseUserDataManager.getInstance().getInterestedEvents();
+                        FireBaseUserDataManager.getInstance().removeFriend(email);
+                        FireBaseUserDataManager.getInstance().getFriends();
                         compoundButton.startAnimation(scaleAnimation);
 
                         // These are needed in order to show the event has been removed straight away
                         // Without this, the event does not disappear
-                        int position = eventsList.indexOf(event);
+                        int position = friendsList.indexOf(email);
                         if (position != -1) {
-                            eventsList.remove(position);
+                            friendsList.remove(position);
                             notifyDataSetChanged();
                         }
-                        holder.heartButton.setChecked(true);
+                        holder.removeFriendButton.setChecked(true);
                     }
                 }, fadeOut.getDuration());
             }
         });
-
-        Glide.with(holder.itemView.getContext()).load(event.getImageURL()).into(holder.eventImageView);
-        holder.titleTextView.setText(event.getTitle());
-        holder.descriptionTextView.setText(event.getDescription());
+        holder.emailTextView.setText(email);
     }
 
     @Override
     public int getItemCount() {
-        return eventsList.size();
+        return friendsList.size();
     }
 
 
     // ViewHolder class to hold references to UI elements for a list item
-    public static class InterestedEventsViewHolder extends RecyclerView.ViewHolder {
-
-        ImageView eventImageView;
-        TextView titleTextView;
-        TextView descriptionTextView;
-        ToggleButton heartButton;
+    public static class FriendsViewHolder extends RecyclerView.ViewHolder {
+        TextView emailTextView;
+        ToggleButton removeFriendButton;
 
 
-        public InterestedEventsViewHolder(@NonNull View itemView) {
+        public FriendsViewHolder(@NonNull View itemView) {
             super(itemView);
-            eventImageView = itemView.findViewById(R.id.coverImage);
-            titleTextView = itemView.findViewById(R.id.titleText);
-            descriptionTextView = itemView.findViewById(R.id.descriptionText);
-            heartButton = itemView.findViewById(R.id.heart_button);
+            emailTextView = itemView.findViewById(R.id.friendEmail);
+            removeFriendButton = itemView.findViewById(R.id.remove_friend_button);
         }
     }
 }

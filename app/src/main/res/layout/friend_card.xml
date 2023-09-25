@@ -19,50 +19,43 @@
             android:layout_height="match_parent">
 
             <LinearLayout
-                android:id="@+id/linearLayout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="vertical">
+                android:orientation="horizontal">
 
                 <ImageView
-                    android:id="@+id/coverImage"
-                    android:layout_width="match_parent"
-                    android:layout_height="400dp"
+                    android:id="@+id/friendImage"
+                    android:layout_width="75dp"
+                    android:layout_height="75dp"
                     android:scaleType="centerCrop"
-                    app:srcCompat="@drawable/baseline_image_24" />
+                    app:srcCompat="@drawable/baseline_person_24" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:background="@android:color/black"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:layout_gravity="center">
 
                      <TextView
-                         android:id="@+id/titleText"
+                         android:id="@+id/friendEmail"
                          android:layout_width="wrap_content"
                          android:layout_height="40dp"
                          android:padding="10dp"
-                         android:text="Title"
-                         android:textColor="@android:color/white" />
+                         android:text="email@gmail.com"
+                         android:textColor="@android:color/white"/>
 
-                     <TextView
-                         android:id="@+id/descriptionText"
-                         android:layout_width="wrap_content"
-                         android:layout_height="wrap_content"
-                         android:paddingTop="10dp"
-                         android:paddingLeft="10dp"
-                         android:paddingRight="10dp"
-                         android:paddingBottom="25dp"
-                         android:text="Description"
-                         android:textColor="@android:color/white" />
+
                  </LinearLayout>
 
              </LinearLayout>
 
             <ToggleButton
-                android:id="@+id/heart_button"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
+                android:id="@+id/remove_friend_button"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginRight="5dp"
                 android:padding="20dp"
                 android:checked="true"
                 android:text=""
@@ -70,14 +63,9 @@
                 android:textOn=""
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                android:background="@drawable/interested_button" />
+                android:background="@drawable/baseline_close_24" />
 
-            <androidx.constraintlayout.widget.Guideline
-                android:id="@+id/guideline2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                app:layout_constraintGuide_begin="20dp" />
+
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
