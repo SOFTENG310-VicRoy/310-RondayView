@@ -24,12 +24,14 @@ public class FireBaseUserDataManager {
     private static final String DISINTERESTEDEVENTSCOLLECTION = "disinterestedEvents";
     private static final String SIGNINERROR = "No user is currently signed in.";
 
+    private List<Event> eventList = new ArrayList<>();
+
 
     private FireBaseUserDataManager() {
         db = FirebaseFirestore.getInstance();
         // On startup, populate the lists
-        getInterestedEvents();
-        getDisinterestedEvents();
+        getEvents(true);
+        getEvents(false);
     }
 
     private static final class InstanceHolder {
@@ -39,39 +41,15 @@ public class FireBaseUserDataManager {
     public static FireBaseUserDataManager getInstance() {
         return InstanceHolder.instance;
     }
+    public void getEvents(Boolean interested) {
+        String collection;
 
-    public void getInterestedEvents() {
-        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
-
-        // Get the currently signed-in user
-        FirebaseUser currentUser = firebaseAuth.getCurrentUser();
-
-        // Check if a user is signed in
-        if (currentUser != null) {
-            String uid = currentUser.getUid();
-
-            // Use the UID to fetch all the users interested events and store it in a singleton list
-            db.collection(USERSCOLLECTION)
-                    .document(uid)
-                    .collection(INTERESTEDEVENTSCOLLECTION)
-                    .get()
-                    .addOnCompleteListener(task -> {
-                        if (task.isSuccessful()) {
-                            // Assign the fetched list of Event objects to the appropriate class member variable
-                            InterestedEvents = makeEventsList(task.getResult());
-
-                            Log.d(TAG, "Successfully fetched the interested events data: " + InterestedEvents.toString());
-                        } else {
-                            Log.e(TAG, "Error fetching interested events data: ", task.getException());
-                        }
-                    });
+        if(Boolean.TRUE.equals(interested)){
+            collection = INTERESTEDEVENTSCOLLECTION;
         } else {
-            // Handle the case where no user is signed in
-            Log.e(TAG, SIGNINERROR);
+            collection = DISINTERESTEDEVENTSCOLLECTION;
         }
-    }
 
-    public void getDisinterestedEvents() {
         FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
 
         // Get the currently signed-in user
@@ -84,12 +62,12 @@ public class FireBaseUserDataManager {
             // Use the UID to fetch all the users disinterested events and store it in a singleton list
             db.collection(USERSCOLLECTION)
                     .document(uid)
-                    .collection(DISINTERESTEDEVENTSCOLLECTION)
+                    .collection(collection)
                     .get()
                     .addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
                             // Assign the fetched list of Event objects to the appropriate class member variable
-                            DisinterestedEvents = makeEventsList(task.getResult());
+                            eventList = makeEventsList(task.getResult());
 
                             Log.d(TAG, "Successfully fetched the disinterested events data: " + DisinterestedEvents.toString());
                         } else {
@@ -99,6 +77,11 @@ public class FireBaseUserDataManager {
         } else {
             // Handle the case where no user is signed in
             Log.e(TAG, SIGNINERROR);
+        }
+        if(Boolean.TRUE.equals(interested)){
+            InterestedEvents = eventList;
+        } else {
+            DisinterestedEvents = eventList;
         }
     }
 
