@@ -290,6 +290,7 @@ public class FireBaseUserDataManager {
                             } else {
                                 // Friend with the provided email does not exist
                                 // Handle the case accordingly
+                                callback.onUnsuccessfulFriendOperation(new Exception("Failed to find friend"));
                             }
                         } else {
                             // Handle the error

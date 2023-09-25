@@ -61,7 +61,7 @@ public class FriendsFragment extends Fragment {
                         }
                         @Override
                         public void onUnsuccessfulFriendOperation(Exception e) {
-                            Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_LONG);
+                            Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_LONG).show();
                         }
                     });
             }
@@ -91,7 +91,6 @@ public class FriendsFragment extends Fragment {
                 }
                 @Override
                 public void onUnsuccessfulFriendOperation(Exception e) {
-
                 }
             });
         }
