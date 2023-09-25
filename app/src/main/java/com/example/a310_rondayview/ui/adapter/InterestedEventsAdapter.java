@@ -13,12 +13,15 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.a310_rondayview.model.CurrentEvent;
 import com.example.a310_rondayview.model.Event;
 import com.example.a310_rondayview.data.user.FireBaseUserDataManager;
 import com.example.a310_rondayview.R;
+import com.example.a310_rondayview.ui.detailed.FragmentDetailed;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
@@ -29,9 +32,19 @@ public class InterestedEventsAdapter extends RecyclerView.Adapter<InterestedEven
     Context context;
     List<Event> eventsList;
 
+    private CurrentEvent currentEvent;
+    private FragmentManager fragmentManager;
+
     public InterestedEventsAdapter(Context context, List<Event> eventsList) {
         this.context = context;
         this.eventsList = eventsList;
+
+    }
+
+    public InterestedEventsAdapter(Context context, List<Event> eventsList, FragmentManager fragmentManager) {
+        this.context = context;
+        this.eventsList = eventsList;
+        this.fragmentManager = fragmentManager;
     }
 
     @androidx.annotation.NonNull
@@ -86,6 +99,12 @@ public class InterestedEventsAdapter extends RecyclerView.Adapter<InterestedEven
         Glide.with(holder.itemView.getContext()).load(event.getImageURL()).into(holder.eventImageView);
         holder.titleTextView.setText(event.getTitle());
         holder.descriptionTextView.setText(event.getDescription());
+        holder.eventImageView.setOnClickListener(v -> {
+            currentEvent = CurrentEvent.getInstance();
+            currentEvent.setCurrentEvent(event);
+
+            fragmentManager.beginTransaction().replace(R.id.frame_layout, new FragmentDetailed()).commit();
+        });
     }
 
     @Override
@@ -101,6 +120,8 @@ public class InterestedEventsAdapter extends RecyclerView.Adapter<InterestedEven
         TextView titleTextView;
         TextView descriptionTextView;
         ToggleButton heartButton;
+
+        ImageView eventImage;
 
 
         public InterestedEventsViewHolder(@NonNull View itemView) {

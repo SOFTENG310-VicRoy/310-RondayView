@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment;
 import com.bumptech.glide.Glide;
 import com.example.a310_rondayview.R;
 import com.example.a310_rondayview.model.CurrentEvent;
+import com.example.a310_rondayview.ui.home.FragmentHome;
 
 
 public class FragmentDetailed extends Fragment {
@@ -24,8 +25,10 @@ public class FragmentDetailed extends Fragment {
     }
     private class ViewHolder {
         ImageView eventImage;
+        ImageView backImage;
         public ViewHolder(View view) {
             eventImage = view.findViewById(R.id.event_image);
+            backImage = view.findViewById(R.id.back);
         }
     }
 
@@ -38,7 +41,10 @@ public class FragmentDetailed extends Fragment {
         currentEvent = CurrentEvent.getInstance();
 
         Glide.with(getContext()).load(currentEvent.getCurrentEvent().getImageURL()).into(vh.eventImage);
+        vh.backImage.setOnClickListener(v -> {
 
+            getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.frame_layout, new FragmentHome()).commit();
+        });
 
         return view;
     }
