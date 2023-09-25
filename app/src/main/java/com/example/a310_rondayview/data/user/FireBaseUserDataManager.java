@@ -195,7 +195,7 @@ public class FireBaseUserDataManager {
         }
     }
 
-    public void getFriends() {
+    public void getFriends(FriendCallback callback) {
         FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
 
         // Get the currently signed-in user
@@ -241,6 +241,7 @@ public class FireBaseUserDataManager {
                                                     if (friendEmails.size() == friendIds.size()) {
                                                         // Handle the list of friend emails here
                                                         Log.d(TAG, "Friend emails: " + friendEmails.toString());
+                                                        callback.onSuccessfulFriendOperation();
                                                     }
                                                 });
                                     }
@@ -260,7 +261,7 @@ public class FireBaseUserDataManager {
             Log.e(TAG, SIGNINERROR);
         }
     }
-    public void addFriend(String friendEmail) {
+    public void addFriend(String friendEmail, FriendCallback callback) {
         // Get the current Firebase Auth instance
         FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
 
@@ -292,9 +293,16 @@ public class FireBaseUserDataManager {
                                         .addOnSuccessListener(aVoid -> {
                                             // Update was successful
                                             // Perform additional actions here if needed
+                                            if (!friendEmails.contains(friendEmail)) {
+                                                friendEmails.add(friendEmail);
+
+                                            }
+                                            callback.onSuccessfulFriendOperation();
                                         })
                                         .addOnFailureListener(e -> {
                                             // Handle the error
+                                            callback.onUnsuccessfulFriendOperation(new Exception("Failed to add friend"));
+
                                         });
                             } else {
                                 // Friend with the provided email does not exist
@@ -303,11 +311,12 @@ public class FireBaseUserDataManager {
                         } else {
                             // Handle the error
                             Log.e(TAG, "Error querying for friend: ", task.getException());
+                            callback.onUnsuccessfulFriendOperation(new Exception("Failed to find friend"));
                         }
                     });
         }
     }
-    public void removeFriend(String friendEmail) {
+    public void removeFriend(String friendEmail, FriendCallback callback) {
         // Get the current Firebase Auth instance
         FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
 
@@ -339,9 +348,13 @@ public class FireBaseUserDataManager {
                                         .addOnSuccessListener(aVoid -> {
                                             // Update was successful
                                             // Perform additional actions here if needed
+                                            friendEmails.remove(friendEmail);
+                                            callback.onSuccessfulFriendOperation();
                                         })
                                         .addOnFailureListener(e -> {
                                             // Handle the error
+                                            callback.onUnsuccessfulFriendOperation(new Exception("Failed to remove friend"));
+
                                         });
                             } else {
                                 // Friend with the provided email does not exist
@@ -350,6 +363,8 @@ public class FireBaseUserDataManager {
                         } else {
                             // Handle the error
                             Log.e(TAG, "Error querying for friend: ", task.getException());
+                            callback.onUnsuccessfulFriendOperation(new Exception("Failed to find friend"));
+
                         }
                     });
         }
