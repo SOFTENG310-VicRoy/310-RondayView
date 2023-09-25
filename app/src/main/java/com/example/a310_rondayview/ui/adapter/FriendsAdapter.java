@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.a310_rondayview.R;
 import com.example.a310_rondayview.data.user.FireBaseUserDataManager;
+import com.example.a310_rondayview.data.user.FriendCallback;
 import com.example.a310_rondayview.model.Event;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -71,8 +72,15 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.FriendsV
                 holder.itemView.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        FireBaseUserDataManager.getInstance().removeFriend(email);
-                        FireBaseUserDataManager.getInstance().getFriends();
+                        FireBaseUserDataManager.getInstance().removeFriend(email, new FriendCallback() {
+                            @Override
+                            public void onSuccessfulFriendOperation() {
+                            }
+                            @Override
+                            public void onUnsuccessfulFriendOperation(Exception e) {
+
+                            }
+                        });
                         compoundButton.startAnimation(scaleAnimation);
 
                         // These are needed in order to show the event has been removed straight away

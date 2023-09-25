@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.a310_rondayview.R;
 import com.example.a310_rondayview.data.user.FireBaseUserDataManager;
+import com.example.a310_rondayview.data.user.FriendCallback;
 import com.example.a310_rondayview.ui.adapter.FriendsAdapter;
 
 import java.util.List;
@@ -49,13 +50,20 @@ public class FriendsFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_friends, container, false);
 
         vh = new FriendsFragment.ViewHolder(view);
-
         vh.addFriendBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                    FireBaseUserDataManager.getInstance().addFriend(vh.friendEmail.getText().toString());
-                    FireBaseUserDataManager.getInstance().getFriends();
-                    friendsAdapter.updateFriendList(FireBaseUserDataManager.getInstance().friendEmails);
+                String friendEmail = vh.friendEmail.getText().toString();
+                FireBaseUserDataManager.getInstance().addFriend(friendEmail, new FriendCallback() {
+                        @Override
+                        public void onSuccessfulFriendOperation() {
+                            friendsAdapter.updateFriendList(FireBaseUserDataManager.getInstance().friendEmails);
+                        }
+                        @Override
+                        public void onUnsuccessfulFriendOperation(Exception e) {
+                            Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_LONG);
+                        }
+                    });
             }
         });
 
@@ -64,11 +72,7 @@ public class FriendsFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        FireBaseUserDataManager.getInstance().getFriends();
-
-        // load in the list of friends' email from the database
         friendList = FireBaseUserDataManager.getInstance().friendEmails;
-
         // setup the recycler view
         vh.friendList.setLayoutManager(new LinearLayoutManager(getContext()));
         vh.friendList.setHasFixedSize(true);
@@ -77,5 +81,19 @@ public class FriendsFragment extends Fragment {
         friendsAdapter = new FriendsAdapter(getContext(), friendList);
         vh.friendList.setAdapter(friendsAdapter);
         friendsAdapter.notifyDataSetChanged();
+
+        // if the local friend list stored was empty, we fetch friend list from db and update recycler view if there is content
+        if (friendList.isEmpty()) {
+            FireBaseUserDataManager.getInstance().getFriends(new FriendCallback() {
+                @Override
+                public void onSuccessfulFriendOperation() {
+                    friendsAdapter.updateFriendList(FireBaseUserDataManager.getInstance().friendEmails);
+                }
+                @Override
+                public void onUnsuccessfulFriendOperation(Exception e) {
+
+                }
+            });
+        }
     }
 }
