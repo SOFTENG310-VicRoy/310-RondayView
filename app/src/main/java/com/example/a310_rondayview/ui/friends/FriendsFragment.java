@@ -4,20 +4,20 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ListView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.a310_rondayview.R;
-import com.example.a310_rondayview.ui.interestedevents.InterestedEventsFragment;
+import com.example.a310_rondayview.data.user.FireBaseUserDataManager;
+import com.example.a310_rondayview.ui.adapter.FriendsAdapter;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class FriendsFragment extends Fragment {
@@ -25,16 +25,17 @@ public class FriendsFragment extends Fragment {
 
         EditText friendEmail;
         Button addFriendBtn;
-        ListView friendList;
+        RecyclerView friendList;
 
         public ViewHolder(View view) {
             friendEmail = view.findViewById(R.id.friend_email);
             addFriendBtn = view.findViewById(R.id.add_friend_btn);
-            friendList = view.findViewById(R.id.friend_list);
+            friendList = view.findViewById(R.id.friend_list_recycler_view);
 
         }
     }
     FriendsFragment.ViewHolder vh;
+    FriendsAdapter friendsAdapter;
     List<String> friendList;
 
     public FriendsFragment() {
@@ -49,21 +50,32 @@ public class FriendsFragment extends Fragment {
 
         vh = new FriendsFragment.ViewHolder(view);
 
-        // Assuming you have an ArrayList of strings
-        ArrayList<String> stringList = new ArrayList<>();
-        stringList.add("Item 1");
-        stringList.add("Item 2");
-        stringList.add("Item 3");
-        // Add more items as needed
-
-        // Create an ArrayAdapter to bind the ArrayList to the ListView
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, stringList);
-        vh.friendList.setAdapter(adapter);
+        vh.addFriendBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                    FireBaseUserDataManager.getInstance().addFriend(vh.friendEmail.getText().toString());
+                    FireBaseUserDataManager.getInstance().getFriends();
+                    friendsAdapter.updateFriendList(FireBaseUserDataManager.getInstance().friendEmails);
+            }
+        });
 
         return view;
     }
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        FireBaseUserDataManager.getInstance().getFriends();
+
+        // load in the list of friends' email from the database
+        friendList = FireBaseUserDataManager.getInstance().friendEmails;
+
+        // setup the recycler view
+        vh.friendList.setLayoutManager(new LinearLayoutManager(getContext()));
+        vh.friendList.setHasFixedSize(true);
+
+        // populate the recycler view
+        friendsAdapter = new FriendsAdapter(getContext(), friendList);
+        vh.friendList.setAdapter(friendsAdapter);
+        friendsAdapter.notifyDataSetChanged();
     }
 }
