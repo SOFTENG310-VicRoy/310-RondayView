@@ -27,29 +27,23 @@
                 android:layout_weight="1"
                 android:ems="10"
                 android:hint="Friend's Email"
-                android:inputType="date" />
+                android:inputType="text" />
 
             <Button
                 android:id="@+id/add_friend_btn"
                 android:layout_width="150dp"
                 android:layout_height="wrap_content"
-                android:text="Add Friend" />
+                android:text="Add Friend"/>
 
         </LinearLayout>
-        <ListView
-            android:id="@+id/friend_list"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-        </ListView>
-
-<!--        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/interested_events_recycler_view"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/friend_list_recycler_view"
             android:layout_width="409dp"
             android:layout_height="657dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:listitem="@layout/interested_events_card" />-->
+            tools:listitem="@layout/friend_card" />
     </LinearLayout>
 
 
