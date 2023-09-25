@@ -114,7 +114,7 @@
                     android:ems="10"
                     android:gravity="start|top"
                     android:hint="Description"
-                    android:focusableInTouchMode="false"
+                    android:inputType="textMultiLine"
                     android:lines="5"
                     android:maxLines="5"/>
 

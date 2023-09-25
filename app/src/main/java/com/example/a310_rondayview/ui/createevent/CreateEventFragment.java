@@ -2,6 +2,7 @@ package com.example.a310_rondayview.ui.createevent;
 
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.InputType;
@@ -13,6 +14,7 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -34,11 +36,13 @@ import java.util.Locale;
 public class CreateEventFragment extends Fragment {
 
     private static final String DATE_DIALOG = "dateDialog";
+    private static final String TIME_DIALOG = "timeDialog";
     ActivityResultLauncher<String> selectPhoto;
     private Uri localImageUri;
     private Uri downloadImageUri;
     Date date;
     DatePickerDialog datePickerDialog;
+    int hour, minute;
 
 
     private static class ViewHolder {
@@ -90,7 +94,6 @@ public class CreateEventFragment extends Fragment {
         initDatePicker();
         vh.date.setInputType(InputType.TYPE_NULL);
 
-        vh.date.setText(getTodaysDate());
         vh.date.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -100,6 +103,18 @@ public class CreateEventFragment extends Fragment {
                 return false;
             }
         });
+
+        vh.time.setInputType(InputType.TYPE_NULL);
+        vh.time.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_UP) {
+                    showDialog(v, TIME_DIALOG);
+                }
+                return false;
+            }
+        });
+
 
         // getting and setting selected image from users camera roll to the event image image view
         selectPhoto = registerForActivityResult(
@@ -115,8 +130,20 @@ public class CreateEventFragment extends Fragment {
         vh.postBtn.setOnClickListener(postView -> {
             if (!validateForm()) return;
 
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+            SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
             try {
-                date = new SimpleDateFormat("dd/MM/yyyy").parse(vh.date.getText().toString());
+                Date parsedDate = dateFormat.parse(vh.date.getText().toString());
+                Date parsedTime = timeFormat.parse(vh.time.getText().toString());
+
+                // Combine the parsed date and time
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTime(parsedDate);
+                Calendar timeCalendar = Calendar.getInstance();
+                timeCalendar.setTime(parsedTime);
+                calendar.set(Calendar.HOUR_OF_DAY, timeCalendar.get(Calendar.HOUR_OF_DAY));
+                calendar.set(Calendar.MINUTE, timeCalendar.get(Calendar.MINUTE));
+                date = calendar.getTime();
             } catch (ParseException e) {
                 vh.date.setError("Invalid date");
                 return;
@@ -205,17 +232,28 @@ public class CreateEventFragment extends Fragment {
         int style = AlertDialog.THEME_HOLO_LIGHT;
         datePickerDialog = new DatePickerDialog(getContext(), style, dateSetListener, year, month, day);
     }
-    private String getTodaysDate()
-    {
-        Calendar calendar = Calendar.getInstance();
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-        String dateString = dateFormat.format(calendar.getTime());
-        return dateString;
-    }
+
     public void showDialog(View view, String dialog)
     {
         if (dialog == DATE_DIALOG) {
             datePickerDialog.show();
+        }
+        else if (dialog == TIME_DIALOG) {
+            TimePickerDialog.OnTimeSetListener onTimeSetListener = new TimePickerDialog.OnTimeSetListener()
+            {
+                @Override
+                public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute)
+                {
+                    hour = selectedHour;
+                    minute = selectedMinute;
+                    vh.time.setText(String.format(Locale.getDefault(), "%02d:%02d",hour, minute));
+                }
+            };
+
+            int style = AlertDialog.THEME_HOLO_LIGHT;
+            TimePickerDialog timePickerDialog = new TimePickerDialog(getContext(), style, onTimeSetListener, hour, minute, true);
+            timePickerDialog.setTitle("Select Time");
+            timePickerDialog.show();
         }
     }
     public void dismissDialog(View view, String dialog) {
