@@ -163,4 +163,12 @@ public class FragmentHome extends Fragment {
             currentEventIndex = 1; //set at 1 as bug where first item is skipped on refresh
         });
     }
+
+    public List<Event> getEvents() {
+        return events;
+    }
+
+    public int getCurrentEventIndex() {
+        return currentEventIndex;
+    }
 }
