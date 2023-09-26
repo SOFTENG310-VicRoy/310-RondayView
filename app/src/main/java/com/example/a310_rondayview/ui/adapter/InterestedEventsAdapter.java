@@ -42,10 +42,11 @@ public class InterestedEventsAdapter extends RecyclerView.Adapter<InterestedEven
 
         this.hideHeart = false;
     }
-    public InterestedEventsAdapter(Context context, List<Event> eventsList, boolean hideHeart) {
+    public InterestedEventsAdapter(Context context, List<Event> eventsList, boolean hideHeart, FragmentManager fragmentManager) {
         this.context = context;
         this.eventsList = eventsList;
         this.hideHeart = hideHeart;
+        this.fragmentManager = fragmentManager;
 
     }
 
