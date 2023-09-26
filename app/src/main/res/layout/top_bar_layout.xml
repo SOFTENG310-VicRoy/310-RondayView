@@ -6,16 +6,6 @@
     android:padding="16dp"
     android:background="@color/light_grey">
 
-    <ImageButton
-        android:id="@+id/heartButton"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:background="?android:selectableItemBackground"
-        android:src="@drawable/ic_heart_hollow"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent" />
-
     <TextView
         android:id="@+id/rondayViewText"
         android:layout_width="wrap_content"
