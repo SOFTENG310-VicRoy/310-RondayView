@@ -11,6 +11,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -75,7 +76,8 @@ public class FriendsFragment extends Fragment {
         vh.friendList.setHasFixedSize(true);
 
         // populate the recycler view
-        friendsAdapter = new FriendsAdapter(getContext(), friendList);
+        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+        friendsAdapter = new FriendsAdapter(getContext(), friendList, fragmentManager);
         vh.friendList.setAdapter(friendsAdapter);
         friendsAdapter.notifyDataSetChanged();
 

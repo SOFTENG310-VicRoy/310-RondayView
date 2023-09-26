@@ -28,10 +28,17 @@ public class InterestedEventsAdapter extends RecyclerView.Adapter<InterestedEven
 
     Context context;
     List<Event> eventsList;
+    boolean hideHeart;
 
     public InterestedEventsAdapter(Context context, List<Event> eventsList) {
         this.context = context;
         this.eventsList = eventsList;
+        this.hideHeart = false;
+    }
+    public InterestedEventsAdapter(Context context, List<Event> eventsList, boolean hideHeart) {
+        this.context = context;
+        this.eventsList = eventsList;
+        this.hideHeart = hideHeart;
     }
 
     @androidx.annotation.NonNull
@@ -54,6 +61,9 @@ public class InterestedEventsAdapter extends RecyclerView.Adapter<InterestedEven
         scaleAnimation.setInterpolator(bounceInterpolator);
 
         ToggleButton heartButton = holder.itemView.findViewById(R.id.heart_button);
+        if (hideHeart) {
+            heartButton.setVisibility(View.GONE);
+        }
         heartButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {

@@ -19,6 +19,7 @@
             android:layout_height="match_parent">
 
             <LinearLayout
+                android:id="@+id/friend_linear_layout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="horizontal">
