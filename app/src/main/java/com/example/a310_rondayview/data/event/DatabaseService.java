@@ -5,11 +5,9 @@ import android.util.Log;
 import com.example.a310_rondayview.model.Event;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Future;
 
 public class DatabaseService {
     /**
