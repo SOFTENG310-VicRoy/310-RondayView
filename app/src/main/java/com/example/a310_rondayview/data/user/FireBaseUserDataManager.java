@@ -1,8 +1,6 @@
 package com.example.a310_rondayview.data.user;
 
-import android.content.Context;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.example.a310_rondayview.model.Event;
 import com.google.firebase.auth.FirebaseAuth;
@@ -19,20 +17,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FireBaseUserDataManager {
-
-    private final FirebaseFirestore db;
-    public List<Event> InterestedEvents = new ArrayList<>();
-    public List<Event> DisinterestedEvents = new ArrayList<>();
-    public List<String> friendEmails = new ArrayList<>();
-
     private static final String TAG = "FireBaseUserDataManager";
     private static final String USERSCOLLECTION = "users";
     private static final String INTERESTEDEVENTSCOLLECTION = "interestedEvents";
     private static final String DISINTERESTEDEVENTSCOLLECTION = "disinterestedEvents";
+    private static final String FRIEND_FIELD = "friends";
     private static final String SIGNINERROR = "No user is currently signed in.";
-
+    private static final String FIND_FRIEND_ERROR = "Failed to find friend";
+    private final FirebaseFirestore db;
+    private List<Event> interestedEvents = new ArrayList<>();
+    private List<Event> disinterestedEvents = new ArrayList<>();
+    private List<String> friendEmails = new ArrayList<>();
     private List<Event> eventList = new ArrayList<>();
-
 
     private FireBaseUserDataManager() {
         db = FirebaseFirestore.getInstance();
@@ -48,6 +44,19 @@ public class FireBaseUserDataManager {
     public static FireBaseUserDataManager getInstance() {
         return InstanceHolder.instance;
     }
+
+    public List<Event> getInterestedEvents() {
+        return interestedEvents;
+    }
+
+    public List<Event> getDisinterestedEvents() {
+        return disinterestedEvents;
+    }
+
+    public List<String> getFriendEmails() {
+        return friendEmails;
+    }
+
     public void getEvents(Boolean interested) {
         String collection;
 
@@ -76,7 +85,7 @@ public class FireBaseUserDataManager {
                             // Assign the fetched list of Event objects to the appropriate class member variable
                             eventList = makeEventsList(task.getResult());
 
-                            Log.d(TAG, "Successfully fetched the disinterested events data: " + DisinterestedEvents.toString());
+                            Log.d(TAG, "Successfully fetched the disinterested events data: " + disinterestedEvents.toString());
                         } else {
                             Log.e(TAG, "Error fetching disinterested events data: ", task.getException());
                         }
@@ -86,9 +95,9 @@ public class FireBaseUserDataManager {
             Log.e(TAG, SIGNINERROR);
         }
         if(Boolean.TRUE.equals(interested)){
-            InterestedEvents = eventList;
+            interestedEvents = eventList;
         } else {
-            DisinterestedEvents = eventList;
+            disinterestedEvents = eventList;
         }
     }
 
@@ -197,7 +206,7 @@ public class FireBaseUserDataManager {
                         if (task.isSuccessful()) {
                             DocumentSnapshot document = task.getResult();
                             if (document.exists()) {
-                                List<String> friendIds = (List<String>) document.get("friends");
+                                List<String> friendIds = (List<String>) document.get(FRIEND_FIELD);
 
                                 if (friendIds != null && !friendIds.isEmpty()) {
                                     friendEmails.clear();
@@ -210,7 +219,7 @@ public class FireBaseUserDataManager {
                                                     if (friendTask.isSuccessful()) {
                                                         DocumentSnapshot friendDocument = friendTask.getResult();
                                                         if (friendDocument.exists()) {
-                                                            String friendEmail = (String) friendDocument.get("email");
+                                                            String friendEmail = (String) friendDocument.get(FRIEND_FIELD);
                                                             if (friendEmail != null) {
                                                                 // Add the friend's email to the list
                                                                 friendEmails.add(friendEmail);
@@ -272,7 +281,7 @@ public class FireBaseUserDataManager {
                                 DocumentReference currentUserDocRef = usersCollectionRef.document(uid);
 
                                 // Update the "friends" array field with the new friend's UID
-                                currentUserDocRef.update("friends", FieldValue.arrayUnion(friendUserId))
+                                currentUserDocRef.update(FRIEND_FIELD, FieldValue.arrayUnion(friendUserId))
                                         .addOnSuccessListener(aVoid -> {
                                             // Update was successful
                                             // Perform additional actions here if needed
@@ -282,20 +291,16 @@ public class FireBaseUserDataManager {
                                             }
                                             callback.onSuccessfulFriendOperation();
                                         })
-                                        .addOnFailureListener(e -> {
-                                            // Handle the error
-                                            callback.onUnsuccessfulFriendOperation(new Exception("Failed to add friend"));
-
-                                        });
+                                        .addOnFailureListener(e -> callback.onUnsuccessfulFriendOperation(new Exception("Failed to add friend")));
                             } else {
                                 // Friend with the provided email does not exist
                                 // Handle the case accordingly
-                                callback.onUnsuccessfulFriendOperation(new Exception("Failed to find friend"));
+                                callback.onUnsuccessfulFriendOperation(new Exception(FIND_FRIEND_ERROR));
                             }
                         } else {
                             // Handle the error
                             Log.e(TAG, "Error querying for friend: ", task.getException());
-                            callback.onUnsuccessfulFriendOperation(new Exception("Failed to find friend"));
+                            callback.onUnsuccessfulFriendOperation(new Exception(FIND_FRIEND_ERROR));
                         }
                     });
         }
@@ -328,18 +333,14 @@ public class FireBaseUserDataManager {
                                 DocumentReference currentUserDocRef = usersCollectionRef.document(uid);
 
                                 // Update the "friends" array field with the  friend's UID
-                                currentUserDocRef.update("friends", FieldValue.arrayRemove(friendUserId))
+                                currentUserDocRef.update(FRIEND_FIELD, FieldValue.arrayRemove(friendUserId))
                                         .addOnSuccessListener(aVoid -> {
                                             // Update was successful
                                             // Perform additional actions here if needed
                                             friendEmails.remove(friendEmail);
                                             callback.onSuccessfulFriendOperation();
                                         })
-                                        .addOnFailureListener(e -> {
-                                            // Handle the error
-                                            callback.onUnsuccessfulFriendOperation(new Exception("Failed to remove friend"));
-
-                                        });
+                                        .addOnFailureListener(e -> callback.onUnsuccessfulFriendOperation(new Exception("Failed to remove friend")));
                             } else {
                                 // Friend with the provided email does not exist
                                 // Handle the case accordingly
@@ -347,7 +348,7 @@ public class FireBaseUserDataManager {
                         } else {
                             // Handle the error
                             Log.e(TAG, "Error querying for friend: ", task.getException());
-                            callback.onUnsuccessfulFriendOperation(new Exception("Failed to find friend"));
+                            callback.onUnsuccessfulFriendOperation(new Exception(FIND_FRIEND_ERROR));
 
                         }
                     });

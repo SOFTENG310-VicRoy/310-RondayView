@@ -57,7 +57,7 @@ public class FriendsFragment extends Fragment {
                 FireBaseUserDataManager.getInstance().addFriend(friendEmail, new FriendCallback() {
                         @Override
                         public void onSuccessfulFriendOperation() {
-                            friendsAdapter.updateFriendList(FireBaseUserDataManager.getInstance().friendEmails);
+                            friendsAdapter.updateFriendList(FireBaseUserDataManager.getInstance().getFriendEmails());
                         }
                         @Override
                         public void onUnsuccessfulFriendOperation(Exception e) {
@@ -72,7 +72,7 @@ public class FriendsFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        friendList = FireBaseUserDataManager.getInstance().friendEmails;
+        friendList = FireBaseUserDataManager.getInstance().getFriendEmails();
         // setup the recycler view
         vh.friendList.setLayoutManager(new LinearLayoutManager(getContext()));
         vh.friendList.setHasFixedSize(true);
@@ -87,7 +87,7 @@ public class FriendsFragment extends Fragment {
             FireBaseUserDataManager.getInstance().getFriends(new FriendCallback() {
                 @Override
                 public void onSuccessfulFriendOperation() {
-                    friendsAdapter.updateFriendList(FireBaseUserDataManager.getInstance().friendEmails);
+                    friendsAdapter.updateFriendList(FireBaseUserDataManager.getInstance().getFriendEmails());
                 }
                 @Override
                 public void onUnsuccessfulFriendOperation(Exception e) {
