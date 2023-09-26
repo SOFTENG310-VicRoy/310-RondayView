@@ -11,6 +11,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import com.example.a310_rondayview.R;
 import com.example.a310_rondayview.data.event.EventsFirestoreManager;
@@ -45,7 +46,8 @@ public class FragmentHome extends Fragment {
         emptyEventsLayout = rootView.findViewById(R.id.emptyEventsLayout);
         // setting up koloda (for the card swipes) - READ MORE HERE: https://github.com/Yalantis/Koloda-Android
         koloda = rootView.findViewById(R.id.koloda);
-        adapter = new SwipeAdapter(getContext(), events);
+        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+        adapter = new SwipeAdapter(getContext(), events, fragmentManager);
         koloda.setAdapter(adapter);
 
         /*

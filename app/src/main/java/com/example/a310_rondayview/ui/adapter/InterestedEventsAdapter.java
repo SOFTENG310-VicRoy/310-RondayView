@@ -13,12 +13,15 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.a310_rondayview.model.CurrentEventSingleton;
 import com.example.a310_rondayview.model.Event;
 import com.example.a310_rondayview.data.user.FireBaseUserDataManager;
 import com.example.a310_rondayview.R;
+import com.example.a310_rondayview.ui.detailed.FragmentDetailed;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
@@ -30,15 +33,21 @@ public class InterestedEventsAdapter extends RecyclerView.Adapter<InterestedEven
     List<Event> eventsList;
     boolean hideHeart;
 
+    private CurrentEventSingleton currentEvent;
+    private FragmentManager fragmentManager;
+
     public InterestedEventsAdapter(Context context, List<Event> eventsList) {
         this.context = context;
         this.eventsList = eventsList;
+
         this.hideHeart = false;
     }
-    public InterestedEventsAdapter(Context context, List<Event> eventsList, boolean hideHeart) {
+    public InterestedEventsAdapter(Context context, List<Event> eventsList, boolean hideHeart, FragmentManager fragmentManager) {
         this.context = context;
         this.eventsList = eventsList;
         this.hideHeart = hideHeart;
+        this.fragmentManager = fragmentManager;
+
     }
 
     @androidx.annotation.NonNull
@@ -96,6 +105,12 @@ public class InterestedEventsAdapter extends RecyclerView.Adapter<InterestedEven
         Glide.with(holder.itemView.getContext()).load(event.getImageURL()).into(holder.eventImageView);
         holder.titleTextView.setText(event.getTitle());
         holder.descriptionTextView.setText(event.getDescription());
+        holder.eventImageView.setOnClickListener(v -> {
+            currentEvent = CurrentEventSingleton.getInstance();
+            currentEvent.setCurrentEvent(event);
+
+            fragmentManager.beginTransaction().addToBackStack("fragment_interested_events").replace(R.id.frame_layout, new FragmentDetailed()).commit();
+        });
     }
 
     @Override
@@ -111,6 +126,8 @@ public class InterestedEventsAdapter extends RecyclerView.Adapter<InterestedEven
         TextView titleTextView;
         TextView descriptionTextView;
         ToggleButton heartButton;
+
+        ImageView eventImage;
 
 
         public InterestedEventsViewHolder(@NonNull View itemView) {
