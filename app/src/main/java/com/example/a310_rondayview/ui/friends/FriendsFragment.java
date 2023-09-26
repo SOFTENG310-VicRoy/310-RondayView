@@ -35,8 +35,8 @@ public class FriendsFragment extends Fragment {
 
         }
     }
-    FriendsFragment.ViewHolder vh;
-    FriendsAdapter friendsAdapter;
+    private FriendsFragment.ViewHolder vh;
+    private FriendsAdapter friendsAdapter;
     List<String> friendList;
 
     public FriendsFragment() {
@@ -48,23 +48,19 @@ public class FriendsFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_friends, container, false);
-
         vh = new FriendsFragment.ViewHolder(view);
-        vh.addFriendBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String friendEmail = vh.friendEmail.getText().toString();
-                FireBaseUserDataManager.getInstance().addFriend(friendEmail, new FriendCallback() {
-                        @Override
-                        public void onSuccessfulFriendOperation() {
-                            friendsAdapter.updateFriendList(FireBaseUserDataManager.getInstance().getFriendEmails());
-                        }
-                        @Override
-                        public void onUnsuccessfulFriendOperation(Exception e) {
-                            Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_LONG).show();
-                        }
-                    });
-            }
+        vh.addFriendBtn.setOnClickListener(view1 -> {
+            String friendEmail = vh.friendEmail.getText().toString();
+            FireBaseUserDataManager.getInstance().addFriend(friendEmail, new FriendCallback() {
+                    @Override
+                    public void onSuccessfulFriendOperation() {
+                        friendsAdapter.updateFriendList(FireBaseUserDataManager.getInstance().getFriendEmails());
+                    }
+                    @Override
+                    public void onUnsuccessfulFriendOperation(Exception e) {
+                        Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                });
         });
 
         return view;
@@ -91,6 +87,7 @@ public class FriendsFragment extends Fragment {
                 }
                 @Override
                 public void onUnsuccessfulFriendOperation(Exception e) {
+                    // Don't do anything if it fails
                 }
             });
         }
