@@ -5,12 +5,26 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/friends_events_recycler_view"
-        android:layout_width="409dp"
-        android:layout_height="657dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:listitem="@layout/interested_events_card" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="His/Hers Events"
+            android:padding="10dp"
+            android:textStyle="bold"
+            android:textSize="26sp"/>
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/friends_events_recycler_view"
+            android:layout_width="409dp"
+            android:layout_height="657dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:listitem="@layout/interested_events_card"
+            android:paddingBottom="10dp"/>
+    </LinearLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
