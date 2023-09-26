@@ -27,7 +27,7 @@ public class PopularEventAdaptor extends RecyclerView.Adapter<PopularEventAdapto
 
     public PopularEventAdaptor(Context contextList, List<Event> eventList){
         this.eventList = eventList;
-        this.context = context;
+        this.context = contextList;
     }
 
     @NonNull
@@ -39,7 +39,7 @@ public class PopularEventAdaptor extends RecyclerView.Adapter<PopularEventAdapto
 
     @Override
     public void onBindViewHolder(@NonNull PopularEventAdaptor.PopularEventHolder holder, int position) {
-        //Glide.with(context).load(eventList.get(position).getImageURL()).into(holder.imageView);
+        Glide.with(context).load(eventList.get(position).getImageURL()).into(holder.popularEventImage);
         holder.titleTextView.setText(eventList.get(position).getTitle());
         holder.placingTextView.setText("#"+(position+1));
         holder.interestAmountTextView.setText(Integer.toString(eventList.get(position).getInterestedNumber()));
@@ -51,13 +51,13 @@ public class PopularEventAdaptor extends RecyclerView.Adapter<PopularEventAdapto
     }
 
     public class PopularEventHolder extends RecyclerView.ViewHolder {
-        ImageView imageView;
+        ImageView popularEventImage;
         TextView titleTextView;
         TextView placingTextView;
         TextView interestAmountTextView;
         public PopularEventHolder(@NonNull View itemView) {
             super(itemView);
-            imageView = itemView.findViewById(R.id.popularEventImage);
+            popularEventImage= itemView.findViewById(R.id.popularEventImage);
             titleTextView = itemView.findViewById(R.id.popularEventTitle);
             placingTextView = itemView.findViewById(R.id.popularEventPlacingText);
             interestAmountTextView = itemView.findViewById(R.id.interestedAmountText);
