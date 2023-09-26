@@ -37,12 +37,14 @@ public class CreateEventFragment extends Fragment {
 
     private static final String DATE_DIALOG = "dateDialog";
     private static final String TIME_DIALOG = "timeDialog";
-    ActivityResultLauncher<String> selectPhoto;
     private Uri localImageUri;
     private Uri downloadImageUri;
-    Date date;
-    DatePickerDialog datePickerDialog;
-    int hour, minute;
+    private int hour;
+    private int minute;
+    private Date date;
+    private DatePickerDialog datePickerDialog;
+    ActivityResultLauncher<String> selectPhoto;
+
 
 
     private static class ViewHolder {
@@ -54,7 +56,6 @@ public class CreateEventFragment extends Fragment {
         EditText description;
         ImageView eventImage;
         Button chooseImageBtn;
-
         Button postBtn;
 
 
@@ -94,25 +95,19 @@ public class CreateEventFragment extends Fragment {
         initDatePicker();
         vh.date.setInputType(InputType.TYPE_NULL);
 
-        vh.date.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (event.getAction() == MotionEvent.ACTION_UP) {
-                    showDialog(v, DATE_DIALOG);
-                }
-                return false;
+        vh.date.setOnTouchListener((v, event) -> {
+            if (event.getAction() == MotionEvent.ACTION_UP) {
+                showDialog(DATE_DIALOG);
             }
+            return false;
         });
 
         vh.time.setInputType(InputType.TYPE_NULL);
-        vh.time.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (event.getAction() == MotionEvent.ACTION_UP) {
-                    showDialog(v, TIME_DIALOG);
-                }
-                return false;
+        vh.time.setOnTouchListener((v, event) -> {
+            if (event.getAction() == MotionEvent.ACTION_UP) {
+                showDialog(TIME_DIALOG);
             }
+            return false;
         });
 
 
@@ -213,50 +208,38 @@ public class CreateEventFragment extends Fragment {
 
     private void initDatePicker()
     {
-        DatePickerDialog.OnDateSetListener dateSetListener = new DatePickerDialog.OnDateSetListener()
-        {
-            @Override
-            public void onDateSet(DatePicker datePicker, int year, int month, int day)
-            {
-                Calendar calendar = Calendar.getInstance();
-                calendar.set(year, month, day);
-                SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-                String dateString = dateFormat.format(calendar.getTime());
-                vh.date.setText(dateString);
-            }
+        DatePickerDialog.OnDateSetListener dateSetListener = (datePicker, year, month, day) -> {
+            Calendar calendar = Calendar.getInstance();
+            calendar.set(year, month, day);
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+            String dateString = dateFormat.format(calendar.getTime());
+            vh.date.setText(dateString);
         };
         Calendar calendar = Calendar.getInstance();
         int year = calendar.get(Calendar.YEAR);
         int month = calendar.get(Calendar.MONTH);
         int day = calendar.get(Calendar.DAY_OF_MONTH);
-        int style = AlertDialog.THEME_HOLO_LIGHT;
-        datePickerDialog = new DatePickerDialog(getContext(), style, dateSetListener, year, month, day);
+        datePickerDialog = new DatePickerDialog(getContext(), 0, dateSetListener, year, month, day);
     }
 
-    public void showDialog(View view, String dialog)
+    public void showDialog(String dialog)
     {
         if (dialog.equals(DATE_DIALOG)) {
             datePickerDialog.show();
         }
         else if (dialog.equals(TIME_DIALOG)) {
-            TimePickerDialog.OnTimeSetListener onTimeSetListener = new TimePickerDialog.OnTimeSetListener()
-            {
-                @Override
-                public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute)
-                {
-                    hour = selectedHour;
-                    minute = selectedMinute;
-                    vh.time.setText(String.format(Locale.getDefault(), "%02d:%02d",hour, minute));
-                }
+            TimePickerDialog.OnTimeSetListener onTimeSetListener = (timePicker, selectedHour, selectedMinute) -> {
+                hour = selectedHour;
+                minute = selectedMinute;
+                vh.time.setText(String.format(Locale.getDefault(), "%02d:%02d",hour, minute));
             };
 
-            int style = AlertDialog.THEME_HOLO_LIGHT;
-            TimePickerDialog timePickerDialog = new TimePickerDialog(getContext(), style, onTimeSetListener, hour, minute, true);
+            TimePickerDialog timePickerDialog = new TimePickerDialog(getContext(), 0, onTimeSetListener, hour, minute, true);
             timePickerDialog.setTitle("Select Time");
             timePickerDialog.show();
         }
     }
-    public void dismissDialog(View view, String dialog) {
+    public void dismissDialog(String dialog) {
         if (dialog.equals(DATE_DIALOG)) {
             datePickerDialog.dismiss();
         }
