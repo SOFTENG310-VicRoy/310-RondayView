@@ -116,7 +116,7 @@
                     android:hint="Description"
                     android:inputType="textMultiLine"
                     android:lines="5"
-                    android:maxLines="5" />
+                    android:maxLines="5"/>
 
 
             </LinearLayout>

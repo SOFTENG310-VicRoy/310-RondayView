@@ -1,8 +1,12 @@
 package com.example.a310_rondayview.ui.createevent;
 
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.InputType;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -22,14 +26,23 @@ import com.google.firebase.storage.StorageReference;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 public class CreateEventFragment extends Fragment {
 
-    ActivityResultLauncher<String> selectPhoto;
+    private static final String DATE_DIALOG = "dateDialog";
+    private static final String TIME_DIALOG = "timeDialog";
     private Uri localImageUri;
     private Uri downloadImageUri;
-    Date date;
+    private int hour;
+    private int minute;
+    private Date date;
+    private DatePickerDialog datePickerDialog;
+    ActivityResultLauncher<String> selectPhoto;
+
+
 
     private static class ViewHolder {
         EditText clubName;
@@ -40,7 +53,6 @@ public class CreateEventFragment extends Fragment {
         EditText description;
         ImageView eventImage;
         Button chooseImageBtn;
-
         Button postBtn;
 
 
@@ -77,6 +89,25 @@ public class CreateEventFragment extends Fragment {
         storage = FirebaseStorage.getInstance();
         mStorageRef = storage.getReference();
 
+        // Set up the Date Dialog Picker
+        initDatePicker();
+        vh.date.setInputType(InputType.TYPE_NULL);
+        vh.date.setOnTouchListener((v, event) -> {
+            if (event.getAction() == MotionEvent.ACTION_UP) {
+                showDialog(DATE_DIALOG);
+            }
+            return false;
+        });
+
+        // Set up the Time Dialog Picker
+        vh.time.setInputType(InputType.TYPE_NULL);
+        vh.time.setOnTouchListener((v, event) -> {
+            if (event.getAction() == MotionEvent.ACTION_UP) {
+                showDialog(TIME_DIALOG);
+            }
+            return false;
+        });
+
         // getting and setting selected image from users camera roll to the event image image view
         selectPhoto = registerForActivityResult(
                 new ActivityResultContracts.GetContent(),
@@ -91,8 +122,21 @@ public class CreateEventFragment extends Fragment {
         vh.postBtn.setOnClickListener(postView -> {
             if (!validateForm()) return;
 
+            // Take the Date and Time and convert it to a single Date object
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+            SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
             try {
-                date = new SimpleDateFormat("dd/MM/yyyy").parse(vh.date.getText().toString());
+                Date parsedDate = dateFormat.parse(vh.date.getText().toString());
+                Date parsedTime = timeFormat.parse(vh.time.getText().toString());
+
+                // Combine the parsed date and time
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTime(parsedDate);
+                Calendar timeCalendar = Calendar.getInstance();
+                timeCalendar.setTime(parsedTime);
+                calendar.set(Calendar.HOUR_OF_DAY, timeCalendar.get(Calendar.HOUR_OF_DAY));
+                calendar.set(Calendar.MINUTE, timeCalendar.get(Calendar.MINUTE));
+                date = calendar.getTime();
             } catch (ParseException e) {
                 vh.date.setError("Invalid date");
                 return;
@@ -159,5 +203,57 @@ public class CreateEventFragment extends Fragment {
         }
 
         return valid;
+    }
+
+    /**
+     * This method initialise the Date Dialog Picker by setting the current day to display first.
+     */
+    private void initDatePicker()
+    {
+        DatePickerDialog.OnDateSetListener dateSetListener = (datePicker, year, month, day) -> {
+            Calendar calendar = Calendar.getInstance();
+            calendar.set(year, month, day);
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+            String dateString = dateFormat.format(calendar.getTime());
+            vh.date.setText(dateString);
+        };
+        // Show current day
+        Calendar calendar = Calendar.getInstance();
+        int year = calendar.get(Calendar.YEAR);
+        int month = calendar.get(Calendar.MONTH);
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+        datePickerDialog = new DatePickerDialog(getContext(), 0, dateSetListener, year, month, day);
+    }
+
+    /**
+     * This method displays a dialog picker depending on the given parameter
+     * @param dialog The string to determine which dialog to show
+     */
+    public void showDialog(String dialog)
+    {
+        if (dialog.equals(DATE_DIALOG)) {
+            datePickerDialog.show();
+        }
+        else if (dialog.equals(TIME_DIALOG)) {
+            // Set up Time Dialog Picker to show current time
+            TimePickerDialog.OnTimeSetListener onTimeSetListener = (timePicker, selectedHour, selectedMinute) -> {
+                hour = selectedHour;
+                minute = selectedMinute;
+                vh.time.setText(String.format(Locale.getDefault(), "%02d:%02d",hour, minute));
+            };
+            TimePickerDialog timePickerDialog = new TimePickerDialog(getContext(), 0, onTimeSetListener, hour, minute, true);
+            timePickerDialog.setTitle("Select Time");
+            timePickerDialog.show();
+        }
+    }
+
+    /**
+     * This method dismiss a dialog picker depending on the given paramter.
+     * @param dialog The string to detemrine which dialog to dismiss.
+     */
+    public void dismissDialog(String dialog) {
+        if (dialog.equals(DATE_DIALOG)) {
+            datePickerDialog.dismiss();
+        }
     }
 }

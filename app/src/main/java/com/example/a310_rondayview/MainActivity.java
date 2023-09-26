@@ -39,13 +39,7 @@ public class MainActivity extends AppCompatActivity {
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         replaceFragment(new FragmentHome());
-        ImageButton heartButton = findViewById(R.id.heartButton);
-        heartButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                replaceFragment(new InterestedEventsFragment());
-            }
-        });
+
         binding.bottomNavigationView.setOnItemSelectedListener(item -> {
             if (item.getItemId() == R.id.create) {
                 replaceFragment(new CreateEventFragment());
@@ -54,6 +48,10 @@ public class MainActivity extends AppCompatActivity {
             } else if (item.getItemId() == R.id.account) {
                 replaceFragment(new ProfileFragment());
             }
+            else if (item.getItemId() == R.id.interested) {
+                replaceFragment(new InterestedEventsFragment());
+            }
+
 
             return true;
         });
