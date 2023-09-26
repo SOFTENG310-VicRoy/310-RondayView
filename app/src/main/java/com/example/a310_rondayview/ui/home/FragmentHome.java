@@ -1,5 +1,6 @@
 package com.example.a310_rondayview.ui.home;
 
+import android.net.wifi.aware.WifiAwareChannelInfo;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -31,6 +32,9 @@ import com.yalantis.library.KolodaListener;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.PriorityQueue;
+
+import kotlin.ranges.URangesKt;
 
 public class FragmentHome extends Fragment {
 
@@ -44,7 +48,6 @@ public class FragmentHome extends Fragment {
     private LinearLayout buttonContainer;
     private LinearLayout emptyEventsLayout;
     Koloda koloda;
-
     private ViewPager2 viewPager2;
 
     @Override
@@ -57,21 +60,11 @@ public class FragmentHome extends Fragment {
         koloda = rootView.findViewById(R.id.koloda);
         adapter = new SwipeAdapter(getContext(), events);
         koloda.setAdapter(adapter);
-
-        //Get top 10 interested events
+        topTenPopularEvents.clear();
+        //Set up UI transition for the popular events list
         viewPager2 = rootView.findViewById(R.id.popularEventViewPager);
-        Date date = new Date();
-        Event dummyEvent = new Event("test", "testname","description", "location", date, null,null, 0);
-        topTenPopularEvents.add(dummyEvent);
-        topTenPopularEvents.add(dummyEvent);
-        topTenPopularEvents.add(dummyEvent);
-        topTenPopularEvents.add(dummyEvent);
-        topTenPopularEvents.add(dummyEvent);
         popularEventAdaptor = new PopularEventAdaptor(getContext(), topTenPopularEvents);
         viewPager2.setAdapter(popularEventAdaptor);
-        viewPager2.setOffscreenPageLimit(3);
-        viewPager2.setClipChildren(false);
-        viewPager2.setClipToPadding(false);
         viewPager2.getChildAt(0).setOverScrollMode(RecyclerView.OVER_SCROLL_NEVER);
         CompositePageTransformer transformer = new CompositePageTransformer();
         transformer.addTransformer(new MarginPageTransformer(40));
@@ -83,6 +76,7 @@ public class FragmentHome extends Fragment {
             }
         });
         viewPager2.setPageTransformer(transformer);
+
         /**
          * Koloda interface listener functions, don't need to use ALL
          */
@@ -143,6 +137,15 @@ public class FragmentHome extends Fragment {
         // fetching event data
         fetchEventData();
         fetchDisinterestedEventData();
+        fetchTopTenEventData();
+        //Date date = new Date();
+       //Event dummyEvent = new Event("test", "testname","description", "location", date, null,null, disinterestedEvents.size());
+        //topTenPopularEvents.add(dummyEvent);
+//        topTenPopularEvents.add(dummyEvent);
+//        topTenPopularEvents.add(dummyEvent);
+//        topTenPopularEvents.add(dummyEvent);
+//        topTenPopularEvents.add(dummyEvent);
+        //Get top 10 interested events
 
         // Add a listener to the events Firestore collection to receive real time updates
         EventsFirestoreManager.getInstance().addEventsListener((snapshots, e) -> {
@@ -158,6 +161,7 @@ public class FragmentHome extends Fragment {
                         case ADDED:
                             // if a document was added, add it to events list
                             Event event = dc.getDocument().toObject(Event.class);
+                            fetchTopTenEventData();
                             events.add(event);
                             // update home page?
                             break;
@@ -212,6 +216,7 @@ public class FragmentHome extends Fragment {
                 events.clear();
                 for (QueryDocumentSnapshot document : task.getResult()) {
                     Event event = document.toObject(Event.class);
+
                         events.add(event);
                 }
                 // Re-notify the adapter when the event data changed
@@ -244,6 +249,24 @@ public class FragmentHome extends Fragment {
     }
 
     /**
+     * Fetches the top ten event ranked by the amount of interests
+     */
+    private void fetchTopTenEventData(){
+        topTenPopularEvents.clear();
+        PriorityQueue<Event> rankedEventList = new PriorityQueue<>(new Event());
+        for(Event event : events){
+            rankedEventList.add(event);
+            if(rankedEventList.size()>10){
+                rankedEventList.poll();
+            }
+        }
+        for(Event event : rankedEventList){
+            topTenPopularEvents.add(event);
+            popularEventAdaptor.notifyDataSetChanged();
+        }
+    }
+
+    /**
      * Checks whether an event is in the disinterested events list
      */
     private boolean eventIsDisinterested(Event event) {
@@ -263,6 +286,7 @@ public class FragmentHome extends Fragment {
     private void handleSwipe(boolean isInterested, int index) {
         currentEventIndex = index;
         if (isInterested) {
+            events.get(currentEventIndex).incrementInterestedNumber();
             FireBaseUserDataManager.getInstance().addInterestedEvent(events.get(currentEventIndex));
             FireBaseUserDataManager.getInstance().getInterestedEvents();
         } else {

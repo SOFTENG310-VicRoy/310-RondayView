@@ -2,9 +2,10 @@ package com.example.a310_rondayview.model;
 
 import com.google.firebase.firestore.DocumentId;
 
+import java.util.Comparator;
 import java.util.Date;
 
-public class Event {
+public class Event implements Comparator<Event> {
 
     @DocumentId
     private String eventId;
@@ -95,7 +96,15 @@ public class Event {
     }
 
     public void setInterestedNumber(int i){ this.interestedNumber = i;}
+
+    public void incrementInterestedNumber(){this.interestedNumber++;}
+    public void decrementInterestedNumber(){this.interestedNumber--;}
     public void setEventClubProfilePicture(String eventClubProfilePicture) {
         this.eventClubProfilePicture = eventClubProfilePicture;
+    }
+
+    @Override
+    public int compare(Event event, Event t1) {
+        return Integer.compare(event.interestedNumber, t1.interestedNumber);
     }
 }
