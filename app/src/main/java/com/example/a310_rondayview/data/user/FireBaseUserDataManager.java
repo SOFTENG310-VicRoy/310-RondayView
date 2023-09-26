@@ -32,7 +32,6 @@ public class FireBaseUserDataManager {
     private List<Event> disinterestedEvents = new ArrayList<>();
 
     private List<User> friendsList = new ArrayList<>();
-    private List<String> friendEmails = new ArrayList<>();
     private List<Event> eventList = new ArrayList<>();
 
     private FireBaseUserDataManager() {
@@ -343,6 +342,11 @@ public class FireBaseUserDataManager {
                 });
     }
 
+    /**
+     * This method takes a friend User object and sets its interested event list to the list found in db
+     * @param friend
+     * @param callback Callback to call after it is successful
+     */
     public void getFriendsEvents(User friend, FriendCallback callback) {
         FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
         // Get the currently signed-in user
@@ -350,8 +354,6 @@ public class FireBaseUserDataManager {
 
         // Check if a user is signed in
         if (currentUser != null) {
-            String uid = currentUser.getUid();
-
             // Use the UID to fetch all the users interested events and store it in a singleton list
             db.collection(USERSCOLLECTION)
                     .document(friend.getUserId())
@@ -363,7 +365,7 @@ public class FireBaseUserDataManager {
                             callback.onSuccessfulFriendOperation();
                             Log.d(TAG, "Successfully fetched the friends' events data: " + disinterestedEvents.toString());
                         } else {
-                            Log.e(TAG, "Error fetching disinterested events data: ", task.getException());
+                            Log.e(TAG, "Error fetching events data: ", task.getException());
                         }
                     });
         } else {

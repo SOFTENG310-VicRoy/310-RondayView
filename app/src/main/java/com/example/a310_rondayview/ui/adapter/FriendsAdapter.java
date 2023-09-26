@@ -89,7 +89,7 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.FriendsV
 
                 // These are needed in order to show the event has been removed straight away
                 // Without this, the event does not disappear
-                int position1 = friendsList.indexOf(email);
+                int position1 = friendsList.indexOf(friend);
                 if (position1 != -1) {
                     friendsList.remove(position1);
                     notifyDataSetChanged();
