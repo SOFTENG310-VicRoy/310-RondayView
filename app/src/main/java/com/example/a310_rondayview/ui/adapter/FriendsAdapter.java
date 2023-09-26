@@ -8,18 +8,14 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.BounceInterpolator;
 import android.view.animation.ScaleAnimation;
-import android.widget.CompoundButton;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
 import com.example.a310_rondayview.R;
 import com.example.a310_rondayview.data.user.FireBaseUserDataManager;
 import com.example.a310_rondayview.data.user.FriendCallback;
-import com.example.a310_rondayview.model.Event;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
@@ -60,40 +56,35 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.FriendsV
         scaleAnimation.setInterpolator(bounceInterpolator);
 
         ToggleButton removeFriendButton = holder.itemView.findViewById(R.id.remove_friend_button);
-        removeFriendButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+        removeFriendButton.setOnCheckedChangeListener((compoundButton, isChecked) -> {
 
-                Animation fadeOut = AnimationUtils.loadAnimation(context, R.anim.fade_out);
-                holder.itemView.startAnimation(fadeOut);
+            Animation fadeOut = AnimationUtils.loadAnimation(context, R.anim.fade_out);
+            holder.itemView.startAnimation(fadeOut);
 
-                // Delay the removal of the item to match the card animation duration
-                // Code snippet adapted from OpenAI. (2023). ChatGPT (Aug 24 version) [Large language model]. https://chat.openai.com/chat
-                holder.itemView.postDelayed(new Runnable() {
+            // Delay the removal of the item to match the card animation duration
+            // Code snippet adapted from OpenAI. (2023). ChatGPT (Aug 24 version) [Large language model]. https://chat.openai.com/chat
+            holder.itemView.postDelayed(() -> {
+                FireBaseUserDataManager.getInstance().removeFriend(email, new FriendCallback() {
                     @Override
-                    public void run() {
-                        FireBaseUserDataManager.getInstance().removeFriend(email, new FriendCallback() {
-                            @Override
-                            public void onSuccessfulFriendOperation() {
-                            }
-                            @Override
-                            public void onUnsuccessfulFriendOperation(Exception e) {
-
-                            }
-                        });
-                        compoundButton.startAnimation(scaleAnimation);
-
-                        // These are needed in order to show the event has been removed straight away
-                        // Without this, the event does not disappear
-                        int position = friendsList.indexOf(email);
-                        if (position != -1) {
-                            friendsList.remove(position);
-                            notifyDataSetChanged();
-                        }
-                        holder.removeFriendButton.setChecked(true);
+                    public void onSuccessfulFriendOperation() {
+                        // Dont do anything
                     }
-                }, fadeOut.getDuration());
-            }
+                    @Override
+                    public void onUnsuccessfulFriendOperation(Exception e) {
+                        // Dont do anything
+                    }
+                });
+                compoundButton.startAnimation(scaleAnimation);
+
+                // These are needed in order to show the event has been removed straight away
+                // Without this, the event does not disappear
+                int position1 = friendsList.indexOf(email);
+                if (position1 != -1) {
+                    friendsList.remove(position1);
+                    notifyDataSetChanged();
+                }
+                holder.removeFriendButton.setChecked(true);
+            }, fadeOut.getDuration());
         });
         holder.emailTextView.setText(email);
     }

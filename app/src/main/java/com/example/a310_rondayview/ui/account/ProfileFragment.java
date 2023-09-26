@@ -18,7 +18,9 @@ public class ProfileFragment extends Fragment {
 
     private class ViewHolder{
 
-        CardView goToAccountBtn, goToLikedEventsBtn, goToFriends;
+        CardView goToAccountBtn;
+        CardView goToLikedEventsBtn;
+        CardView goToFriends;
 
         public ViewHolder(View view){
             goToAccountBtn = view.findViewById(R.id.go_to_account_details);
@@ -29,19 +31,11 @@ public class ProfileFragment extends Fragment {
 
     ViewHolder vh;
 
-    public ProfileFragment() {
-    }
-
-    public static ProfileFragment newInstance(String param1, String param2) {
+    public static ProfileFragment newInstance() {
         ProfileFragment fragment = new ProfileFragment();
         Bundle args = new Bundle();
         fragment.setArguments(args);
         return fragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
     }
 
     @Override
@@ -51,34 +45,25 @@ public class ProfileFragment extends Fragment {
 
         vh = new ViewHolder(view);
 
-        vh.goToAccountBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Create an instance of FragmentAccount
-                FragmentAccount fragmentAccount = new FragmentAccount();
+        vh.goToAccountBtn.setOnClickListener(v -> {
+            // Create an instance of FragmentAccount
+            FragmentAccount fragmentAccount = new FragmentAccount();
 
-                replaceFragmentWith(fragmentAccount);
-            }
+            replaceFragmentWith(fragmentAccount);
         });
 
-        vh.goToLikedEventsBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Create an instance of FragmentAccount
-                InterestedEventsFragment interestedEventsFragment = new InterestedEventsFragment();
+        vh.goToLikedEventsBtn.setOnClickListener(v -> {
+            // Create an instance of FragmentAccount
+            InterestedEventsFragment interestedEventsFragment = new InterestedEventsFragment();
 
-                replaceFragmentWith(interestedEventsFragment);
-            }
+            replaceFragmentWith(interestedEventsFragment);
         });
 
-        vh.goToFriends.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Create an instance of FragmentAccount
-                FriendsFragment friendsFragment = new FriendsFragment();
+        vh.goToFriends.setOnClickListener(v -> {
+            // Create an instance of FragmentAccount
+            FriendsFragment friendsFragment = new FriendsFragment();
 
-                replaceFragmentWith(friendsFragment);
-            }
+            replaceFragmentWith(friendsFragment);
         });
 
         return view;
