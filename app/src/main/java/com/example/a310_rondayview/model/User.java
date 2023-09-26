@@ -2,12 +2,14 @@ package com.example.a310_rondayview.model;
 
 import com.google.firebase.firestore.DocumentId;
 
+import java.util.List;
 import java.util.Objects;
 
 public class User {
     @DocumentId
     private String userId;
     private String email;
+    private List<Event> interestedEvents;
 
     public User() {
     }
@@ -28,6 +30,13 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+    public List<Event> getInterestedEvents() {
+        return interestedEvents;
+    }
+
+    public void setInterestedEvents(List<Event> interestedEvents) {
+        this.interestedEvents = interestedEvents;
     }
 
     @Override

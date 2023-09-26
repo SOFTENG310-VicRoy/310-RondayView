@@ -342,5 +342,34 @@ public class FireBaseUserDataManager {
                     callback.onUnsuccessfulFriendOperation(new Exception(FIND_FRIEND_ERROR));
                 });
     }
+
+    public void getFriendsEvents(User friend, FriendCallback callback) {
+        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+        // Get the currently signed-in user
+        FirebaseUser currentUser = firebaseAuth.getCurrentUser();
+
+        // Check if a user is signed in
+        if (currentUser != null) {
+            String uid = currentUser.getUid();
+
+            // Use the UID to fetch all the users interested events and store it in a singleton list
+            db.collection(USERSCOLLECTION)
+                    .document(friend.getUserId())
+                    .collection(INTERESTEDEVENTSCOLLECTION)
+                    .get()
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            friend.setInterestedEvents(makeEventsList(task.getResult()));
+                            callback.onSuccessfulFriendOperation();
+                            Log.d(TAG, "Successfully fetched the friends' events data: " + disinterestedEvents.toString());
+                        } else {
+                            Log.e(TAG, "Error fetching disinterested events data: ", task.getException());
+                        }
+                    });
+        } else {
+            // Handle the case where no user is signed in
+            Log.e(TAG, SIGNINERROR);
+        }
+    }
 }
 

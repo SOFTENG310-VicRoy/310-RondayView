@@ -13,21 +13,18 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.a310_rondayview.R;
 import com.example.a310_rondayview.data.user.FireBaseUserDataManager;
-import com.example.a310_rondayview.model.Event;
+import com.example.a310_rondayview.data.user.FriendCallback;
+import com.example.a310_rondayview.model.CurrentFriendSingleton;
 import com.example.a310_rondayview.ui.adapter.InterestedEventsAdapter;
-import com.example.a310_rondayview.ui.interestedevents.InterestedEventsFragment;
-
-import java.util.List;
 
 public class FriendsEventFragment extends Fragment {
     private class ViewHolder {
         RecyclerView friendsEventRecyclerView;
-
         public ViewHolder(View view) {
             friendsEventRecyclerView = view.findViewById(R.id.friends_events_recycler_view);
         }
     }
-    List<Event> eventsList;
+    CurrentFriendSingleton currentFriendSingleton;
     FriendsEventFragment.ViewHolder vh;
 
     public FriendsEventFragment() {
@@ -40,6 +37,7 @@ public class FriendsEventFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_friends_event, container, false);
         vh = new FriendsEventFragment.ViewHolder(view);
+        currentFriendSingleton = CurrentFriendSingleton.getInstance();
         return view;
     }
 
@@ -48,15 +46,24 @@ public class FriendsEventFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         // load in the list of interested events from the database
-       // eventsList = FireBaseUserDataManager.getInstance().getInterestedEvents();
+        FireBaseUserDataManager.getInstance().getFriendsEvents(currentFriendSingleton.getCurrentFriend(), new FriendCallback() {
+            @Override
+            public void onSuccessfulFriendOperation() {
+                // setup the recycler view
+                vh.friendsEventRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+                vh.friendsEventRecyclerView.setHasFixedSize(true);
 
-//        // setup the recycler view
-//        vh.friendsEventRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-//        vh.friendsEventRecyclerView.setHasFixedSize(true);
-//
-//        // populate the recycler view
-//        InterestedEventsAdapter interestedEventsAdapter = new InterestedEventsAdapter(getContext(), eventsList, true);
-//        vh.friendsEventRecyclerView.setAdapter(interestedEventsAdapter);
-//        interestedEventsAdapter.notifyDataSetChanged();
+                // populate the recycler view
+                InterestedEventsAdapter interestedEventsAdapter = new InterestedEventsAdapter(getContext(), currentFriendSingleton.getCurrentFriend().getInterestedEvents(), true);
+                vh.friendsEventRecyclerView.setAdapter(interestedEventsAdapter);
+                interestedEventsAdapter.notifyDataSetChanged();
+            }
+            @Override
+            public void onUnsuccessfulFriendOperation(Exception e) {
+                // Do nothing
+            }
+        });
+
+
     }
 }
