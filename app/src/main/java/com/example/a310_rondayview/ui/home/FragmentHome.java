@@ -14,6 +14,7 @@ import androidx.fragment.app.Fragment;
 
 import com.example.a310_rondayview.R;
 import com.example.a310_rondayview.data.event.DatabaseService;
+import com.example.a310_rondayview.data.user.FireBaseUserDataManager;
 import com.example.a310_rondayview.model.Event;
 import com.example.a310_rondayview.ui.adapter.SwipeAdapter;
 import com.yalantis.library.Koloda;
@@ -24,7 +25,7 @@ import java.util.List;
 
 public class FragmentHome extends Fragment {
 
-    private static class ViewHolder{
+    private static class ViewHolder {
 
         LinearLayout buttonContainer;
         LinearLayout emptyEventsLayout;
@@ -35,7 +36,7 @@ public class FragmentHome extends Fragment {
 
         Koloda koloda;
 
-        public ViewHolder(View rootView){
+        public ViewHolder(View rootView) {
             // setting up views
             buttonContainer = rootView.findViewById(R.id.buttonsContainer);
             emptyEventsLayout = rootView.findViewById(R.id.emptyEventsLayout);
@@ -52,22 +53,21 @@ public class FragmentHome extends Fragment {
     private static final String TAG = "FragmentHome";
     private SwipeAdapter adapter;
     private List<Event> events = new ArrayList<>();
-    private final List<Event> disinterestedEvents = new ArrayList<>();
-    private int currentEventIndex = 0;
+    private int currentEventIndex;
     private ViewHolder vh;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_home, container, false);
         vh = new ViewHolder(rootView);
+        currentEventIndex = 0;
         // fetching event data
         DatabaseService databaseService = new DatabaseService();
         databaseService.getAllEvents().thenAccept(events1 -> {
-           events = events1;
-           adapter = new SwipeAdapter(getContext(), events);
-           vh.koloda.setAdapter(adapter);
+            events = events1;
+            adapter = new SwipeAdapter(getContext(), events);
+            vh.koloda.setAdapter(adapter);
         });
-
 
         buttonListeners();
 
@@ -86,33 +86,36 @@ public class FragmentHome extends Fragment {
             @Override
             public void onCardSwipedLeft(int i) {
                 Toast.makeText(getContext(), "Left Swipe", Toast.LENGTH_SHORT).show();
+                currentEventIndex++;
             }
 
             @Override
             public void onCardSwipedRight(int i) {
                 Toast.makeText(getContext(), "Right Swipe", Toast.LENGTH_SHORT).show();
+                currentEventIndex++;
             }
 
             @Override
-            public void onClickRight(int i) {}
+            public void onClickRight(int i) {
+            }
 
             @Override
-            public void onClickLeft(int i) {}
+            public void onClickLeft(int i) {
+            }
 
-            //TODO DETAILS PAGE (A2) -> show details of event from dialog
+
             @Override
             public void onCardSingleTap(int i) {
+                //TODO DETAILS PAGE (A2) -> show details of event from dialog
                 Toast.makeText(getContext(), "Open detailed view", Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onCardDoubleTap(int i) {
-
             }
 
             @Override
             public void onCardLongPress(int i) {
-
             }
 
             @Override
@@ -136,11 +139,15 @@ public class FragmentHome extends Fragment {
         // NOT INTERESTED
         vh.nopeButton.setOnClickListener(v -> {
             vh.koloda.onButtonClick(false);
+            FireBaseUserDataManager.getInstance().addDisinterestedEvent(events.get(currentEventIndex));
+            currentEventIndex++;
         });
 
         // INTERESTED
         vh.interestedButton.setOnClickListener(view -> {
             vh.koloda.onButtonClick(true);
+            FireBaseUserDataManager.getInstance().addInterestedEvent(events.get(currentEventIndex));
+            currentEventIndex++;
         });
 
         // REFRESH PAGE
@@ -153,6 +160,7 @@ public class FragmentHome extends Fragment {
             vh.emptyEventsLayout.setVisibility(View.GONE);
             vh.koloda.setVisibility(View.VISIBLE);
             vh.buttonContainer.setVisibility(View.VISIBLE);
+            currentEventIndex = 1; //set at 1 as bug where first item is skipped on refresh
         });
     }
 }
