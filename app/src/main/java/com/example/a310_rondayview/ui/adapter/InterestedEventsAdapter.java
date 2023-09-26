@@ -16,6 +16,7 @@ import android.widget.ToggleButton;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.a310_rondayview.data.event.EventsFirestoreManager;
 import com.example.a310_rondayview.model.Event;
 import com.example.a310_rondayview.data.user.FireBaseUserDataManager;
 import com.example.a310_rondayview.R;
@@ -66,6 +67,8 @@ public class InterestedEventsAdapter extends RecyclerView.Adapter<InterestedEven
                 holder.itemView.postDelayed(new Runnable() {
                     @Override
                     public void run() {
+                        event.decrementInterestedNumber();
+                        EventsFirestoreManager.getInstance().updateEvent(event);
                         FireBaseUserDataManager.getInstance().removeInterestedEvent(event);
                         FireBaseUserDataManager.getInstance().getInterestedEvents();
                         compoundButton.startAnimation(scaleAnimation);

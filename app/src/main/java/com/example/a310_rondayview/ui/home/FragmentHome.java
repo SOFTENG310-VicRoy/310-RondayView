@@ -31,8 +31,10 @@ import com.yalantis.library.KolodaListener;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.PriorityQueue;
+import java.util.Set;
 
 import kotlin.ranges.URangesKt;
 
@@ -60,8 +62,8 @@ public class FragmentHome extends Fragment {
         koloda = rootView.findViewById(R.id.koloda);
         adapter = new SwipeAdapter(getContext(), events);
         koloda.setAdapter(adapter);
-        topTenPopularEvents.clear();
         //Set up UI transition for the popular events list
+        topTenPopularEvents.clear();
         viewPager2 = rootView.findViewById(R.id.popularEventViewPager);
         popularEventAdaptor = new PopularEventAdaptor(getContext(), topTenPopularEvents);
         viewPager2.setAdapter(popularEventAdaptor);
@@ -137,15 +139,6 @@ public class FragmentHome extends Fragment {
         // fetching event data
         fetchEventData();
         fetchDisinterestedEventData();
-        fetchTopTenEventData();
-        //Date date = new Date();
-       //Event dummyEvent = new Event("test", "testname","description", "location", date, null,null, disinterestedEvents.size());
-        //topTenPopularEvents.add(dummyEvent);
-//        topTenPopularEvents.add(dummyEvent);
-//        topTenPopularEvents.add(dummyEvent);
-//        topTenPopularEvents.add(dummyEvent);
-//        topTenPopularEvents.add(dummyEvent);
-        //Get top 10 interested events
 
         // Add a listener to the events Firestore collection to receive real time updates
         EventsFirestoreManager.getInstance().addEventsListener((snapshots, e) -> {
@@ -161,6 +154,7 @@ public class FragmentHome extends Fragment {
                         case ADDED:
                             // if a document was added, add it to events list
                             Event event = dc.getDocument().toObject(Event.class);
+                            //Refresh the top ten event data
                             fetchTopTenEventData();
                             events.add(event);
                             // update home page?
@@ -199,6 +193,7 @@ public class FragmentHome extends Fragment {
             koloda.setVisibility(View.VISIBLE);
             buttonContainer.setVisibility(View.VISIBLE);
             fetchEventData(); // fetch data again
+            fetchTopTenEventData();//Refresh top ten again
             koloda.reloadAdapterData();
         });
 
@@ -216,8 +211,8 @@ public class FragmentHome extends Fragment {
                 events.clear();
                 for (QueryDocumentSnapshot document : task.getResult()) {
                     Event event = document.toObject(Event.class);
-
                         events.add(event);
+                        fetchTopTenEventData();
                 }
                 // Re-notify the adapter when the event data changed
                 adapter.notifyDataSetChanged();
@@ -252,16 +247,17 @@ public class FragmentHome extends Fragment {
      * Fetches the top ten event ranked by the amount of interests
      */
     private void fetchTopTenEventData(){
-        topTenPopularEvents.clear();
         PriorityQueue<Event> rankedEventList = new PriorityQueue<>(new Event());
+//        Set<Event> elementSet = new HashSet<>();
         for(Event event : events){
-            rankedEventList.add(event);
+                rankedEventList.add(event);
             if(rankedEventList.size()>10){
                 rankedEventList.poll();
             }
         }
+        topTenPopularEvents.clear();
         for(Event event : rankedEventList){
-            topTenPopularEvents.add(event);
+            topTenPopularEvents.add(0,event);
             popularEventAdaptor.notifyDataSetChanged();
         }
     }
@@ -287,6 +283,7 @@ public class FragmentHome extends Fragment {
         currentEventIndex = index;
         if (isInterested) {
             events.get(currentEventIndex).incrementInterestedNumber();
+            EventsFirestoreManager.getInstance().updateEvent(events.get(currentEventIndex));
             FireBaseUserDataManager.getInstance().addInterestedEvent(events.get(currentEventIndex));
             FireBaseUserDataManager.getInstance().getInterestedEvents();
         } else {

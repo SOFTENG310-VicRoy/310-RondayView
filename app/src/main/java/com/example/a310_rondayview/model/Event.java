@@ -1,5 +1,7 @@
 package com.example.a310_rondayview.model;
 
+import androidx.annotation.Nullable;
+
 import com.google.firebase.firestore.DocumentId;
 
 import java.util.Comparator;
@@ -98,13 +100,21 @@ public class Event implements Comparator<Event> {
     public void setInterestedNumber(int i){ this.interestedNumber = i;}
 
     public void incrementInterestedNumber(){this.interestedNumber++;}
-    public void decrementInterestedNumber(){this.interestedNumber--;}
+    public void decrementInterestedNumber(){if(this.interestedNumber>0){this.interestedNumber--;}}
     public void setEventClubProfilePicture(String eventClubProfilePicture) {
         this.eventClubProfilePicture = eventClubProfilePicture;
     }
 
     @Override
     public int compare(Event event, Event t1) {
-        return Integer.compare(event.interestedNumber, t1.interestedNumber);
+        return event.interestedNumber - t1.interestedNumber;
     }
+
+//    @Override
+//    public boolean equals(@Nullable Object obj) {
+//        if(obj.getClass()!=this.getClass()){
+//            return false;
+//        }
+//        return this.eventId.equals((((Event) obj).getEventId()));
+//    }
 }
