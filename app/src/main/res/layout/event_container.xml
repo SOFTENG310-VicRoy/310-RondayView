@@ -88,6 +88,7 @@
                     android:id="@+id/eventDescriptionTextView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:minHeight="65dp"
                     android:textSize="16sp"
                     android:textColor="@color/white"
                     android:text="Event Description" />
