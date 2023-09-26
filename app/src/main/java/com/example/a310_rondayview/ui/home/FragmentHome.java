@@ -10,7 +10,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 
 import com.example.a310_rondayview.R;
 import com.example.a310_rondayview.data.event.DatabaseService;
@@ -63,7 +62,7 @@ public class FragmentHome extends Fragment {
         currentEventIndex = 0;
         // fetching event data
         DatabaseService databaseService = new DatabaseService();
-        databaseService.getAllEvents().thenAccept(events1 -> {
+        databaseService.getApplicableEvents().thenAccept(events1 -> {
             events = events1;
             adapter = new SwipeAdapter(getContext(), events);
             vh.koloda.setAdapter(adapter);
@@ -85,13 +84,13 @@ public class FragmentHome extends Fragment {
 
             @Override
             public void onCardSwipedLeft(int i) {
-                Toast.makeText(getContext(), "Left Swipe", Toast.LENGTH_SHORT).show();
+                FireBaseUserDataManager.getInstance().addDisinterestedEvent(events.get(currentEventIndex));
                 currentEventIndex++;
             }
 
             @Override
             public void onCardSwipedRight(int i) {
-                Toast.makeText(getContext(), "Right Swipe", Toast.LENGTH_SHORT).show();
+                FireBaseUserDataManager.getInstance().addInterestedEvent(events.get(currentEventIndex));
                 currentEventIndex++;
             }
 
@@ -147,7 +146,7 @@ public class FragmentHome extends Fragment {
         // REFRESH PAGE
         vh.refreshButton.setOnClickListener(view -> {
             DatabaseService databaseService = new DatabaseService();
-            databaseService.getAllEvents().thenAccept(events1 -> {
+            databaseService.getApplicableEvents().thenAccept(events1 -> {
                 events = events1;
                 vh.koloda.reloadAdapterData();
             });

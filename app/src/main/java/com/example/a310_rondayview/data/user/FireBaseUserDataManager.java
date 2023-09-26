@@ -98,9 +98,7 @@ public class FireBaseUserDataManager {
         }
         if(Boolean.TRUE.equals(interested)){
             interestedEvents = eventList;
-        } else {
-            disinterestedEvents = eventList;
-        }
+        } else disinterestedEvents = eventList;
     }
 
     List<Event> makeEventsList(QuerySnapshot snapshot) {
@@ -193,7 +191,7 @@ public class FireBaseUserDataManager {
     /**
      * This method gets the current user's friends data.
      * Current it gets the friends emails
-     * @param callback
+     * @param callback Callback
      */
     public void getFriends(FriendCallback callback) {
         FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
@@ -235,8 +233,8 @@ public class FireBaseUserDataManager {
     }
     /**
      * This method takes the friends ids and get the friends' user document
-     * @param friendIds
-     * @param callback
+     * @param friendIds Id of a users friends
+     * @param callback Callback
      */
     private void fetchFriendData(List<String> friendIds, FriendCallback callback) {
         List<Task<DocumentSnapshot>> friendTasks = new ArrayList<>();
@@ -269,16 +267,16 @@ public class FireBaseUserDataManager {
 
     /**
      * This method adds a friend to the users array of friends in the db
-     * @param friendEmail
-     * @param callback
+     * @param friendEmail Email of user to friend
+     * @param callback Callback
      */
     public void addFriend(String friendEmail, FriendCallback callback) {
         performFriendOperation(friendEmail, callback, true);
     }
     /**
      * This method removes a friend to the users array of friends in the db
-     * @param friendEmail
-     * @param callback
+     * @param friendEmail Email of user to friend
+     * @param callback Callback
      */
     public void removeFriend(String friendEmail, FriendCallback callback) {
         performFriendOperation(friendEmail, callback, false);
@@ -286,9 +284,9 @@ public class FireBaseUserDataManager {
 
     /**
      * This method performs some operation on the friend array of the current user.
-     * @param friendEmail
-     * @param callback
-     * @param addFriend
+     * @param friendEmail Email of the user to friend
+     * @param callback Callback
+     * @param addFriend True or flase
      */
     private void performFriendOperation(String friendEmail, FriendCallback callback, boolean addFriend) {
         FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
@@ -344,7 +342,7 @@ public class FireBaseUserDataManager {
 
     /**
      * This method takes a friend User object and sets its interested event list to the list found in db
-     * @param friend
+     * @param friend Friends of user
      * @param callback Callback to call after it is successful
      */
     public void getFriendsEvents(User friend, FriendCallback callback) {
