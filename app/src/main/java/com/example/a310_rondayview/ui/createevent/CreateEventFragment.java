@@ -111,7 +111,7 @@ public class CreateEventFragment extends Fragment {
                                 vh.location.getText().toString(),
                                 date,
                                 downloadImageUri.toString(),
-                                "https://cdn.discordapp.com/attachments/1144469565179433131/1144469584573906964/image.png"
+                                "https://cdn.discordapp.com/attachments/1144469565179433131/1144469584573906964/image.png",0
                         );
                         EventsFirestoreManager.getInstance().addEvent(event, task -> {
                             if (task.isSuccessful()) {

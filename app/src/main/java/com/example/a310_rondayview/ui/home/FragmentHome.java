@@ -11,11 +11,16 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager2.widget.CompositePageTransformer;
+import androidx.viewpager2.widget.MarginPageTransformer;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.a310_rondayview.R;
 import com.example.a310_rondayview.data.event.EventsFirestoreManager;
 import com.example.a310_rondayview.data.user.FireBaseUserDataManager;
 import com.example.a310_rondayview.model.Event;
+import com.example.a310_rondayview.ui.adapter.PopularEventAdaptor;
 import com.example.a310_rondayview.ui.adapter.SwipeAdapter;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -24,18 +29,23 @@ import com.yalantis.library.Koloda;
 import com.yalantis.library.KolodaListener;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class FragmentHome extends Fragment {
 
     private static final String TAG = "FragmentHome";
     private SwipeAdapter adapter;
+    private PopularEventAdaptor popularEventAdaptor;
     private List<Event> events = new ArrayList<>();
     private List<Event> disinterestedEvents = new ArrayList<>();
+    private List<Event> topTenPopularEvents = new ArrayList<>();
     private int currentEventIndex = 0;
     private LinearLayout buttonContainer;
     private LinearLayout emptyEventsLayout;
     Koloda koloda;
+
+    private ViewPager2 viewPager2;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -48,6 +58,31 @@ public class FragmentHome extends Fragment {
         adapter = new SwipeAdapter(getContext(), events);
         koloda.setAdapter(adapter);
 
+        //Get top 10 interested events
+        viewPager2 = rootView.findViewById(R.id.popularEventViewPager);
+        Date date = new Date();
+        Event dummyEvent = new Event("test", "testname","description", "location", date, null,null, 0);
+        topTenPopularEvents.add(dummyEvent);
+        topTenPopularEvents.add(dummyEvent);
+        topTenPopularEvents.add(dummyEvent);
+        topTenPopularEvents.add(dummyEvent);
+        topTenPopularEvents.add(dummyEvent);
+        popularEventAdaptor = new PopularEventAdaptor(getContext(), topTenPopularEvents);
+        viewPager2.setAdapter(popularEventAdaptor);
+        viewPager2.setOffscreenPageLimit(3);
+        viewPager2.setClipChildren(false);
+        viewPager2.setClipToPadding(false);
+        viewPager2.getChildAt(0).setOverScrollMode(RecyclerView.OVER_SCROLL_NEVER);
+        CompositePageTransformer transformer = new CompositePageTransformer();
+        transformer.addTransformer(new MarginPageTransformer(40));
+        transformer.addTransformer(new ViewPager2.PageTransformer() {
+            @Override
+            public void transformPage(@NonNull View page, float position) {
+                float r = 1 - Math.abs(position);
+                page.setScaleY(0.3f+r*0.7f);
+            }
+        });
+        viewPager2.setPageTransformer(transformer);
         /**
          * Koloda interface listener functions, don't need to use ALL
          */
