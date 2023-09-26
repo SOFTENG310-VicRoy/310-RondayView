@@ -3,6 +3,8 @@ package com.example.a310_rondayview.data.user;
 import android.util.Log;
 
 import com.example.a310_rondayview.model.Event;
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
@@ -187,172 +189,156 @@ public class FireBaseUserDataManager {
         }
     }
 
+
+    /**
+     * This method gets the current user's friends data.
+     * Current it gets the friends emails
+     * @param callback
+     */
     public void getFriends(FriendCallback callback) {
         FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
-
-        // Get the currently signed-in user
         FirebaseUser currentUser = firebaseAuth.getCurrentUser();
 
-        // Check if a user is signed in
-        if (currentUser != null) {
-            String uid = currentUser.getUid();
-
-            // Get a reference to the user's document
-            DocumentReference userDocRef = db.collection(USERSCOLLECTION).document(uid);
-
-            // Retrieve the "friends" array field from the user's document
-            userDocRef.get()
-                    .addOnCompleteListener(task -> {
-                        if (task.isSuccessful()) {
-                            DocumentSnapshot document = task.getResult();
-                            if (document.exists()) {
-                                List<String> friendIds = (List<String>) document.get(FRIEND_FIELD);
-
-                                if (friendIds != null && !friendIds.isEmpty()) {
-                                    friendEmails.clear();
-                                    // Loop through friend IDs and fetch their email addresses
-                                    for (String friendId : friendIds) {
-                                        db.collection(USERSCOLLECTION)
-                                                .document(friendId)
-                                                .get()
-                                                .addOnCompleteListener(friendTask -> {
-                                                    if (friendTask.isSuccessful()) {
-                                                        DocumentSnapshot friendDocument = friendTask.getResult();
-                                                        if (friendDocument.exists()) {
-                                                            String friendEmail = (String) friendDocument.get(FRIEND_FIELD);
-                                                            if (friendEmail != null) {
-                                                                // Add the friend's email to the list
-                                                                friendEmails.add(friendEmail);
-                                                            }
-                                                        }
-                                                    } else {
-                                                        Log.e(TAG, "Error fetching friend data: ", friendTask.getException());
-                                                    }
-
-                                                    // Check if we have fetched all friend emails
-                                                    if (friendEmails.size() == friendIds.size()) {
-                                                        // Handle the list of friend emails here
-                                                        Log.d(TAG, "Friend emails: " + friendEmails.toString());
-                                                        callback.onSuccessfulFriendOperation();
-                                                    }
-                                                });
-                                    }
-                                } else {
-                                    // Handle the case where the user has no friends
-                                    Log.d(TAG, "User has no friends.");
-                                }
-                            } else {
-                                Log.e(TAG, "User document does not exist.");
-                            }
-                        } else {
-                            Log.e(TAG, "Error fetching user data: ", task.getException());
-                        }
-                    });
-        } else {
+        if (currentUser == null) {
             // Handle the case where no user is signed in
             Log.e(TAG, SIGNINERROR);
+            return;
         }
+
+        String uid = currentUser.getUid();
+        DocumentReference userDocRef = db.collection(USERSCOLLECTION).document(uid);
+
+        userDocRef.get()
+                .addOnCompleteListener(task -> {
+                    if (!task.isSuccessful()) {
+                        // Handle the error
+                        Log.e(TAG, "Error fetching user data: ", task.getException());
+                        return;
+                    }
+                    DocumentSnapshot document = task.getResult();
+                    if (document == null || !document.exists()) {
+                        // Handle the case where the user document does not exist
+                        Log.e(TAG, "User document does not exist.");
+                        return;
+                    }
+                    List<String> friendIds = (List<String>) document.get(FRIEND_FIELD);
+                    if (friendIds == null || friendIds.isEmpty()) {
+                        // Handle the case where the user has no friends
+                        Log.d(TAG, "User has no friends.");
+                        callback.onSuccessfulFriendOperation();
+                        return;
+                    }
+                    friendEmails.clear();
+                    fetchFriendEmails(friendIds, callback);
+                    // Add condition checks if we are getting something else...
+                });
     }
+
+    /**
+     * This method takes the friends ids and get the emails associated
+     * @param friendIds
+     * @param callback
+     */
+    private void fetchFriendEmails(List<String> friendIds, FriendCallback callback) {
+        List<Task<DocumentSnapshot>> friendTasks = new ArrayList<>();
+
+        for (String friendId : friendIds) {
+            DocumentReference friendDocRef = db.collection(USERSCOLLECTION).document(friendId);
+            Task<DocumentSnapshot> friendTask = friendDocRef.get().addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot friendDocument = task.getResult();
+                    try {
+                        String friendEmail = friendDocument.getString("email");
+                        friendEmails.add(friendEmail);
+                    } catch (Exception e) {
+                        Log.e(TAG, "Error fetching friend data: ", task.getException());
+                    }
+                }
+            });
+            friendTasks.add(friendTask);
+        }
+
+        Tasks.whenAllSuccess(friendTasks)
+                .addOnSuccessListener(results -> {
+                    // Handle the list of friend emails here
+                    Log.d(TAG, "Friend emails: " + friendEmails.toString());
+                    callback.onSuccessfulFriendOperation();
+                })
+                // Handle the case where not all friend emails were fetched successfully
+                .addOnFailureListener(e -> Log.e(TAG, "Error fetching friend emails: ", e));
+    }
+
+    /**
+     * This method adds a friend to the users array of friends in the db
+     * @param friendEmail
+     * @param callback
+     */
     public void addFriend(String friendEmail, FriendCallback callback) {
-        // Get the current Firebase Auth instance
-        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
-
-        FirebaseUser currentUser = firebaseAuth.getCurrentUser();
-
-        // Check if a user is signed in
-        if (currentUser != null) {
-            String uid = currentUser.getUid();
-
-            // Get a reference to the users' collection
-            CollectionReference usersCollectionRef = db.collection(USERSCOLLECTION);
-
-            // Query for the friend's document by their email
-            usersCollectionRef.whereEqualTo("email", friendEmail)
-                    .get()
-                    .addOnCompleteListener(task -> {
-                        if (task.isSuccessful()) {
-                            QuerySnapshot querySnapshot = task.getResult();
-                            if (querySnapshot != null && !querySnapshot.isEmpty()) {
-                                // Assuming there's only one user with the given email, but you can handle multiple results if needed
-                                DocumentSnapshot friendDocument = querySnapshot.getDocuments().get(0);
-                                String friendUserId = friendDocument.getId();
-
-                                // Get a reference to the current user's document
-                                DocumentReference currentUserDocRef = usersCollectionRef.document(uid);
-
-                                // Update the "friends" array field with the new friend's UID
-                                currentUserDocRef.update(FRIEND_FIELD, FieldValue.arrayUnion(friendUserId))
-                                        .addOnSuccessListener(aVoid -> {
-                                            // Update was successful
-                                            // Perform additional actions here if needed
-                                            if (!friendEmails.contains(friendEmail)) {
-                                                friendEmails.add(friendEmail);
-
-                                            }
-                                            callback.onSuccessfulFriendOperation();
-                                        })
-                                        .addOnFailureListener(e -> callback.onUnsuccessfulFriendOperation(new Exception("Failed to add friend")));
-                            } else {
-                                // Friend with the provided email does not exist
-                                // Handle the case accordingly
-                                callback.onUnsuccessfulFriendOperation(new Exception(FIND_FRIEND_ERROR));
-                            }
-                        } else {
-                            // Handle the error
-                            Log.e(TAG, "Error querying for friend: ", task.getException());
-                            callback.onUnsuccessfulFriendOperation(new Exception(FIND_FRIEND_ERROR));
-                        }
-                    });
-        }
+        performFriendOperation(friendEmail, callback, true);
     }
+    /**
+     * This method removes a friend to the users array of friends in the db
+     * @param friendEmail
+     * @param callback
+     */
     public void removeFriend(String friendEmail, FriendCallback callback) {
-        // Get the current Firebase Auth instance
-        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+        performFriendOperation(friendEmail, callback, false);
+    }
 
+    /**
+     * This method performs some operation on the friend array of the current user.
+     * @param friendEmail
+     * @param callback
+     * @param addFriend
+     */
+    private void performFriendOperation(String friendEmail, FriendCallback callback, boolean addFriend) {
+        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
         FirebaseUser currentUser = firebaseAuth.getCurrentUser();
 
-        // Check if a user is signed in
-        if (currentUser != null) {
-            String uid = currentUser.getUid();
-
-            // Get a reference to the users' collection
-            CollectionReference usersCollectionRef = db.collection(USERSCOLLECTION);
-
-            // Query for the friend's document by their email
-            usersCollectionRef.whereEqualTo("email", friendEmail)
-                    .get()
-                    .addOnCompleteListener(task -> {
-                        if (task.isSuccessful()) {
-                            QuerySnapshot querySnapshot = task.getResult();
-                            if (querySnapshot != null && !querySnapshot.isEmpty()) {
-                                // Assuming there's only one user with the given email, but you can handle multiple results if needed
-                                DocumentSnapshot friendDocument = querySnapshot.getDocuments().get(0);
-                                String friendUserId = friendDocument.getId();
-
-                                // Get a reference to the current user's document
-                                DocumentReference currentUserDocRef = usersCollectionRef.document(uid);
-
-                                // Update the "friends" array field with the  friend's UID
-                                currentUserDocRef.update(FRIEND_FIELD, FieldValue.arrayRemove(friendUserId))
-                                        .addOnSuccessListener(aVoid -> {
-                                            // Update was successful
-                                            // Perform additional actions here if needed
-                                            friendEmails.remove(friendEmail);
-                                            callback.onSuccessfulFriendOperation();
-                                        })
-                                        .addOnFailureListener(e -> callback.onUnsuccessfulFriendOperation(new Exception("Failed to remove friend")));
-                            } else {
-                                // Friend with the provided email does not exist
-                                // Handle the case accordingly
-                            }
-                        } else {
-                            // Handle the error
-                            Log.e(TAG, "Error querying for friend: ", task.getException());
-                            callback.onUnsuccessfulFriendOperation(new Exception(FIND_FRIEND_ERROR));
-
-                        }
-                    });
+        if (currentUser == null) {
+            // Handle the case where no user is signed in
+            Log.e(TAG, SIGNINERROR);
+            return;
         }
+        String uid = currentUser.getUid();
+        CollectionReference usersCollectionRef = db.collection(USERSCOLLECTION);
+
+        usersCollectionRef.whereEqualTo("email", friendEmail)
+                .get()
+                .addOnSuccessListener(querySnapshot -> {
+                    if (!querySnapshot.isEmpty()) {
+                        DocumentSnapshot friendDocument = querySnapshot.getDocuments().get(0);
+                        String friendUserId = friendDocument.getId();
+                        DocumentReference currentUserDocRef = usersCollectionRef.document(uid);
+
+                        // Perform the friend operation based on the 'addFriend' parameter
+                        if (addFriend) {
+                            currentUserDocRef.update(FRIEND_FIELD, FieldValue.arrayUnion(friendUserId))
+                                    .addOnSuccessListener(aVoid -> {
+                                        if (!friendEmails.contains(friendEmail)) {
+                                            friendEmails.add(friendEmail);
+                                        }
+                                        callback.onSuccessfulFriendOperation();
+                                    })
+                                    .addOnFailureListener(e -> callback.onUnsuccessfulFriendOperation(new Exception("Failed to add friend")));
+                        } else {
+                            currentUserDocRef.update(FRIEND_FIELD, FieldValue.arrayRemove(friendUserId))
+                                    .addOnSuccessListener(aVoid -> {
+                                        friendEmails.remove(friendEmail);
+                                        callback.onSuccessfulFriendOperation();
+                                    })
+                                    .addOnFailureListener(e -> callback.onUnsuccessfulFriendOperation(new Exception("Failed to remove friend")));
+                        }
+                    } else {
+                        // Friend with the provided email does not exist
+                        callback.onUnsuccessfulFriendOperation(new Exception(FIND_FRIEND_ERROR));
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    // Handle the error
+                    Log.e(TAG, "Error querying for friend: ", e);
+                    callback.onUnsuccessfulFriendOperation(new Exception(FIND_FRIEND_ERROR));
+                });
     }
 }
 
