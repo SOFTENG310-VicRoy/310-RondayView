@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -60,7 +61,8 @@ public class InterestedEventsFragment extends Fragment {
         vh.interestedRecyclerView.setHasFixedSize(true);
 
         // populate the recycler view
-        InterestedEventsAdapter interestedEventsAdapter = new InterestedEventsAdapter(getContext(), eventsList);
+        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+        InterestedEventsAdapter interestedEventsAdapter = new InterestedEventsAdapter(getContext(), eventsList,true, fragmentManager);
         vh.interestedRecyclerView.setAdapter(interestedEventsAdapter);
         interestedEventsAdapter.notifyDataSetChanged();
     }
