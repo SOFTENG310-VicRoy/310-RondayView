@@ -13,11 +13,10 @@ import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
 import com.example.a310_rondayview.R;
-import com.example.a310_rondayview.model.CurrentEvent;
-import com.example.a310_rondayview.ui.home.FragmentHome;
+import com.example.a310_rondayview.model.CurrentEventSingleton;
 
 public class FragmentDetailed extends Fragment {
-    CurrentEvent currentEvent;
+    CurrentEventSingleton currentEvent;
     ViewHolder vh;
 
     public FragmentDetailed() {
@@ -52,7 +51,7 @@ public class FragmentDetailed extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_detailed, container, false);
         vh = new ViewHolder(view);
-        currentEvent = CurrentEvent.getInstance();
+        currentEvent = CurrentEventSingleton.getInstance();
         vh.clubNameText.setText(currentEvent.getCurrentEvent().getClubName());
         vh.eventNameText.setText(currentEvent.getCurrentEvent().getTitle());
         vh.eventDateText.setText(currentEvent.getCurrentEvent().getDateTime().toString());
@@ -60,9 +59,7 @@ public class FragmentDetailed extends Fragment {
         vh.eventDescText.setText(currentEvent.getCurrentEvent().getDescription());
         Glide.with(getContext()).load(currentEvent.getCurrentEvent().getImageURL()).into(vh.eventImage);
         Glide.with(getContext()).load(currentEvent.getCurrentEvent().getEventClubProfilePicture()).into(vh.profileImage);
-        vh.backImage.setOnClickListener(v -> {
-            getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.frame_layout, new FragmentHome()).commit();
-        });
+        vh.backImage.setOnClickListener(v -> getActivity().getSupportFragmentManager().popBackStack());
         return view;
     }
 }

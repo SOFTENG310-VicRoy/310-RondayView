@@ -17,7 +17,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.example.a310_rondayview.model.CurrentEvent;
+import com.example.a310_rondayview.model.CurrentEventSingleton;
 import com.example.a310_rondayview.model.Event;
 import com.example.a310_rondayview.data.user.FireBaseUserDataManager;
 import com.example.a310_rondayview.R;
@@ -32,7 +32,7 @@ public class InterestedEventsAdapter extends RecyclerView.Adapter<InterestedEven
     Context context;
     List<Event> eventsList;
 
-    private CurrentEvent currentEvent;
+    private CurrentEventSingleton currentEvent;
     private FragmentManager fragmentManager;
 
     public InterestedEventsAdapter(Context context, List<Event> eventsList) {
@@ -100,10 +100,10 @@ public class InterestedEventsAdapter extends RecyclerView.Adapter<InterestedEven
         holder.titleTextView.setText(event.getTitle());
         holder.descriptionTextView.setText(event.getDescription());
         holder.eventImageView.setOnClickListener(v -> {
-            currentEvent = CurrentEvent.getInstance();
+            currentEvent = CurrentEventSingleton.getInstance();
             currentEvent.setCurrentEvent(event);
 
-            fragmentManager.beginTransaction().replace(R.id.frame_layout, new FragmentDetailed()).commit();
+            fragmentManager.beginTransaction().addToBackStack("fragment_interested_events").replace(R.id.frame_layout, new FragmentDetailed()).commit();
         });
     }
 

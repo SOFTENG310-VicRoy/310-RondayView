@@ -1,16 +1,16 @@
 package com.example.a310_rondayview.model;
 
-public class CurrentEvent {
-    private static CurrentEvent instance;
+public class CurrentEventSingleton {
+    private static CurrentEventSingleton instance;
     private Event currentEvent;
 
-    private CurrentEvent() {
+    private CurrentEventSingleton() {
         // Private constructor to prevent instantiation
     }
 
-    public static synchronized CurrentEvent getInstance() {
+    public static synchronized CurrentEventSingleton getInstance() {
         if (instance == null) {
-            instance = new CurrentEvent();
+            instance = new CurrentEventSingleton();
         }
         return instance;
     }

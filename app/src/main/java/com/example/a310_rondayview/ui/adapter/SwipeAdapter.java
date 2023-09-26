@@ -9,13 +9,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.fragment.app.FragmentManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.example.a310_rondayview.model.CurrentEvent;
+import com.example.a310_rondayview.model.CurrentEventSingleton;
 import com.example.a310_rondayview.model.Event;
 import com.example.a310_rondayview.R;
-import com.example.a310_rondayview.ui.createevent.CreateEventFragment;
 import com.example.a310_rondayview.ui.detailed.FragmentDetailed;
 
 import java.text.SimpleDateFormat;
@@ -35,7 +33,7 @@ public class SwipeAdapter extends BaseAdapter {
 
     private ImageView eventClubPFPImageView;
 
-    private CurrentEvent currentEvent;
+    private CurrentEventSingleton currentEvent;
     private FragmentManager fragmentManager;
 
     public SwipeAdapter(Context context, List<Event> events, FragmentManager fragmentManager) {
@@ -100,10 +98,10 @@ public class SwipeAdapter extends BaseAdapter {
             Glide.with(context).load(event.getImageURL()).into(eventImageView);
             Glide.with(context).load(event.getEventClubProfilePicture()).into(eventClubPFPImageView);
             eventImageView.setOnClickListener(v -> {
-                currentEvent = CurrentEvent.getInstance();
+                currentEvent = CurrentEventSingleton.getInstance();
                 currentEvent.setCurrentEvent(event);
 
-                fragmentManager.beginTransaction().replace(R.id.frame_layout, new FragmentDetailed()).commit();
+                fragmentManager.beginTransaction().addToBackStack("fragment_home").replace(R.id.frame_layout, new FragmentDetailed()).commit();
             });
         }
         return view;
