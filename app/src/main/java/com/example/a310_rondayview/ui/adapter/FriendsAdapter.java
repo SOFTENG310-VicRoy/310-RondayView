@@ -23,7 +23,6 @@ import com.example.a310_rondayview.model.User;
 import com.example.a310_rondayview.ui.friends.FriendsEventFragment;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.units.qual.Current;
 
 import java.util.List;
 
