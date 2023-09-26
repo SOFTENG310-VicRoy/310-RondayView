@@ -3,6 +3,7 @@ package com.example.a310_rondayview.data.user;
 import android.util.Log;
 
 import com.example.a310_rondayview.model.Event;
+import com.example.a310_rondayview.model.User;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.auth.FirebaseAuth;
@@ -29,7 +30,8 @@ public class FireBaseUserDataManager {
     private final FirebaseFirestore db;
     private List<Event> interestedEvents = new ArrayList<>();
     private List<Event> disinterestedEvents = new ArrayList<>();
-    private List<String> friendEmails = new ArrayList<>();
+
+    private List<User> friendsList = new ArrayList<>();
     private List<Event> eventList = new ArrayList<>();
 
     private FireBaseUserDataManager() {
@@ -54,11 +56,9 @@ public class FireBaseUserDataManager {
     public List<Event> getDisinterestedEvents() {
         return disinterestedEvents;
     }
-
-    public List<String> getFriendEmails() {
-        return friendEmails;
+    public List<User> getFriendsList() {
+        return friendsList;
     }
-
     public void getEvents(Boolean interested) {
         String collection;
 
@@ -228,20 +228,18 @@ public class FireBaseUserDataManager {
                         callback.onSuccessfulFriendOperation();
                         return;
                     }
-                    friendEmails.clear();
-                    fetchFriendEmails(friendIds, callback);
+                    friendsList.clear();
+                    fetchFriendData(friendIds, callback);
                     // Add condition checks if we are getting something else...
                 });
     }
-
     /**
-     * This method takes the friends ids and get the emails associated
+     * This method takes the friends ids and get the friends' user document
      * @param friendIds
      * @param callback
      */
-    private void fetchFriendEmails(List<String> friendIds, FriendCallback callback) {
+    private void fetchFriendData(List<String> friendIds, FriendCallback callback) {
         List<Task<DocumentSnapshot>> friendTasks = new ArrayList<>();
-
         for (String friendId : friendIds) {
             DocumentReference friendDocRef = db.collection(USERSCOLLECTION).document(friendId);
             Task<DocumentSnapshot> friendTask = friendDocRef.get().addOnCompleteListener(task -> {
@@ -249,7 +247,9 @@ public class FireBaseUserDataManager {
                     DocumentSnapshot friendDocument = task.getResult();
                     try {
                         String friendEmail = friendDocument.getString("email");
-                        friendEmails.add(friendEmail);
+                        User friend = new User(friendEmail);
+                        friend.setUserId(friendId);
+                        friendsList.add(friend);
                     } catch (Exception e) {
                         Log.e(TAG, "Error fetching friend data: ", task.getException());
                     }
@@ -257,15 +257,14 @@ public class FireBaseUserDataManager {
             });
             friendTasks.add(friendTask);
         }
-
         Tasks.whenAllSuccess(friendTasks)
                 .addOnSuccessListener(results -> {
                     // Handle the list of friend emails here
-                    Log.d(TAG, "Friend emails: " + friendEmails.toString());
+                    Log.d(TAG, "Friend data: " + friendsList.toString());
                     callback.onSuccessfulFriendOperation();
                 })
-                // Handle the case where not all friend emails were fetched successfully
-                .addOnFailureListener(e -> Log.e(TAG, "Error fetching friend emails: ", e));
+                // Handle the case where not all friends were fetched successfully
+                .addOnFailureListener(e -> Log.e(TAG, "Error fetching friend data: ", e));
     }
 
     /**
@@ -309,14 +308,16 @@ public class FireBaseUserDataManager {
                     if (!querySnapshot.isEmpty()) {
                         DocumentSnapshot friendDocument = querySnapshot.getDocuments().get(0);
                         String friendUserId = friendDocument.getId();
+                        User friend = new User(friendEmail);
+                        friend.setUserId(friendUserId);
                         DocumentReference currentUserDocRef = usersCollectionRef.document(uid);
 
                         // Perform the friend operation based on the 'addFriend' parameter
                         if (addFriend) {
                             currentUserDocRef.update(FRIEND_FIELD, FieldValue.arrayUnion(friendUserId))
                                     .addOnSuccessListener(aVoid -> {
-                                        if (!friendEmails.contains(friendEmail)) {
-                                            friendEmails.add(friendEmail);
+                                        if (!friendsList.contains(friend)) {
+                                            friendsList.add(friend);
                                         }
                                         callback.onSuccessfulFriendOperation();
                                     })
@@ -324,7 +325,7 @@ public class FireBaseUserDataManager {
                         } else {
                             currentUserDocRef.update(FRIEND_FIELD, FieldValue.arrayRemove(friendUserId))
                                     .addOnSuccessListener(aVoid -> {
-                                        friendEmails.remove(friendEmail);
+                                        friendsList.remove(friend);
                                         callback.onSuccessfulFriendOperation();
                                     })
                                     .addOnFailureListener(e -> callback.onUnsuccessfulFriendOperation(new Exception("Failed to remove friend")));
@@ -339,6 +340,38 @@ public class FireBaseUserDataManager {
                     Log.e(TAG, "Error querying for friend: ", e);
                     callback.onUnsuccessfulFriendOperation(new Exception(FIND_FRIEND_ERROR));
                 });
+    }
+
+    /**
+     * This method takes a friend User object and sets its interested event list to the list found in db
+     * @param friend
+     * @param callback Callback to call after it is successful
+     */
+    public void getFriendsEvents(User friend, FriendCallback callback) {
+        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+        // Get the currently signed-in user
+        FirebaseUser currentUser = firebaseAuth.getCurrentUser();
+
+        // Check if a user is signed in
+        if (currentUser != null) {
+            // Use the UID to fetch all the users interested events and store it in a singleton list
+            db.collection(USERSCOLLECTION)
+                    .document(friend.getUserId())
+                    .collection(INTERESTEDEVENTSCOLLECTION)
+                    .get()
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            friend.setInterestedEvents(makeEventsList(task.getResult()));
+                            callback.onSuccessfulFriendOperation();
+                            Log.d(TAG, "Successfully fetched the friends' events data: " + disinterestedEvents.toString());
+                        } else {
+                            Log.e(TAG, "Error fetching events data: ", task.getException());
+                        }
+                    });
+        } else {
+            // Handle the case where no user is signed in
+            Log.e(TAG, SIGNINERROR);
+        }
     }
 }
 
