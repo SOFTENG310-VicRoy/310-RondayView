@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.a310_rondayview.R;
 import com.example.a310_rondayview.data.user.FireBaseUserDataManager;
 import com.example.a310_rondayview.data.user.FriendCallback;
+import com.example.a310_rondayview.model.User;
 import com.example.a310_rondayview.ui.adapter.FriendsAdapter;
 
 import java.util.List;
@@ -37,7 +38,7 @@ public class FriendsFragment extends Fragment {
     }
     private FriendsFragment.ViewHolder vh;
     private FriendsAdapter friendsAdapter;
-    List<String> friendList;
+    List<User> friendList;
 
     public FriendsFragment() {
         // Required empty public constructor
@@ -54,7 +55,7 @@ public class FriendsFragment extends Fragment {
             FireBaseUserDataManager.getInstance().addFriend(friendEmail, new FriendCallback() {
                     @Override
                     public void onSuccessfulFriendOperation() {
-                        friendsAdapter.updateFriendList(FireBaseUserDataManager.getInstance().getFriendEmails());
+                        friendsAdapter.updateFriendList(FireBaseUserDataManager.getInstance().getFriendsList());
                     }
                     @Override
                     public void onUnsuccessfulFriendOperation(Exception e) {
@@ -68,7 +69,7 @@ public class FriendsFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        friendList = FireBaseUserDataManager.getInstance().getFriendEmails();
+        friendList = FireBaseUserDataManager.getInstance().getFriendsList();
         // setup the recycler view
         vh.friendList.setLayoutManager(new LinearLayoutManager(getContext()));
         vh.friendList.setHasFixedSize(true);
@@ -83,7 +84,7 @@ public class FriendsFragment extends Fragment {
             FireBaseUserDataManager.getInstance().getFriends(new FriendCallback() {
                 @Override
                 public void onSuccessfulFriendOperation() {
-                    friendsAdapter.updateFriendList(FireBaseUserDataManager.getInstance().getFriendEmails());
+                    friendsAdapter.updateFriendList(FireBaseUserDataManager.getInstance().getFriendsList());
                 }
                 @Override
                 public void onUnsuccessfulFriendOperation(Exception e) {

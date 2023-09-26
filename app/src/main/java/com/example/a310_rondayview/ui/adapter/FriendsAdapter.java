@@ -16,22 +16,22 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.a310_rondayview.R;
 import com.example.a310_rondayview.data.user.FireBaseUserDataManager;
 import com.example.a310_rondayview.data.user.FriendCallback;
+import com.example.a310_rondayview.model.User;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.List;
 
 public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.FriendsViewHolder> {
-
     Context context;
-    List<String> friendsList;
+    List<User> friendsList;
 
-    public FriendsAdapter(Context context, List<String> friendsList) {
+    public FriendsAdapter(Context context, List<User> friendsList) {
         this.context = context;
         this.friendsList = friendsList;
     }
 
-    public void updateFriendList(List<String> friendsList) {
+    public void updateFriendList(List<User> friendsList) {
         this.friendsList = friendsList;
         notifyDataSetChanged();
     }
@@ -47,7 +47,8 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.FriendsV
     @Override
     public void onBindViewHolder(@androidx.annotation.NonNull FriendsViewHolder holder, int position) {
         // Binds data to the UI elements in each list item
-        String email = friendsList.get(position);
+        String email = friendsList.get(position).getEmail();
+        String id = friendsList.get(position).getUserId();
 
         // Set up the animation for the remove button being clicked
         ScaleAnimation scaleAnimation = new ScaleAnimation(0.7f, 1.0f, 0.7f, 1.0f, Animation.RELATIVE_TO_SELF, 0.7f, Animation.RELATIVE_TO_SELF, 0.7f);
@@ -87,6 +88,7 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.FriendsV
             }, fadeOut.getDuration());
         });
         holder.emailTextView.setText(email);
+        holder.idTextView.setText("ID: " + id);
     }
 
     @Override
@@ -99,12 +101,14 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.FriendsV
     public static class FriendsViewHolder extends RecyclerView.ViewHolder {
         TextView emailTextView;
         ToggleButton removeFriendButton;
+        TextView idTextView;
 
 
         public FriendsViewHolder(@NonNull View itemView) {
             super(itemView);
             emailTextView = itemView.findViewById(R.id.friendEmail);
             removeFriendButton = itemView.findViewById(R.id.remove_friend_button);
+            idTextView = itemView.findViewById(R.id.friendId);
         }
     }
 }
