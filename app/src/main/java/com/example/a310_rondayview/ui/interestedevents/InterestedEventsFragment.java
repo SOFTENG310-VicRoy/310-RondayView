@@ -53,7 +53,7 @@ public class InterestedEventsFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         // load in the list of interested events from the database
-        eventsList = FireBaseUserDataManager.getInstance().InterestedEvents;
+        eventsList = FireBaseUserDataManager.getInstance().getInterestedEvents();
 
         // setup the recycler view
         vh.interestedRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
