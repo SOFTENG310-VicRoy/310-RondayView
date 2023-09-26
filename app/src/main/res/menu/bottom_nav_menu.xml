@@ -8,7 +8,11 @@
     <item android:id="@+id/create"
         android:title="Create"
         android:icon="@drawable/baseline_add_24"/>
+    <item android:id="@+id/interested"
+        android:title="Interested"
+        android:icon="@drawable/event"/>
     <item android:id="@+id/account"
         android:title="Account"
         android:icon="@drawable/baseline_person_24"/>
+
 </menu>

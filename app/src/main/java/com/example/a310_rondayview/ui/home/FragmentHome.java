@@ -50,8 +50,8 @@ public class FragmentHome extends Fragment {
         adapter = new SwipeAdapter(getContext(), events, fragmentManager);
         koloda.setAdapter(adapter);
 
-        /**
-         * Koloda interface listener functions, don't need to use ALL
+        /*
+          Koloda interface listener functions, don't need to use ALL
          */
         koloda.setKolodaListener(new KolodaListener() {
             @Override
@@ -231,11 +231,11 @@ public class FragmentHome extends Fragment {
         currentEventIndex = index;
         if (isInterested) {
             FireBaseUserDataManager.getInstance().addInterestedEvent(events.get(currentEventIndex));
-            FireBaseUserDataManager.getInstance().getInterestedEvents();
+            FireBaseUserDataManager.getInstance().getEvents(true);
         } else {
             FireBaseUserDataManager.getInstance().addDisinterestedEvent(events.get(currentEventIndex));
-            FireBaseUserDataManager.getInstance().getInterestedEvents();
-            FireBaseUserDataManager.getInstance().getDisinterestedEvents();
+            FireBaseUserDataManager.getInstance().getEvents(true);
+            FireBaseUserDataManager.getInstance().getEvents(false);
             // disinterested events are removed from the browse stack
             if (eventIsDisinterested(events.get(currentEventIndex))){
                 events.remove(events.get(currentEventIndex));
