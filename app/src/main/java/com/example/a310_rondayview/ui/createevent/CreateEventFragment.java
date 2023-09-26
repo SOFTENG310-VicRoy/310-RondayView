@@ -92,9 +92,9 @@ public class CreateEventFragment extends Fragment {
         storage = FirebaseStorage.getInstance();
         mStorageRef = storage.getReference();
 
+        // Set up the Date Dialog Picker
         initDatePicker();
         vh.date.setInputType(InputType.TYPE_NULL);
-
         vh.date.setOnTouchListener((v, event) -> {
             if (event.getAction() == MotionEvent.ACTION_UP) {
                 showDialog(DATE_DIALOG);
@@ -102,6 +102,7 @@ public class CreateEventFragment extends Fragment {
             return false;
         });
 
+        // Set up the Time Dialog Picker
         vh.time.setInputType(InputType.TYPE_NULL);
         vh.time.setOnTouchListener((v, event) -> {
             if (event.getAction() == MotionEvent.ACTION_UP) {
@@ -109,7 +110,6 @@ public class CreateEventFragment extends Fragment {
             }
             return false;
         });
-
 
         // getting and setting selected image from users camera roll to the event image image view
         selectPhoto = registerForActivityResult(
@@ -125,6 +125,7 @@ public class CreateEventFragment extends Fragment {
         vh.postBtn.setOnClickListener(postView -> {
             if (!validateForm()) return;
 
+            // Take the Date and Time and convert it to a single Date object
             SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
             SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
             try {
@@ -206,6 +207,9 @@ public class CreateEventFragment extends Fragment {
         return valid;
     }
 
+    /**
+     * This method initialise the Date Dialog Picker by setting the current day to display first.
+     */
     private void initDatePicker()
     {
         DatePickerDialog.OnDateSetListener dateSetListener = (datePicker, year, month, day) -> {
@@ -215,6 +219,7 @@ public class CreateEventFragment extends Fragment {
             String dateString = dateFormat.format(calendar.getTime());
             vh.date.setText(dateString);
         };
+        // Show current day
         Calendar calendar = Calendar.getInstance();
         int year = calendar.get(Calendar.YEAR);
         int month = calendar.get(Calendar.MONTH);
@@ -222,23 +227,32 @@ public class CreateEventFragment extends Fragment {
         datePickerDialog = new DatePickerDialog(getContext(), 0, dateSetListener, year, month, day);
     }
 
+    /**
+     * This method displays a dialog picker depending on the given parameter
+     * @param dialog The string to determine which dialog to show
+     */
     public void showDialog(String dialog)
     {
         if (dialog.equals(DATE_DIALOG)) {
             datePickerDialog.show();
         }
         else if (dialog.equals(TIME_DIALOG)) {
+            // Set up Time Dialog Picker to show current time
             TimePickerDialog.OnTimeSetListener onTimeSetListener = (timePicker, selectedHour, selectedMinute) -> {
                 hour = selectedHour;
                 minute = selectedMinute;
                 vh.time.setText(String.format(Locale.getDefault(), "%02d:%02d",hour, minute));
             };
-
             TimePickerDialog timePickerDialog = new TimePickerDialog(getContext(), 0, onTimeSetListener, hour, minute, true);
             timePickerDialog.setTitle("Select Time");
             timePickerDialog.show();
         }
     }
+
+    /**
+     * This method dismiss a dialog picker depending on the given paramter.
+     * @param dialog The string to detemrine which dialog to dismiss.
+     */
     public void dismissDialog(String dialog) {
         if (dialog.equals(DATE_DIALOG)) {
             datePickerDialog.dismiss();
