@@ -1,72 +1,99 @@
 <!-- res/layout/fragment_home.xml -->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
-    android:layout_gravity="center">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-    <LinearLayout
-        android:id="@+id/emptyEventsLayout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:layout_gravity="center"
-        android:orientation="vertical"
-        android:visibility="gone">
-
-        <TextView
-            android:id="@+id/emptyEventsTextView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="You've run out of events!"
-            android:textAlignment="center"
-            android:textSize="18sp" />
-
-        <Button
-            android:id="@+id/refreshButton"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="Refresh"
-            android:layout_marginTop="8dp" />
-    </LinearLayout>
-
-    <com.yalantis.library.Koloda
-        android:id="@+id/koloda"
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:visibility="visible"
-        app:koloda_card_layout="@layout/event_container" />
+        android:layout_height="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-    <LinearLayout
-        android:id="@+id/buttonsContainer"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="16dp"
-        android:gravity="center">
-
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/nopeButton"
-            android:layout_width="0dp"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_marginEnd="8dp"
-            android:text="Nope!"
-            android:background="@drawable/nope_button_background"
-            android:textColor="#FFFFFF"
-            android:textSize="22sp" />
+            android:gravity="center"
+            android:orientation="vertical">
 
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/interestedButton"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_marginStart="8dp"
-            android:text="Interested"
-            android:background="@drawable/interested_button_background"
-            android:textColor="#FFFFFF"
-            android:textSize="22sp" />
-    </LinearLayout>
-</LinearLayout>
+            <TextView
+                android:id="@+id/popularEventTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/top_events_title"
+                android:textSize="34sp"
+                android:textStyle="bold"></TextView>
+
+            <androidx.viewpager2.widget.ViewPager2
+                android:id="@+id/popularEventViewPager"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"></androidx.viewpager2.widget.ViewPager2>
+
+            <LinearLayout
+                android:id="@+id/emptyEventsLayout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <TextView
+                    android:id="@+id/emptyEventsTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="You've run out of events!"
+                    android:textAlignment="center"
+                    android:textSize="18sp" />
+
+                <Button
+                    android:id="@+id/refreshButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="8dp"
+                    android:text="Refresh" />
+            </LinearLayout>
+
+            <com.yalantis.library.Koloda
+                android:id="@+id/koloda"
+                android:layout_width="match_parent"
+                android:layout_height="500dp"
+                android:layout_weight="1"
+                android:visibility="visible"
+                app:koloda_card_layout="@layout/event_container" />
+
+            <LinearLayout
+                android:id="@+id/buttonsContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:padding="16dp">
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/nopeButton"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/nope_button_background"
+                    android:text="Nope!"
+                    android:textColor="#FFFFFF"
+                    android:textSize="22sp" />
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/interestedButton"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/interested_button_background"
+                    android:text="Interested"
+                    android:textColor="#FFFFFF"
+                    android:textSize="22sp" />
+            </LinearLayout>
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>

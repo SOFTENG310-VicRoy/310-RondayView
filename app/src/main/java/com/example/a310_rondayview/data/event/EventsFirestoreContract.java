@@ -16,6 +16,7 @@ public class EventsFirestoreContract {
     public static final String EVENT_IMAGE_URL = "imageURL";
     public static final String EVENT_LOCATION = "location";
     public static final String EVENT_TITLE = "title";
+    public static final String EVENT_INTERESTS = "eventInterests";
 
     // To prevent someone from accidentally instantiating the contract class, make the constructor private
     private EventsFirestoreContract() {}

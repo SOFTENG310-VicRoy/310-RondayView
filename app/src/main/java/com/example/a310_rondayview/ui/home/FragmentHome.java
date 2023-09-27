@@ -10,17 +10,25 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
+
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager2.widget.CompositePageTransformer;
+import androidx.viewpager2.widget.MarginPageTransformer;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.a310_rondayview.R;
 import com.example.a310_rondayview.data.event.DatabaseService;
+import com.example.a310_rondayview.data.event.EventsFirestoreManager;
 import com.example.a310_rondayview.data.user.FireBaseUserDataManager;
 import com.example.a310_rondayview.model.Event;
+import com.example.a310_rondayview.ui.adapter.PopularEventAdaptor;
 import com.example.a310_rondayview.ui.adapter.SwipeAdapter;
 import com.yalantis.library.Koloda;
 import com.yalantis.library.KolodaListener;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class FragmentHome extends Fragment {
@@ -29,6 +37,8 @@ public class FragmentHome extends Fragment {
 
         LinearLayout buttonContainer;
         LinearLayout emptyEventsLayout;
+
+        ViewPager2 popularEventViewPager;
 
         Button nopeButton;
         Button interestedButton;
@@ -40,6 +50,16 @@ public class FragmentHome extends Fragment {
             // setting up views
             buttonContainer = rootView.findViewById(R.id.buttonsContainer);
             emptyEventsLayout = rootView.findViewById(R.id.emptyEventsLayout);
+            //Set up UI transition for the popular events list
+            popularEventViewPager = rootView.findViewById(R.id.popularEventViewPager);
+            popularEventViewPager.getChildAt(0).setOverScrollMode(View.OVER_SCROLL_NEVER);
+            CompositePageTransformer transformer = new CompositePageTransformer();
+            transformer.addTransformer(new MarginPageTransformer(40));
+            transformer.addTransformer((page, position) -> {
+                float r = 1 - Math.abs(position);
+                page.setScaleY(0.3f+r*0.7f);
+            });
+            popularEventViewPager.setPageTransformer(transformer);
             // Set up button click listeners
             nopeButton = rootView.findViewById(R.id.nopeButton);
             interestedButton = rootView.findViewById(R.id.interestedButton);
@@ -52,7 +72,9 @@ public class FragmentHome extends Fragment {
 
     private static final String TAG = "FragmentHome";
     private SwipeAdapter adapter;
+    private PopularEventAdaptor popularEventAdaptor;
     private List<Event> events = new ArrayList<>();
+    private List<Event>topTenPopularEvents = new ArrayList<>();
     private int currentEventIndex;
     private ViewHolder vh;
 
@@ -67,8 +89,10 @@ public class FragmentHome extends Fragment {
             events = events1;
             adapter = new SwipeAdapter(getContext(), events);
             vh.koloda.setAdapter(adapter);
+            //Fetch top 10 interested events
+            fetchTopTenEvent();
+            refreshTopTenEvent();
         });
-
         buttonListeners();
 
         /*
@@ -125,7 +149,6 @@ public class FragmentHome extends Fragment {
                 vh.buttonContainer.setVisibility(View.GONE);
             }
         });
-
         return rootView;
     }
 
@@ -140,6 +163,11 @@ public class FragmentHome extends Fragment {
         // INTERESTED
         vh.interestedButton.setOnClickListener(view -> {
             vh.koloda.onButtonClick(true);
+            //Increment likes
+            events.get(currentEventIndex).incrementInterestedNumber();
+            EventsFirestoreManager.getInstance().updateEvent(events.get(currentEventIndex));
+            fetchTopTenEvent();
+            refreshTopTenEvent();
             FireBaseUserDataManager.getInstance().addInterestedEvent(events.get(currentEventIndex));
             currentEventIndex++;
         });
@@ -150,6 +178,8 @@ public class FragmentHome extends Fragment {
             databaseService.getAllEvents().thenAccept(events1 -> {
                 events = events1;
                 vh.koloda.reloadAdapterData();
+                fetchTopTenEvent();
+                refreshTopTenEvent();
             });
             vh.emptyEventsLayout.setVisibility(View.GONE);
             vh.koloda.setVisibility(View.VISIBLE);
@@ -158,6 +188,26 @@ public class FragmentHome extends Fragment {
         });
     }
 
+    /**
+     * Fetches the top ten event ranked by the amount of interests
+     */
+    private void fetchTopTenEvent(){
+        Comparator<Event> descendingComparator = Comparator
+                .comparingInt(Event::getInterestedNumber)
+                .reversed();
+        Collections.sort(events, descendingComparator);
+        topTenPopularEvents.clear();
+        for(Event event : events){
+            topTenPopularEvents.add(event);
+            if(topTenPopularEvents.size()==10){
+                break;
+            }
+        }
+    }
+    private void refreshTopTenEvent(){
+        popularEventAdaptor = new PopularEventAdaptor(getContext(), topTenPopularEvents);
+        vh.popularEventViewPager.setAdapter(popularEventAdaptor);
+    }
     public List<Event> getEvents() {
         return events;
     }
