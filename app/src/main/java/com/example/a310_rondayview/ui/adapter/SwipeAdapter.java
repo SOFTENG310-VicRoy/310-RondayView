@@ -97,12 +97,6 @@ public class SwipeAdapter extends BaseAdapter {
             eventDescriptionTextView.setText(event.getDescription());
             Glide.with(context).load(event.getImageURL()).into(eventImageView);
             Glide.with(context).load(event.getEventClubProfilePicture()).into(eventClubPFPImageView);
-            eventImageView.setOnClickListener(v -> {
-                currentEvent = CurrentEventSingleton.getInstance();
-                currentEvent.setCurrentEvent(event);
-
-                fragmentManager.beginTransaction().addToBackStack("fragment_home").replace(R.id.frame_layout, new FragmentDetailed()).commit();
-            });
         }
         return view;
     }
