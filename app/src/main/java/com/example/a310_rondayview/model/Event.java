@@ -16,6 +16,7 @@ public class Event {
     private Date dateTime;
     private String imageURL;
     private String eventClubProfilePicture;
+    private int interestedNumber;
 
     public Event() {
         // Default constructor for Firestore deserialization
@@ -29,6 +30,7 @@ public class Event {
         this.dateTime = dateTime;
         this.imageURL = imageURL;
         this.eventClubProfilePicture = eventClubProfilePicture;
+        this.interestedNumber = 0;
     }
 
     public String getEventId() {
@@ -63,6 +65,8 @@ public class Event {
         return eventClubProfilePicture;
     }
 
+    public int getInterestedNumber(){ return interestedNumber;}
+
     public void setEventId(String eventId) {
         this.eventId = eventId;
     }
@@ -91,6 +95,10 @@ public class Event {
         this.imageURL = imageURL;
     }
 
+    public void setInterestedNumber(int i){ this.interestedNumber = i;}
+
+    public void incrementInterestedNumber(){this.interestedNumber++;}
+    public void decrementInterestedNumber(){if(this.interestedNumber>0){this.interestedNumber--;}}
     public void setEventClubProfilePicture(String eventClubProfilePicture) {
         this.eventClubProfilePicture = eventClubProfilePicture;
     }
