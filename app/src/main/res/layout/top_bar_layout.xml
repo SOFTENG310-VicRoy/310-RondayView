@@ -6,6 +6,8 @@
     android:padding="16dp"
     android:background="@color/light_grey">
 
+
+
     <TextView
         android:id="@+id/rondayViewText"
         android:layout_width="wrap_content"
@@ -19,5 +21,15 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
+        android:id="@+id/createButton"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:background="?android:selectableItemBackground"
+        android:src="@drawable/baseline_add_24"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

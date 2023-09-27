@@ -13,6 +13,7 @@ import androidx.fragment.app.FragmentTransaction;
 import com.example.a310_rondayview.databinding.ActivityMainBinding;
 import com.example.a310_rondayview.ui.account.ProfileFragment;
 import com.example.a310_rondayview.ui.createevent.CreateEventFragment;
+import com.example.a310_rondayview.ui.friends.FriendsFragment;
 import com.example.a310_rondayview.ui.home.FragmentHome;
 import com.example.a310_rondayview.ui.interestedevents.InterestedEventsFragment;
 import com.google.firebase.FirebaseApp;
@@ -23,6 +24,8 @@ public class MainActivity extends AppCompatActivity {
 
     ActivityMainBinding binding;
     private FirebaseAuth mAuth;
+
+    ImageButton createButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,10 +42,16 @@ public class MainActivity extends AppCompatActivity {
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         replaceFragment(new FragmentHome());
-
-        binding.bottomNavigationView.setOnItemSelectedListener(item -> {
-            if (item.getItemId() == R.id.create) {
+        ImageButton createButton = findViewById(R.id.createButton);
+        createButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
                 replaceFragment(new CreateEventFragment());
+            }
+        });
+        binding.bottomNavigationView.setOnItemSelectedListener(item -> {
+            if (item.getItemId() == R.id.friends) {
+                replaceFragment(new FriendsFragment());
             } else if (item.getItemId() == R.id.browse) {
                 replaceFragment(new FragmentHome());
             } else if (item.getItemId() == R.id.account) {
