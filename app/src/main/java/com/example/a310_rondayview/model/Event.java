@@ -1,13 +1,10 @@
 package com.example.a310_rondayview.model;
 
-import androidx.annotation.Nullable;
-
 import com.google.firebase.firestore.DocumentId;
 
-import java.util.Comparator;
 import java.util.Date;
 
-public class Event implements Comparator<Event> {
+public class Event {
 
     @DocumentId
     private String eventId;
@@ -24,7 +21,7 @@ public class Event implements Comparator<Event> {
         // Default constructor for Firestore deserialization
     }
 
-    public Event(String clubName, String title, String description, String location, Date dateTime, String imageURL, String eventClubProfilePicture, int interestedNumber) {
+    public Event(String clubName, String title, String description, String location, Date dateTime, String imageURL, String eventClubProfilePicture) {
         this.clubName = clubName;
         this.title = title;
         this.description = description;
@@ -32,7 +29,7 @@ public class Event implements Comparator<Event> {
         this.dateTime = dateTime;
         this.imageURL = imageURL;
         this.eventClubProfilePicture = eventClubProfilePicture;
-        this.interestedNumber = interestedNumber;
+        this.interestedNumber = 0;
     }
 
     public String getEventId() {
@@ -104,17 +101,4 @@ public class Event implements Comparator<Event> {
     public void setEventClubProfilePicture(String eventClubProfilePicture) {
         this.eventClubProfilePicture = eventClubProfilePicture;
     }
-
-    @Override
-    public int compare(Event event, Event t1) {
-        return event.interestedNumber - t1.interestedNumber;
-    }
-
-//    @Override
-//    public boolean equals(@Nullable Object obj) {
-//        if(obj.getClass()!=this.getClass()){
-//            return false;
-//        }
-//        return this.eventId.equals((((Event) obj).getEventId()));
-//    }
 }

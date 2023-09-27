@@ -1,21 +1,17 @@
 package com.example.a310_rondayview.ui.adapter;
 
 import android.content.Context;
-import android.net.ipsec.ike.exceptions.InvalidMajorVersionException;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.a310_rondayview.R;
-import com.example.a310_rondayview.databinding.PopularEventCardBinding;
 import com.example.a310_rondayview.model.Event;
 
 import java.util.List;

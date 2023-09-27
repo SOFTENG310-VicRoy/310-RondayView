@@ -1,6 +1,5 @@
 package com.example.a310_rondayview.ui.home;
 
-import android.net.wifi.aware.WifiAwareChannelInfo;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,7 +15,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.CompositePageTransformer;
 import androidx.viewpager2.widget.MarginPageTransformer;
 import androidx.viewpager2.widget.ViewPager2;
-import androidx.fragment.app.FragmentManager;
 
 import com.example.a310_rondayview.R;
 import com.example.a310_rondayview.data.event.DatabaseService;
@@ -29,16 +27,9 @@ import com.yalantis.library.Koloda;
 import com.yalantis.library.KolodaListener;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
-import java.util.PriorityQueue;
-import java.util.Set;
-
-import kotlin.ranges.URangesKt;
 
 public class FragmentHome extends Fragment {
 
@@ -61,15 +52,12 @@ public class FragmentHome extends Fragment {
             emptyEventsLayout = rootView.findViewById(R.id.emptyEventsLayout);
             //Set up UI transition for the popular events list
             popularEventViewPager = rootView.findViewById(R.id.popularEventViewPager);
-            popularEventViewPager.getChildAt(0).setOverScrollMode(RecyclerView.OVER_SCROLL_NEVER);
+            popularEventViewPager.getChildAt(0).setOverScrollMode(View.OVER_SCROLL_NEVER);
             CompositePageTransformer transformer = new CompositePageTransformer();
             transformer.addTransformer(new MarginPageTransformer(40));
-            transformer.addTransformer(new ViewPager2.PageTransformer() {
-                @Override
-                public void transformPage(@NonNull View page, float position) {
-                    float r = 1 - Math.abs(position);
-                    page.setScaleY(0.3f+r*0.7f);
-                }
+            transformer.addTransformer((page, position) -> {
+                float r = 1 - Math.abs(position);
+                page.setScaleY(0.3f+r*0.7f);
             });
             popularEventViewPager.setPageTransformer(transformer);
             // Set up button click listeners
