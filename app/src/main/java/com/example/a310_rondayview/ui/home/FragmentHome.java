@@ -74,6 +74,7 @@ public class FragmentHome extends Fragment {
     private PopularEventAdaptor popularEventAdaptor;
     private List<Event> events = new ArrayList<>();
     private List<Event>topTenPopularEvents = new ArrayList<>();
+    private List<Event>allEvents = new ArrayList<>();
     private int currentEventIndex;
     private ViewHolder vh;
 
@@ -88,6 +89,9 @@ public class FragmentHome extends Fragment {
             events = events1;
             adapter = new SwipeAdapter(getContext(), events);
             vh.koloda.setAdapter(adapter);
+        });
+        databaseService.getAllEvents().thenAccept(events1 -> {
+            allEvents = events1;
             //Fetch top 10 interested events
             fetchTopTenEvent();
             refreshTopTenEvent();
@@ -165,8 +169,13 @@ public class FragmentHome extends Fragment {
             //Increment likes
             events.get(currentEventIndex).incrementInterestedNumber();
             EventsFirestoreManager.getInstance().updateEvent(events.get(currentEventIndex));
-            fetchTopTenEvent();
-            refreshTopTenEvent();
+            DatabaseService databaseService = new DatabaseService();
+            databaseService.getAllEvents().thenAccept(events1 -> {
+                allEvents = events1;
+                //Fetch top 10 interested events
+                fetchTopTenEvent();
+                refreshTopTenEvent();
+            });
             FireBaseUserDataManager.getInstance().addInterestedEvent(events.get(currentEventIndex));
             currentEventIndex++;
         });
@@ -181,6 +190,10 @@ public class FragmentHome extends Fragment {
                 vh.koloda.setVisibility(View.VISIBLE);
                 vh.buttonContainer.setVisibility(View.VISIBLE);
                 currentEventIndex = 0;//Bug where first card messes up count
+            });
+            databaseService.getAllEvents().thenAccept(events1 -> {
+                allEvents = events1;
+                //Fetch top 10 interested events
                 fetchTopTenEvent();
                 refreshTopTenEvent();
             });
@@ -195,9 +208,9 @@ public class FragmentHome extends Fragment {
         Comparator<Event> descendingComparator = Comparator
                 .comparingInt(Event::getInterestedNumber)
                 .reversed();
-        Collections.sort(events, descendingComparator);
+        Collections.sort(allEvents, descendingComparator);
         topTenPopularEvents.clear();
-        for(Event event : events){
+        for(Event event : allEvents){
             topTenPopularEvents.add(event);
             if(topTenPopularEvents.size()==10){
                 break;
