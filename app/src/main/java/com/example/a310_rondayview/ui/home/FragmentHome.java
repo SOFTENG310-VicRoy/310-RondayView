@@ -20,9 +20,11 @@ import com.example.a310_rondayview.R;
 import com.example.a310_rondayview.data.event.DatabaseService;
 import com.example.a310_rondayview.data.event.EventsFirestoreManager;
 import com.example.a310_rondayview.data.user.FireBaseUserDataManager;
+import com.example.a310_rondayview.model.CurrentEventSingleton;
 import com.example.a310_rondayview.model.Event;
 import com.example.a310_rondayview.ui.adapter.PopularEventAdaptor;
 import com.example.a310_rondayview.ui.adapter.SwipeAdapter;
+import com.example.a310_rondayview.ui.detailed.FragmentDetailed;
 import com.yalantis.library.Koloda;
 import com.yalantis.library.KolodaListener;
 
@@ -133,8 +135,11 @@ public class FragmentHome extends Fragment {
 
             @Override
             public void onCardSingleTap(int i) {
-                //TODO DETAILS PAGE (A2) -> show details of event from dialog
                 Toast.makeText(getContext(), "Open detailed view", Toast.LENGTH_SHORT).show();
+                CurrentEventSingleton currentEventSingleton = CurrentEventSingleton.getInstance();
+                currentEventSingleton.setCurrentEvent(events.get(currentEventIndex));
+                getActivity().getSupportFragmentManager().beginTransaction().addToBackStack(null).replace(R.id.frame_layout, new FragmentDetailed()).commit();
+
             }
 
             @Override
@@ -161,6 +166,7 @@ public class FragmentHome extends Fragment {
             vh.koloda.onButtonClick(false);
             FireBaseUserDataManager.getInstance().addDisinterestedEvent(events.get(currentEventIndex));
             currentEventIndex++;
+
         });
 
         // INTERESTED
