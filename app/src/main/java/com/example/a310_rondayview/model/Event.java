@@ -3,6 +3,7 @@ package com.example.a310_rondayview.model;
 import com.google.firebase.firestore.DocumentId;
 
 import java.util.Date;
+import java.util.Objects;
 
 public class Event {
 
@@ -95,9 +96,20 @@ public class Event {
     }
     @Override
     public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || this.getClass() != obj.getClass()) {
+            return false;
+        }
 
         Event otherEvent = (Event) obj;
 
         return eventId.equals(otherEvent.eventId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(eventId, title);
     }
 }
