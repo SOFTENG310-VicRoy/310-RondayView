@@ -62,7 +62,7 @@ public class InterestedEventsFragment extends Fragment {
 
         // populate the recycler view
         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-        InterestedEventsAdapter interestedEventsAdapter = new InterestedEventsAdapter(getContext(), eventsList,true, fragmentManager);
+        InterestedEventsAdapter interestedEventsAdapter = new InterestedEventsAdapter(getContext(), eventsList,false, fragmentManager);
         vh.interestedRecyclerView.setAdapter(interestedEventsAdapter);
         interestedEventsAdapter.notifyDataSetChanged();
     }
