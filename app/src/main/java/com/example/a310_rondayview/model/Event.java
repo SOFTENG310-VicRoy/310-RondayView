@@ -93,4 +93,11 @@ public class Event {
     public void setEventClubProfilePicture(String eventClubProfilePicture) {
         this.eventClubProfilePicture = eventClubProfilePicture;
     }
+    @Override
+    public boolean equals(Object obj) {
+
+        Event otherEvent = (Event) obj;
+
+        return eventId.equals(otherEvent.eventId);
+    }
 }

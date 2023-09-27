@@ -49,7 +49,6 @@ public class FragmentHome extends Fragment {
 
     }
 
-    private static final String TAG = "FragmentHome";
     private SwipeAdapter adapter;
     private List<Event> events = new ArrayList<>();
     private int currentEventIndex;
@@ -149,11 +148,12 @@ public class FragmentHome extends Fragment {
             databaseService.getApplicableEvents().thenAccept(events1 -> {
                 events = events1;
                 vh.koloda.reloadAdapterData();
+                vh.emptyEventsLayout.setVisibility(View.GONE);
+                vh.koloda.setVisibility(View.VISIBLE);
+                vh.buttonContainer.setVisibility(View.VISIBLE);
+                currentEventIndex = 0;//Bug where first card messes up count
             });
-            vh.emptyEventsLayout.setVisibility(View.GONE);
-            vh.koloda.setVisibility(View.VISIBLE);
-            vh.buttonContainer.setVisibility(View.VISIBLE);
-            currentEventIndex = 1; //set at 1 as bug where first item is skipped on refresh
+
         });
     }
 

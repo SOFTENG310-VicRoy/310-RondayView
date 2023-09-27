@@ -18,6 +18,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 public class FireBaseUserDataManager {
     private static final String TAG = "FireBaseUserDataManager";
@@ -28,11 +29,9 @@ public class FireBaseUserDataManager {
     private static final String SIGNINERROR = "No user is currently signed in.";
     private static final String FIND_FRIEND_ERROR = "Failed to find friend";
     private final FirebaseFirestore db;
-    private List<Event> interestedEvents = new ArrayList<>();
-    private List<Event> disinterestedEvents = new ArrayList<>();
 
     private List<User> friendsList = new ArrayList<>();
-    private List<Event> eventList = new ArrayList<>();
+    private ArrayList<Event> eventList = new ArrayList<>();
 
     private FireBaseUserDataManager() {
         db = FirebaseFirestore.getInstance();
@@ -49,17 +48,11 @@ public class FireBaseUserDataManager {
         return InstanceHolder.instance;
     }
 
-    public List<Event> getInterestedEvents() {
-        return interestedEvents;
-    }
-
-    public List<Event> getDisinterestedEvents() {
-        return disinterestedEvents;
-    }
     public List<User> getFriendsList() {
         return friendsList;
     }
-    public void getEvents(Boolean interested) {
+    public CompletableFuture<ArrayList<Event>> getEvents(Boolean interested) {
+        CompletableFuture<ArrayList<Event>> events = new CompletableFuture<>();
         String collection;
 
         if(Boolean.TRUE.equals(interested)){
@@ -86,23 +79,22 @@ public class FireBaseUserDataManager {
                         if (task.isSuccessful()) {
                             // Assign the fetched list of Event objects to the appropriate class member variable
                             eventList = makeEventsList(task.getResult());
-
-                            Log.d(TAG, "Successfully fetched the disinterested events data: " + disinterestedEvents.toString());
+                            events.complete(eventList);
+                            Log.d(TAG, "Successfully fetched the event data");
                         } else {
                             Log.e(TAG, "Error fetching disinterested events data: ", task.getException());
                         }
+
                     });
         } else {
             // Handle the case where no user is signed in
             Log.e(TAG, SIGNINERROR);
         }
-        if(Boolean.TRUE.equals(interested)){
-            interestedEvents = eventList;
-        } else disinterestedEvents = eventList;
+        return events;
     }
 
-    List<Event> makeEventsList(QuerySnapshot snapshot) {
-        List<Event> events = new ArrayList<>();
+    ArrayList<Event> makeEventsList(QuerySnapshot snapshot) {
+        ArrayList<Event> events = new ArrayList<>();
         for (QueryDocumentSnapshot document : snapshot) {
             if (document != null && document.exists()) {
                 Event event = new Event();
@@ -361,7 +353,7 @@ public class FireBaseUserDataManager {
                         if (task.isSuccessful()) {
                             friend.setInterestedEvents(makeEventsList(task.getResult()));
                             callback.onSuccessfulFriendOperation();
-                            Log.d(TAG, "Successfully fetched the friends' events data: " + disinterestedEvents.toString());
+                            Log.d(TAG, "Successfully fetched the friends' events data");
                         } else {
                             Log.e(TAG, "Error fetching events data: ", task.getException());
                         }

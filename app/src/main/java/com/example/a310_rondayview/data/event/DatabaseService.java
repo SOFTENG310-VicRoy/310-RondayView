@@ -8,7 +8,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 public class DatabaseService {
@@ -42,17 +41,17 @@ public class DatabaseService {
     public CompletableFuture<ArrayList<Event>> getApplicableEvents(){
         CompletableFuture<ArrayList<Event>> futureApplicableEvents = new CompletableFuture<>();
         FireBaseUserDataManager fireBaseUserDataManager = FireBaseUserDataManager.getInstance();
-        fireBaseUserDataManager.getEvents(true);
+
         ArrayList<Event> applicableEvents = new ArrayList<>();
-        List<Event> interestedEvents = fireBaseUserDataManager.getInterestedEvents();
-        getAllEvents().thenAccept(events -> {
+        fireBaseUserDataManager.getEvents(true).thenAccept(interestedEvents -> getAllEvents().thenAccept(events -> {
             for (Event event: events) {
                 if(!interestedEvents.contains(event)){
                     applicableEvents.add(event);
                 }
             }
             futureApplicableEvents.complete(applicableEvents);
-        });
+        }));
+
         return (futureApplicableEvents);
     }
 }
