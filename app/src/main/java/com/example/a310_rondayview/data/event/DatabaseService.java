@@ -2,6 +2,7 @@ package com.example.a310_rondayview.data.event;
 
 import android.util.Log;
 
+import com.example.a310_rondayview.data.user.FireBaseUserDataManager;
 import com.example.a310_rondayview.model.Event;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -34,23 +35,23 @@ public class DatabaseService {
     }
 
     /**
-     * Gets all the events a user is disinterested in
-     * @return Arraylist of events
+     * Only uninterested events or events they haven't seen should show
+     * @return applicable events to show the user
      */
-    private ArrayList<Event> fetchDisinterestedEvents() {
-        ArrayList<Event> disinterestedEvents = new ArrayList<>();
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        db.collection("users").get().addOnCompleteListener(task -> { // is this the correct collection path?
-            if (task.isSuccessful()) {
-                for (QueryDocumentSnapshot document : task.getResult()) {
-                    Event event = document.toObject(Event.class);
-                    disinterestedEvents.add(event);
-                }
-            } else {
-                Log.e("Database error", "Fetching of disinterested events not working properly");
-            }
-        });
-        return disinterestedEvents;
-    }
+    public CompletableFuture<ArrayList<Event>> getApplicableEvents(){
+        CompletableFuture<ArrayList<Event>> futureApplicableEvents = new CompletableFuture<>();
+        FireBaseUserDataManager fireBaseUserDataManager = FireBaseUserDataManager.getInstance();
 
+        ArrayList<Event> applicableEvents = new ArrayList<>();
+        fireBaseUserDataManager.getEvents(true).thenAccept(interestedEvents -> getAllEvents().thenAccept(events -> {
+            for (Event event: events) {
+                if(!interestedEvents.contains(event)){
+                    applicableEvents.add(event);
+                }
+            }
+            futureApplicableEvents.complete(applicableEvents);
+        }));
+
+        return (futureApplicableEvents);
+    }
 }

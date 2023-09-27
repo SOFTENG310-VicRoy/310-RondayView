@@ -70,7 +70,6 @@ public class FragmentHome extends Fragment {
 
     }
 
-    private static final String TAG = "FragmentHome";
     private SwipeAdapter adapter;
     private PopularEventAdaptor popularEventAdaptor;
     private List<Event> events = new ArrayList<>();
@@ -85,7 +84,7 @@ public class FragmentHome extends Fragment {
         currentEventIndex = 0;
         // fetching event data
         DatabaseService databaseService = new DatabaseService();
-        databaseService.getAllEvents().thenAccept(events1 -> {
+        databaseService.getApplicableEvents().thenAccept(events1 -> {
             events = events1;
             adapter = new SwipeAdapter(getContext(), events);
             vh.koloda.setAdapter(adapter);
@@ -109,13 +108,13 @@ public class FragmentHome extends Fragment {
 
             @Override
             public void onCardSwipedLeft(int i) {
-                Toast.makeText(getContext(), "Left Swipe", Toast.LENGTH_SHORT).show();
+                FireBaseUserDataManager.getInstance().addDisinterestedEvent(events.get(currentEventIndex));
                 currentEventIndex++;
             }
 
             @Override
             public void onCardSwipedRight(int i) {
-                Toast.makeText(getContext(), "Right Swipe", Toast.LENGTH_SHORT).show();
+                FireBaseUserDataManager.getInstance().addInterestedEvent(events.get(currentEventIndex));
                 currentEventIndex++;
             }
 
@@ -175,16 +174,17 @@ public class FragmentHome extends Fragment {
         // REFRESH PAGE
         vh.refreshButton.setOnClickListener(view -> {
             DatabaseService databaseService = new DatabaseService();
-            databaseService.getAllEvents().thenAccept(events1 -> {
+            databaseService.getApplicableEvents().thenAccept(events1 -> {
                 events = events1;
                 vh.koloda.reloadAdapterData();
+                vh.emptyEventsLayout.setVisibility(View.GONE);
+                vh.koloda.setVisibility(View.VISIBLE);
+                vh.buttonContainer.setVisibility(View.VISIBLE);
+                currentEventIndex = 0;//Bug where first card messes up count
                 fetchTopTenEvent();
                 refreshTopTenEvent();
             });
-            vh.emptyEventsLayout.setVisibility(View.GONE);
-            vh.koloda.setVisibility(View.VISIBLE);
-            vh.buttonContainer.setVisibility(View.VISIBLE);
-            currentEventIndex = 1; //set at 1 as bug where first item is skipped on refresh
+
         });
     }
 

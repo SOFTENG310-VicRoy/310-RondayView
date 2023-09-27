@@ -23,7 +23,7 @@ public class InterestedEventsFragment extends Fragment {
 
     List<Event> eventsList;
 
-    private class ViewHolder {
+    private static class ViewHolder {
 
         RecyclerView interestedRecyclerView;
 
@@ -53,17 +53,17 @@ public class InterestedEventsFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // load in the list of interested events from the database
-        eventsList = FireBaseUserDataManager.getInstance().getInterestedEvents();
-
         // setup the recycler view
         vh.interestedRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         vh.interestedRecyclerView.setHasFixedSize(true);
 
-        // populate the recycler view
-        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-        InterestedEventsAdapter interestedEventsAdapter = new InterestedEventsAdapter(getContext(), eventsList,false, fragmentManager);
-        vh.interestedRecyclerView.setAdapter(interestedEventsAdapter);
-        interestedEventsAdapter.notifyDataSetChanged();
+        // load in the list of interested events from the database
+        FireBaseUserDataManager.getInstance().getEvents(true).thenAccept(events -> {
+            eventsList = events;
+            // populate the recycler view
+            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+            InterestedEventsAdapter interestedEventsAdapter = new InterestedEventsAdapter(getContext(), eventsList,false, fragmentManager);
+            vh.interestedRecyclerView.setAdapter(interestedEventsAdapter);
+        });
     }
 }
