@@ -11,7 +11,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
-import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.CompositePageTransformer;
 import androidx.viewpager2.widget.MarginPageTransformer;
 import androidx.viewpager2.widget.ViewPager2;
@@ -27,7 +26,6 @@ import com.yalantis.library.Koloda;
 import com.yalantis.library.KolodaListener;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -71,9 +69,8 @@ public class FragmentHome extends Fragment {
     }
 
     private SwipeAdapter adapter;
-    private PopularEventAdaptor popularEventAdaptor;
     private List<Event> events = new ArrayList<>();
-    private List<Event>topTenPopularEvents = new ArrayList<>();
+    private final List<Event>topTenPopularEvents = new ArrayList<>();
     private int currentEventIndex;
     private ViewHolder vh;
 
@@ -86,11 +83,13 @@ public class FragmentHome extends Fragment {
         DatabaseService databaseService = new DatabaseService();
         databaseService.getApplicableEvents().thenAccept(events1 -> {
             events = events1;
-            adapter = new SwipeAdapter(getContext(), events);
-            vh.koloda.setAdapter(adapter);
             //Fetch top 10 interested events
             fetchTopTenEvent();
             refreshTopTenEvent();
+
+            adapter = new SwipeAdapter(getContext(), events1);
+            vh.koloda.setAdapter(adapter);
+
         });
         buttonListeners();
 
@@ -175,14 +174,12 @@ public class FragmentHome extends Fragment {
         vh.refreshButton.setOnClickListener(view -> {
             DatabaseService databaseService = new DatabaseService();
             databaseService.getApplicableEvents().thenAccept(events1 -> {
-                events = events1;
-                vh.koloda.reloadAdapterData();
+                adapter = new SwipeAdapter(getContext(), events1);
+                vh.koloda.setAdapter(adapter);
                 vh.emptyEventsLayout.setVisibility(View.GONE);
                 vh.koloda.setVisibility(View.VISIBLE);
                 vh.buttonContainer.setVisibility(View.VISIBLE);
                 currentEventIndex = 0;//Bug where first card messes up count
-                fetchTopTenEvent();
-                refreshTopTenEvent();
             });
 
         });
@@ -192,12 +189,13 @@ public class FragmentHome extends Fragment {
      * Fetches the top ten event ranked by the amount of interests
      */
     private void fetchTopTenEvent(){
+        List<Event> tempEvents = new ArrayList<>(events);
         Comparator<Event> descendingComparator = Comparator
                 .comparingInt(Event::getInterestedNumber)
                 .reversed();
-        Collections.sort(events, descendingComparator);
+        tempEvents.sort(descendingComparator);
         topTenPopularEvents.clear();
-        for(Event event : events){
+        for(Event event : tempEvents){
             topTenPopularEvents.add(event);
             if(topTenPopularEvents.size()==10){
                 break;
@@ -205,7 +203,7 @@ public class FragmentHome extends Fragment {
         }
     }
     private void refreshTopTenEvent(){
-        popularEventAdaptor = new PopularEventAdaptor(getContext(), topTenPopularEvents);
+        PopularEventAdaptor popularEventAdaptor = new PopularEventAdaptor(getContext(), topTenPopularEvents);
         vh.popularEventViewPager.setAdapter(popularEventAdaptor);
     }
     public List<Event> getEvents() {
