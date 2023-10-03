@@ -1,6 +1,8 @@
 package com.example.a310_rondayview.ui.adapter;
 
 import android.content.Context;
+import android.content.Intent;
+import android.provider.CalendarContract;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,7 +36,7 @@ public class InterestedEventsAdapter extends RecyclerView.Adapter<InterestedEven
     List<Event> eventsList;
     boolean hideHeart;
 
-    private CurrentEventSingleton currentEvent;
+    private CurrentEventSingleton currentEventSingleton;
     private FragmentManager fragmentManager;
 
     public InterestedEventsAdapter(Context context, List<Event> eventsList) {
@@ -109,9 +111,16 @@ public class InterestedEventsAdapter extends RecyclerView.Adapter<InterestedEven
         holder.titleTextView.setText(event.getTitle());
         holder.descriptionTextView.setText(event.getDescription());
         holder.eventImageView.setOnClickListener(v -> {
-            currentEvent = CurrentEventSingleton.getInstance();
-            currentEvent.setCurrentEvent(event);
+            currentEventSingleton = CurrentEventSingleton.getInstance();
 
+            currentEventSingleton.setCurrentEvent(event);
+            Intent intent = new Intent(Intent.ACTION_INSERT)
+                    .setData(CalendarContract.Events.CONTENT_URI)
+                    .putExtra(CalendarContract.Events.TITLE, event.getTitle())
+                    .putExtra(CalendarContract.Events.EVENT_LOCATION, event.getLocation())
+                    .putExtra(CalendarContract.Events.DESCRIPTION, event.getDescription())
+                    .putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, event.getDateTime());
+            context.startActivity(intent);
             fragmentManager.beginTransaction().addToBackStack("fragment_interested_events").replace(R.id.frame_layout, new FragmentDetailed()).commit();
         });
     }
