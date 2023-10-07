@@ -10,6 +10,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.BounceInterpolator;
 import android.view.animation.ScaleAnimation;
+import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -110,7 +111,7 @@ public class InterestedEventsAdapter extends RecyclerView.Adapter<InterestedEven
         Glide.with(holder.itemView.getContext()).load(event.getImageURL()).into(holder.eventImageView);
         holder.titleTextView.setText(event.getTitle());
         holder.descriptionTextView.setText(event.getDescription());
-        holder.eventImageView.setOnClickListener(v -> {
+        holder.notificationButton.setOnClickListener(v -> {
             currentEventSingleton = CurrentEventSingleton.getInstance();
 
             currentEventSingleton.setCurrentEvent(event);
@@ -121,6 +122,8 @@ public class InterestedEventsAdapter extends RecyclerView.Adapter<InterestedEven
                     .putExtra(CalendarContract.Events.DESCRIPTION, event.getDescription())
                     .putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, event.getDateTime());
             context.startActivity(intent);
+        });
+        holder.eventImageView.setOnClickListener(v -> {
             fragmentManager.beginTransaction().addToBackStack("fragment_interested_events").replace(R.id.frame_layout, new FragmentDetailed()).commit();
         });
     }
@@ -138,8 +141,7 @@ public class InterestedEventsAdapter extends RecyclerView.Adapter<InterestedEven
         TextView titleTextView;
         TextView descriptionTextView;
         ToggleButton heartButton;
-
-        ImageView eventImage;
+        Button notificationButton;
 
 
         public InterestedEventsViewHolder(@NonNull View itemView) {
@@ -148,6 +150,7 @@ public class InterestedEventsAdapter extends RecyclerView.Adapter<InterestedEven
             titleTextView = itemView.findViewById(R.id.titleText);
             descriptionTextView = itemView.findViewById(R.id.descriptionText);
             heartButton = itemView.findViewById(R.id.heart_button);
+            notificationButton = itemView.findViewById(R.id.notification_button);
         }
     }
 }
