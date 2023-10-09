@@ -31,6 +31,25 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import java.util.List;
 
 public class InterestedEventsAdapter extends RecyclerView.Adapter<InterestedEventsAdapter.InterestedEventsViewHolder> {
+    // ViewHolder class to hold references to UI elements for a list item
+    public static class InterestedEventsViewHolder extends RecyclerView.ViewHolder {
+
+        ImageView eventImageView;
+        TextView titleTextView;
+        TextView descriptionTextView;
+        ToggleButton heartButton;
+
+        ImageView eventImage;
+
+
+        public InterestedEventsViewHolder(@NonNull View itemView) {
+            super(itemView);
+            eventImageView = itemView.findViewById(R.id.coverImage);
+            titleTextView = itemView.findViewById(R.id.titleText);
+            descriptionTextView = itemView.findViewById(R.id.descriptionText);
+            heartButton = itemView.findViewById(R.id.heart_button);
+        }
+    }
 
     Context context;
     List<Event> eventsList;
@@ -72,43 +91,52 @@ public class InterestedEventsAdapter extends RecyclerView.Adapter<InterestedEven
         BounceInterpolator bounceInterpolator = new BounceInterpolator();
         scaleAnimation.setInterpolator(bounceInterpolator);
 
-        ToggleButton heartButton = holder.itemView.findViewById(R.id.heart_button);
         if (hideHeart) {
-            heartButton.setVisibility(View.GONE);
+            holder.heartButton.setVisibility(View.GONE);
         }
-        heartButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        holder.heartButton.setChecked(true);
+        holder.heartButton.setEnabled(true);
+
+        holder.heartButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                if (!isChecked) {
+                    Animation fadeOut = AnimationUtils.loadAnimation(context, R.anim.fade_out);
+                    holder.itemView.startAnimation(fadeOut);
 
-                Animation fadeOut = AnimationUtils.loadAnimation(context, R.anim.fade_out);
-                holder.itemView.startAnimation(fadeOut);
-                // disable the button so that user cannot spam it and run the event update multiple times
-                heartButton.setEnabled(false);
+                    // disable the button so that user cannot spam it and run the event updater multiple times
+                    holder.heartButton.setEnabled(false);
 
-                // Delay the removal of the item to match the card animation duration
-                // Code snippet adapted from OpenAI. (2023). ChatGPT (Aug 24 version) [Large language model]. https://chat.openai.com/chat
-                holder.itemView.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        String eventId = event.getEventId();
-                        DatabaseService databaseService = new DatabaseService();
-                        databaseService.getEventById(eventId).thenAccept(event1 -> {
-                            event1.decrementInterestCount();
-                            EventsFirestoreManager.getInstance().updateEvent(event1);
-                            FireBaseUserDataManager.getInstance().removeInterestedEvent(event1);
-                            FireBaseUserDataManager.getInstance().getEvents(true);
-                            compoundButton.startAnimation(scaleAnimation);
-                            // These are needed in order to show the event has been removed straight away
-                            // Without this, the event does not disappear
-                            int position = eventsList.indexOf(event);
-                            if (position != -1) {
-                                eventsList.remove(position);
-                                notifyDataSetChanged();
-                            }
-                        });
+                    // Delay the removal of the item to match the card animation duration
+                    // Code snippet adapted from OpenAI. (2023). ChatGPT (Aug 24 version) [Large language model]. https://chat.openai.com/chat
+                    holder.itemView.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            Log.d("test", "Event namme:" + event.getTitle());
+                            Log.d("test", "Event count:" + event.getInterestCount());
 
-                    }
-                }, fadeOut.getDuration());
+                            String eventId = event.getEventId();
+                            DatabaseService databaseService = new DatabaseService();
+                            databaseService.getEventById(eventId).thenAccept(event1 -> {
+                                event1.decrementInterestCount();
+                                EventsFirestoreManager.getInstance().updateEvent(event1);
+                                FireBaseUserDataManager.getInstance().removeInterestedEvent(event1);
+                                FireBaseUserDataManager.getInstance().getEvents(true);
+                                compoundButton.startAnimation(scaleAnimation);
+                                // These are needed in order to show the event has been removed straight away
+                                // Without this, the event does not disappear
+                                int position = eventsList.indexOf(event);
+                                if (position != -1) {
+                                    eventsList.remove(position);
+                                    notifyDataSetChanged();
+                                }
+                            });
+
+                        }
+                    }, fadeOut.getDuration());
+                }
+
+
             }
         });
 
@@ -129,23 +157,5 @@ public class InterestedEventsAdapter extends RecyclerView.Adapter<InterestedEven
     }
 
 
-    // ViewHolder class to hold references to UI elements for a list item
-    public static class InterestedEventsViewHolder extends RecyclerView.ViewHolder {
 
-        ImageView eventImageView;
-        TextView titleTextView;
-        TextView descriptionTextView;
-        ToggleButton heartButton;
-
-        ImageView eventImage;
-
-
-        public InterestedEventsViewHolder(@NonNull View itemView) {
-            super(itemView);
-            eventImageView = itemView.findViewById(R.id.coverImage);
-            titleTextView = itemView.findViewById(R.id.titleText);
-            descriptionTextView = itemView.findViewById(R.id.descriptionText);
-            heartButton = itemView.findViewById(R.id.heart_button);
-        }
-    }
 }
