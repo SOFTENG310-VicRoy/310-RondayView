@@ -13,6 +13,8 @@ import java.util.ArrayList;
 import java.util.concurrent.CompletableFuture;
 
 public class DatabaseService {
+    private static final String DATABASE_ERROR_TAG = "Database error";
+
     /**
      * Gets all current events irrespective of a user interacting with them
      * @return Arraylist of events
@@ -29,7 +31,7 @@ public class DatabaseService {
                     allEvents.add(event);
                 }
             } else {
-                Log.e("Database error", "Fetching of events not working properly");
+                Log.e(DATABASE_ERROR_TAG, "Fetching of events not working properly");
             }
             futureEvents.complete(allEvents);
         });
@@ -74,11 +76,11 @@ public class DatabaseService {
                     Event event = document.toObject(Event.class);
                     futureEvent.complete(event);
                 } else {
-                    Log.e("Database error", "Event with ID " + eventId + " not found.");
+                    Log.e(DATABASE_ERROR_TAG, "Event with ID " + eventId + " not found.");
                     futureEvent.complete(null); // Event not found
                 }
             } else {
-                Log.e("Database error", "Error fetching event with ID " + eventId);
+                Log.e(DATABASE_ERROR_TAG, "Error fetching event with ID " + eventId);
                 futureEvent.completeExceptionally(task.getException());
             }
         });

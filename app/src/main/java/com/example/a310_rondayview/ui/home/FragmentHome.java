@@ -74,7 +74,6 @@ public class FragmentHome extends Fragment {
     private PopularEventAdaptor popularEventAdaptor;
     private List<Event> events = new ArrayList<>();
     private List<Event>topTenPopularEvents = new ArrayList<>();
-    private List<Event>allEvents = new ArrayList<>();
     private int currentEventIndex;
     private ViewHolder vh;
 
@@ -89,9 +88,6 @@ public class FragmentHome extends Fragment {
             events = events1;
             adapter = new SwipeAdapter(getContext(), events);
             vh.koloda.setAdapter(adapter);
-        });
-        databaseService.getAllEvents().thenAccept(events1 -> {
-            allEvents = events1;
             //Fetch top 10 interested events
             refreshTopTenEvent();
         });

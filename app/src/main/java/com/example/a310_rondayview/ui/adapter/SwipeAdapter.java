@@ -8,13 +8,9 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.fragment.app.FragmentManager;
-
 import com.bumptech.glide.Glide;
-import com.example.a310_rondayview.model.CurrentEventSingleton;
-import com.example.a310_rondayview.model.Event;
 import com.example.a310_rondayview.R;
-import com.example.a310_rondayview.ui.detailed.FragmentDetailed;
+import com.example.a310_rondayview.model.Event;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -33,7 +29,6 @@ public class SwipeAdapter extends BaseAdapter {
 
     private ImageView eventClubPFPImageView;
 
-    private CurrentEventSingleton currentEvent;
 
     public SwipeAdapter(Context context, List<Event> events) {
         this.context = context;
