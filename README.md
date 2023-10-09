@@ -28,7 +28,9 @@ For additional help, questions, or suggestions, please feel free to contact the 
 
 ## Attributions
 
-A big thank you to the team that have worked hard on RondayView and brought this project to the community!
+A big thank you to the teams that have worked hard on RondayView and brought this project to the community!
+
+Group 8:
 
     Jackson Schofield (Jackson-Schofield)
     Ben Martin (bmar268)
@@ -36,3 +38,11 @@ A big thank you to the team that have worked hard on RondayView and brought this
     Ariel Wang (arielyxw)
     Emily Zou (boxy8)
     Michael Hardy (mhardy88)
+
+Group 6:
+
+    Troy Murdoch (tmur647)
+    Daniel Eir (deir905)
+    Yizheng Xing (Yxin-KaiByz)
+    Yuqi Xing (yxin202)
+    Nathan Bell (nbel806)

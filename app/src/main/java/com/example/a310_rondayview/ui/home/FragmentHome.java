@@ -74,6 +74,7 @@ public class FragmentHome extends Fragment {
     private PopularEventAdaptor popularEventAdaptor;
     private List<Event> events = new ArrayList<>();
     private List<Event>topTenPopularEvents = new ArrayList<>();
+    private List<Event>allEvents = new ArrayList<>();
     private int currentEventIndex;
     private ViewHolder vh;
 
@@ -88,6 +89,9 @@ public class FragmentHome extends Fragment {
             events = events1;
             adapter = new SwipeAdapter(getContext(), events);
             vh.koloda.setAdapter(adapter);
+        });
+        databaseService.getAllEvents().thenAccept(events1 -> {
+            allEvents = events1;
             //Fetch top 10 interested events
             refreshTopTenEvent();
         });
@@ -155,9 +159,11 @@ public class FragmentHome extends Fragment {
 
     private void buttonListeners() {
         // NOT INTERESTED
+
         vh.nopeButton.setOnClickListener(v -> vh.koloda.onClickLeft());
         // INTERESTED
         vh.interestedButton.setOnClickListener(v -> vh.koloda.onClickRight());
+
 
         // REFRESH PAGE
         vh.refreshButton.setOnClickListener(view -> {
@@ -178,6 +184,7 @@ public class FragmentHome extends Fragment {
     /**
      * Fetches the top ten event ranked by the amount of interests and refreshes the display
      */
+
     private void refreshTopTenEvent(){
         Comparator<Event> descendingComparator = Comparator
                 .comparingInt(Event::getInterestCount)
