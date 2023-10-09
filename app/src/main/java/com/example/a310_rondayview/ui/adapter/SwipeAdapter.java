@@ -34,13 +34,6 @@ public class SwipeAdapter extends BaseAdapter {
     private ImageView eventClubPFPImageView;
 
     private CurrentEventSingleton currentEvent;
-    private FragmentManager fragmentManager;
-
-    public SwipeAdapter(Context context, List<Event> events, FragmentManager fragmentManager) {
-        this.context = context;
-        this.events = events;
-        this.fragmentManager = fragmentManager;
-    }
 
     public SwipeAdapter(Context context, List<Event> events) {
         this.context = context;
@@ -97,12 +90,6 @@ public class SwipeAdapter extends BaseAdapter {
             eventDescriptionTextView.setText(event.getDescription());
             Glide.with(context).load(event.getImageURL()).into(eventImageView);
             Glide.with(context).load(event.getEventClubProfilePicture()).into(eventClubPFPImageView);
-            eventImageView.setOnClickListener(v -> {
-                currentEvent = CurrentEventSingleton.getInstance();
-                currentEvent.setCurrentEvent(event);
-
-                fragmentManager.beginTransaction().addToBackStack("fragment_home").replace(R.id.frame_layout, new FragmentDetailed()).commit();
-            });
         }
         return view;
     }
