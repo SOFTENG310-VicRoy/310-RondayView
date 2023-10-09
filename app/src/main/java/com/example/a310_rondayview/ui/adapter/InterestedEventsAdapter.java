@@ -9,7 +9,6 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.BounceInterpolator;
 import android.view.animation.ScaleAnimation;
-import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.ToggleButton;
@@ -18,12 +17,12 @@ import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.a310_rondayview.R;
 import com.example.a310_rondayview.data.event.DatabaseService;
 import com.example.a310_rondayview.data.event.EventsFirestoreManager;
+import com.example.a310_rondayview.data.user.FireBaseUserDataManager;
 import com.example.a310_rondayview.model.CurrentEventSingleton;
 import com.example.a310_rondayview.model.Event;
-import com.example.a310_rondayview.data.user.FireBaseUserDataManager;
-import com.example.a310_rondayview.R;
 import com.example.a310_rondayview.ui.detailed.FragmentDetailed;
 
 import org.checkerframework.checker.nullness.qual.NonNull;

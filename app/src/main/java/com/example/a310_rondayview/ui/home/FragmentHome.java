@@ -155,11 +155,9 @@ public class FragmentHome extends Fragment {
 
     private void buttonListeners() {
         // NOT INTERESTED
-
         vh.nopeButton.setOnClickListener(v -> vh.koloda.onClickLeft());
         // INTERESTED
         vh.interestedButton.setOnClickListener(v -> vh.koloda.onClickRight());
-
 
         // REFRESH PAGE
         vh.refreshButton.setOnClickListener(view -> {
