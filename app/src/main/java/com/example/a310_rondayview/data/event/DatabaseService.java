@@ -4,6 +4,8 @@ import android.util.Log;
 
 import com.example.a310_rondayview.data.user.FireBaseUserDataManager;
 import com.example.a310_rondayview.model.Event;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
@@ -53,5 +55,34 @@ public class DatabaseService {
         }));
 
         return (futureApplicableEvents);
+    }
+
+    /**
+     * Gets a specific event by an ID
+     * @param eventId
+     * @return the event from the firebase db
+     */
+    public CompletableFuture<Event> getEventById(String eventId) {
+        CompletableFuture<Event> futureEvent = new CompletableFuture<>();
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        DocumentReference eventRef = db.collection("events").document(eventId);
+        eventRef.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                DocumentSnapshot document = task.getResult();
+                if (document.exists()) {
+                    Event event = document.toObject(Event.class);
+                    futureEvent.complete(event);
+                } else {
+                    Log.e("Database error", "Event with ID " + eventId + " not found.");
+                    futureEvent.complete(null); // Event not found
+                }
+            } else {
+                Log.e("Database error", "Error fetching event with ID " + eventId);
+                futureEvent.completeExceptionally(task.getException());
+            }
+        });
+
+        return futureEvent;
     }
 }
