@@ -1,6 +1,7 @@
 package com.example.a310_rondayview.ui.adapter;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +18,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.a310_rondayview.data.event.DatabaseService;
 import com.example.a310_rondayview.data.event.EventsFirestoreManager;
 import com.example.a310_rondayview.model.CurrentEventSingleton;
 import com.example.a310_rondayview.model.Event;
@@ -80,26 +82,31 @@ public class InterestedEventsAdapter extends RecyclerView.Adapter<InterestedEven
 
                 Animation fadeOut = AnimationUtils.loadAnimation(context, R.anim.fade_out);
                 holder.itemView.startAnimation(fadeOut);
+                // disable the button so that user cannot spam it and run the event update multiple times
+                heartButton.setEnabled(false);
 
                 // Delay the removal of the item to match the card animation duration
                 // Code snippet adapted from OpenAI. (2023). ChatGPT (Aug 24 version) [Large language model]. https://chat.openai.com/chat
                 holder.itemView.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        event.decrementInterestedNumber();
-                        EventsFirestoreManager.getInstance().updateEvent(event);
-                        FireBaseUserDataManager.getInstance().removeInterestedEvent(event);
-                        FireBaseUserDataManager.getInstance().getEvents(true);
-                        compoundButton.startAnimation(scaleAnimation);
+                        String eventId = event.getEventId();
+                        DatabaseService databaseService = new DatabaseService();
+                        databaseService.getEventById(eventId).thenAccept(event1 -> {
+                            event1.decrementInterestCount();
+                            EventsFirestoreManager.getInstance().updateEvent(event1);
+                            FireBaseUserDataManager.getInstance().removeInterestedEvent(event1);
+                            FireBaseUserDataManager.getInstance().getEvents(true);
+                            compoundButton.startAnimation(scaleAnimation);
+                            // These are needed in order to show the event has been removed straight away
+                            // Without this, the event does not disappear
+                            int position = eventsList.indexOf(event);
+                            if (position != -1) {
+                                eventsList.remove(position);
+                                notifyDataSetChanged();
+                            }
+                        });
 
-                        // These are needed in order to show the event has been removed straight away
-                        // Without this, the event does not disappear
-                        int position = eventsList.indexOf(event);
-                        if (position != -1) {
-                            eventsList.remove(position);
-                            notifyDataSetChanged();
-                        }
-                        holder.heartButton.setChecked(true);
                     }
                 }, fadeOut.getDuration());
             }

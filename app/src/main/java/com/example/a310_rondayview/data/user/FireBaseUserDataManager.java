@@ -109,6 +109,12 @@ public class FireBaseUserDataManager {
                 event.setLocation(document.getString("location"));
                 event.setTitle(document.getString("title"));
 
+                Object interestCountObject = document.get("interestCount");
+                if (interestCountObject != null) {
+                    int interestCount = ((Number) interestCountObject).intValue();
+                    event.setInterestCount(interestCount);
+                }
+
                 // Add the Event object to the list of events
                 events.add(event);
             }
