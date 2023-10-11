@@ -113,7 +113,8 @@ public class Event {
 
         Event otherEvent = (Event) obj;
 
-        return eventId.equals(otherEvent.eventId);
+        return (eventId.equals(otherEvent.eventId) ||
+                (description.equals(otherEvent.description) && title.equals(otherEvent.title) && clubName.equals(otherEvent.clubName)));
     }
 
     @Override

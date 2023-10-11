@@ -8,30 +8,32 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.a310_rondayview.R;
+import com.example.a310_rondayview.data.event.DatabaseService;
 import com.example.a310_rondayview.model.CurrentEventSingleton;
+import com.example.a310_rondayview.model.Event;
+import com.example.a310_rondayview.ui.adapter.SimilarEventAdapter;
+
+import java.util.Collections;
+import java.util.List;
 
 public class FragmentDetailed extends Fragment {
-    CurrentEventSingleton currentEvent;
-    ViewHolder vh;
-
-    public FragmentDetailed() {
-        // Required empty public constructor
-    }
     private class ViewHolder {
         ImageView eventImage;
         ImageView backImage;
-
         TextView clubNameText;
         TextView eventNameText;
         ImageView profileImage;
         TextView locationText;
         TextView eventDateText;
         TextView eventDescText;
+        RecyclerView similarEventRv;
 
         public ViewHolder(View view) {
             eventImage = view.findViewById(R.id.event_image);
@@ -42,8 +44,17 @@ public class FragmentDetailed extends Fragment {
             eventDateText = view.findViewById(R.id.event_date);
             locationText = view.findViewById(R.id.locationtext);
             eventDescText = view.findViewById(R.id.event_desc);
+            similarEventRv = view.findViewById(R.id.similar_events_rv);
         }
     }
+    List<Event> similarEvents;
+    CurrentEventSingleton currentEvent;
+    ViewHolder vh;
+
+    public FragmentDetailed() {
+        // Required empty public constructor
+    }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -60,6 +71,22 @@ public class FragmentDetailed extends Fragment {
         Glide.with(getContext()).load(currentEvent.getCurrentEvent().getImageURL()).into(vh.eventImage);
         Glide.with(getContext()).load(currentEvent.getCurrentEvent().getEventClubProfilePicture()).into(vh.profileImage);
         vh.backImage.setOnClickListener(v -> getActivity().getSupportFragmentManager().popBackStack());
+
+        // load in the events from the database and sort them based on their similarity to
+        // the current event dispalyed. (show a max of 10 events)
+        DatabaseService databaseService = new DatabaseService();
+        databaseService.getAllEvents().thenAccept(events -> {
+            events.remove(currentEvent.getCurrentEvent());
+            similarEvents = events;
+            // setup the similar event recycler view
+            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+            vh.similarEventRv.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+            SimilarEventAdapter similarEventAdapter = new SimilarEventAdapter(getContext(), similarEvents, fragmentManager);
+            vh.similarEventRv.setAdapter(similarEventAdapter);
+            // sort based on similarity
+            Collections.sort(similarEvents, new SimilarEventComparator(currentEvent.getCurrentEvent()));
+        });
+
         return view;
     }
 }
