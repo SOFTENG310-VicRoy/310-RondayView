@@ -2,13 +2,11 @@ package com.example.a310_rondayview.ui.detailed;
 
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -18,10 +16,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.a310_rondayview.R;
 import com.example.a310_rondayview.data.event.DatabaseService;
-import com.example.a310_rondayview.data.user.FireBaseUserDataManager;
 import com.example.a310_rondayview.model.CurrentEventSingleton;
 import com.example.a310_rondayview.model.Event;
-import com.example.a310_rondayview.ui.adapter.InterestedEventsAdapter;
 import com.example.a310_rondayview.ui.adapter.SimilarEventAdapter;
 
 import java.util.Collections;

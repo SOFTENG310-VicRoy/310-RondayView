@@ -16,9 +16,7 @@ import com.bumptech.glide.Glide;
 import com.example.a310_rondayview.R;
 import com.example.a310_rondayview.model.CurrentEventSingleton;
 import com.example.a310_rondayview.model.Event;
-import com.example.a310_rondayview.model.User;
 import com.example.a310_rondayview.ui.detailed.FragmentDetailed;
-import com.google.api.Distribution;
 
 import java.util.List;
 
