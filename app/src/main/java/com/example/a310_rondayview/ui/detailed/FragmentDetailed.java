@@ -85,7 +85,6 @@ public class FragmentDetailed extends Fragment {
             // setup the similar event recycler view
             FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
             vh.similarEventRv.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
-            vh.similarEventRv.setHasFixedSize(true);
             SimilarEventAdapter similarEventAdapter = new SimilarEventAdapter(getContext(), similarEvents, fragmentManager);
             vh.similarEventRv.setAdapter(similarEventAdapter);
             // sort based on similarity
