@@ -25,7 +25,6 @@ public class FragmentDetailed extends Fragment {
     private class ViewHolder {
         ImageView eventImage;
         ImageView backImage;
-
         TextView clubNameText;
         TextView eventNameText;
         ImageView profileImage;
