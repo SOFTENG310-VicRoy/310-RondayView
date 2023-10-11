@@ -2,6 +2,7 @@ package com.example.a310_rondayview.ui.detailed;
 
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +24,7 @@ import com.example.a310_rondayview.model.Event;
 import com.example.a310_rondayview.ui.adapter.InterestedEventsAdapter;
 import com.example.a310_rondayview.ui.adapter.SimilarEventAdapter;
 
+import java.util.Collections;
 import java.util.List;
 
 public class FragmentDetailed extends Fragment {
@@ -74,16 +76,20 @@ public class FragmentDetailed extends Fragment {
         Glide.with(getContext()).load(currentEvent.getCurrentEvent().getEventClubProfilePicture()).into(vh.profileImage);
         vh.backImage.setOnClickListener(v -> getActivity().getSupportFragmentManager().popBackStack());
 
-        // setup the recycler view
-        vh.similarEventRv.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
-        vh.similarEventRv.setHasFixedSize(true);
-        // load in the all the  events from the database
+        // load in the events from the database and sort them based on their similarity to
+        // the current event dispalyed. (show a max of 10 events)
         DatabaseService databaseService = new DatabaseService();
         databaseService.getAllEvents().thenAccept(events -> {
+            events.remove(currentEvent.getCurrentEvent());
             similarEvents = events;
+            // setup the similar event recycler view
             FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+            vh.similarEventRv.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+            vh.similarEventRv.setHasFixedSize(true);
             SimilarEventAdapter similarEventAdapter = new SimilarEventAdapter(getContext(), similarEvents, fragmentManager);
             vh.similarEventRv.setAdapter(similarEventAdapter);
+            // sort based on similarity
+            Collections.sort(similarEvents, new SimilarEventComparator(currentEvent.getCurrentEvent()));
         });
 
         return view;

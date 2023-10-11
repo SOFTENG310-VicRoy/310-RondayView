@@ -39,16 +39,19 @@ public class SimilarEventAdapter extends RecyclerView.Adapter<SimilarEventAdapte
         }
     }
 
-    Context context;
-    List<Event> similarEvents;
-    FragmentManager fragmentManager;
+    private Context context;
+    private List<Event> similarEvents;
+    private FragmentManager fragmentManager;
 
     public SimilarEventAdapter(Context context, List<Event> similarEvents, FragmentManager fragmentManager) {
         this.context = context;
         this.similarEvents = similarEvents;
         this.fragmentManager = fragmentManager;
     }
-
+    public void setSimilarEvents(List<Event> similarEvents) {
+        this.similarEvents = similarEvents;
+        notifyDataSetChanged();
+    }
     @NonNull
     @Override
     public SimilarEventAdapter.SimilarEventViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
