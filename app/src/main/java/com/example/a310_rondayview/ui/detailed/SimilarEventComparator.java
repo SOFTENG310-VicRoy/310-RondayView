@@ -1,9 +1,6 @@
 package com.example.a310_rondayview.ui.detailed;
 
-import android.util.Log;
-
 import com.example.a310_rondayview.model.Event;
-import com.example.a310_rondayview.ui.adapter.SimilarEventAdapter;
 
 import org.apache.commons.text.similarity.LevenshteinDistance;
 
