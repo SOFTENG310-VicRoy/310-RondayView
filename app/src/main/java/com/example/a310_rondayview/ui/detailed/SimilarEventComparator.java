@@ -23,9 +23,6 @@ public class SimilarEventComparator implements Comparator<Event> {
         int distance1 = calculateSimilarity(event1);
         int distance2 = calculateSimilarity(event2);
 
-        Log.d("Sort", "distance 1: " + distance1);
-        Log.d("Sort", "distance 2: " + distance2);
-
         //sorts in ascending order of Levenshtein distance (more similar first)
         return Integer.compare(distance1, distance2);
     }
