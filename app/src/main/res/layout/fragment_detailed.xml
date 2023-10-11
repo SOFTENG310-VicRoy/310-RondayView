@@ -166,7 +166,10 @@
             android:id="@+id/similar_events_rv"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:scrollbars="horizontal"
             android:orientation="horizontal"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true"
             tools:listitem="@layout/small_event_container" />
 
         <View
@@ -174,6 +177,6 @@
             android:layout_height="1dp"
             android:layout_marginBottom="90dp"
             android:background="#d3d3d3"
-            android:layout_marginTop="5dp"/>
+            android:layout_marginTop="10dp"/>
     </LinearLayout>
 </ScrollView>

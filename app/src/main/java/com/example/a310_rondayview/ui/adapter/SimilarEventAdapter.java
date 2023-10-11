@@ -74,6 +74,6 @@ public class SimilarEventAdapter extends RecyclerView.Adapter<SimilarEventAdapte
 
     @Override
     public int getItemCount() {
-        return 0;
+        return similarEvents.size();
     }
 }
