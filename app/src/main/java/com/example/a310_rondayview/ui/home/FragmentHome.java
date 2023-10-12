@@ -11,26 +11,18 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.viewpager2.widget.CompositePageTransformer;
-import androidx.viewpager2.widget.MarginPageTransformer;
-import androidx.viewpager2.widget.ViewPager2;
-
 import com.example.a310_rondayview.R;
 import com.example.a310_rondayview.data.event.DatabaseService;
 import com.example.a310_rondayview.data.event.EventsFirestoreManager;
 import com.example.a310_rondayview.data.user.FireBaseUserDataManager;
 import com.example.a310_rondayview.model.CurrentEventSingleton;
 import com.example.a310_rondayview.model.Event;
-import com.example.a310_rondayview.ui.adapter.PopularEventAdaptor;
 import com.example.a310_rondayview.ui.adapter.SwipeAdapter;
 import com.example.a310_rondayview.ui.detailed.FragmentDetailed;
 import com.yalantis.library.Koloda;
 import com.yalantis.library.KolodaListener;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 public class FragmentHome extends Fragment {
@@ -38,7 +30,6 @@ public class FragmentHome extends Fragment {
     private static class ViewHolder {
         LinearLayout buttonContainer;
         LinearLayout emptyEventsLayout;
-        ViewPager2 popularEventViewPager;
         Button nopeButton;
         Button interestedButton;
         Button refreshButton;
@@ -48,18 +39,7 @@ public class FragmentHome extends Fragment {
             // setting up views
             buttonContainer = rootView.findViewById(R.id.buttonsContainer);
             emptyEventsLayout = rootView.findViewById(R.id.emptyEventsLayout);
-            //Set up UI transition for the popular events list
-            popularEventViewPager = rootView.findViewById(R.id.popularEventViewPager);
 
-            popularEventViewPager.getChildAt(0).setOverScrollMode(View.OVER_SCROLL_NEVER);
-            CompositePageTransformer transformer = new CompositePageTransformer();
-            transformer.addTransformer(new MarginPageTransformer(40));
-            transformer.addTransformer((page, position) -> {
-                float r = 1 - Math.abs(position);
-                page.setScaleY(0.3f+r*0.7f);
-            });
-
-            popularEventViewPager.setPageTransformer(transformer);
             // Set up button click listeners
             nopeButton = rootView.findViewById(R.id.nopeButton);
             interestedButton = rootView.findViewById(R.id.interestedButton);
@@ -71,9 +51,7 @@ public class FragmentHome extends Fragment {
     }
 
     private SwipeAdapter adapter;
-    private PopularEventAdaptor popularEventAdaptor;
     private List<Event> events = new ArrayList<>();
-    private List<Event>topTenPopularEvents = new ArrayList<>();
     private int currentEventIndex;
     private ViewHolder vh;
 
@@ -88,8 +66,6 @@ public class FragmentHome extends Fragment {
             events = events1;
             adapter = new SwipeAdapter(getContext(), events);
             vh.koloda.setAdapter(adapter);
-            //Fetch top 10 interested events
-            refreshTopTenEvent();
         });
         buttonListeners();
 
@@ -117,7 +93,6 @@ public class FragmentHome extends Fragment {
                 databaseService.getEventById(eventId).thenAccept(event1 -> {
                     event1.incrementInterestCount();
                     EventsFirestoreManager.getInstance().updateEvent(event1);
-                    refreshTopTenEvent();
                     FireBaseUserDataManager.getInstance().addInterestedEvent(event1);
                     currentEventIndex++;
                 });
@@ -169,34 +144,11 @@ public class FragmentHome extends Fragment {
                 vh.koloda.setVisibility(View.VISIBLE);
                 vh.buttonContainer.setVisibility(View.VISIBLE);
                 currentEventIndex = 0;//Bug where first card messes up count
-                refreshTopTenEvent();
             });
 
         });
     }
 
-    /**
-     * Fetches the top ten event ranked by the amount of interests and refreshes the display
-     */
-
-    private void refreshTopTenEvent(){
-        Comparator<Event> descendingComparator = Comparator
-                .comparingInt(Event::getInterestCount)
-                .reversed();
-        DatabaseService databaseService = new DatabaseService();
-        databaseService.getAllEvents().thenAccept(events1 -> {
-            Collections.sort(events1, descendingComparator);
-            topTenPopularEvents.clear();
-            for(Event event : events1){
-                topTenPopularEvents.add(event);
-                if(topTenPopularEvents.size() == 10) {
-                    break;
-                }
-            }
-            popularEventAdaptor = new PopularEventAdaptor(getContext(), topTenPopularEvents);
-            vh.popularEventViewPager.setAdapter(popularEventAdaptor);
-        });
-    }
 
     public List<Event> getEvents() {
         return events;

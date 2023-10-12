@@ -2,4 +2,8 @@
     <string name="app_name">310-RondayView</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="top_events_title">Popular events</string>
+    <string name="image_of_event">Image of event</string>
+    <string name="_0">#0</string>
+    <string name="number_of_likes">number of likes</string>
+    <string name="_100">100</string>
 </resources>

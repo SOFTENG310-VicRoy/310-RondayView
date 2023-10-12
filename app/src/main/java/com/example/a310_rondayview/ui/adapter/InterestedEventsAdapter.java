@@ -12,7 +12,6 @@ import android.view.animation.AnimationUtils;
 import android.view.animation.BounceInterpolator;
 import android.view.animation.ScaleAnimation;
 import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.ToggleButton;
@@ -42,7 +41,7 @@ public class InterestedEventsAdapter extends RecyclerView.Adapter<InterestedEven
         TextView descriptionTextView;
         ToggleButton heartButton;
 
-        ImageView eventImage;
+        Button notificationButton;
 
 
         public InterestedEventsViewHolder(@NonNull View itemView) {
@@ -51,9 +50,12 @@ public class InterestedEventsAdapter extends RecyclerView.Adapter<InterestedEven
             titleTextView = itemView.findViewById(R.id.titleText);
             descriptionTextView = itemView.findViewById(R.id.descriptionText);
             heartButton = itemView.findViewById(R.id.heart_button);
+            notificationButton = itemView.findViewById(R.id.notification_button);
         }
     }
-
+    static String description = "description";
+    static String eventLocation = "eventLocation";
+    static String title= "title";
     Context context;
     List<Event> eventsList;
     boolean hideHeart;
@@ -146,9 +148,9 @@ public class InterestedEventsAdapter extends RecyclerView.Adapter<InterestedEven
             currentEventSingleton.setCurrentEvent(event);
             Intent intent = new Intent(Intent.ACTION_INSERT)
                     .setData(CalendarContract.Events.CONTENT_URI)
-                    .putExtra(CalendarContract.Events.TITLE, event.getTitle())
-                    .putExtra(CalendarContract.Events.EVENT_LOCATION, event.getLocation())
-                    .putExtra(CalendarContract.Events.DESCRIPTION, event.getDescription())
+                    .putExtra(title, event.getTitle())
+                    .putExtra(eventLocation, event.getLocation())
+                    .putExtra(description, event.getDescription())
                     .putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, event.getDateTime());
             context.startActivity(intent);
         });
@@ -162,23 +164,5 @@ public class InterestedEventsAdapter extends RecyclerView.Adapter<InterestedEven
         return eventsList.size();
     }
 
-    // ViewHolder class to hold references to UI elements for a list item
-    public static class InterestedEventsViewHolder extends RecyclerView.ViewHolder {
 
-        ImageView eventImageView;
-        TextView titleTextView;
-        TextView descriptionTextView;
-        ToggleButton heartButton;
-        Button notificationButton;
-
-
-        public InterestedEventsViewHolder(@NonNull View itemView) {
-            super(itemView);
-            eventImageView = itemView.findViewById(R.id.coverImage);
-            titleTextView = itemView.findViewById(R.id.titleText);
-            descriptionTextView = itemView.findViewById(R.id.descriptionText);
-            heartButton = itemView.findViewById(R.id.heart_button);
-            notificationButton = itemView.findViewById(R.id.notification_button);
-        }
-    }
 }
