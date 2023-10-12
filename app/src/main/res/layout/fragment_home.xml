@@ -18,19 +18,6 @@
             android:gravity="center"
             android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/popularEventTitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/top_events_title"
-                android:textSize="34sp"
-                android:textStyle="bold"></TextView>
-
-            <androidx.viewpager2.widget.ViewPager2
-                android:id="@+id/popularEventViewPager"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"></androidx.viewpager2.widget.ViewPager2>
-
             <LinearLayout
                 android:id="@+id/emptyEventsLayout"
                 android:layout_width="wrap_content"
