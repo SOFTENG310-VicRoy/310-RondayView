@@ -9,13 +9,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="20dp"
-
-        >
+        android:padding="20dp">
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="500dp">
+
             <LinearLayout
                 android:id="@+id/title_linear"
                 android:layout_width="match_parent"
@@ -48,13 +47,11 @@
                     android:id="@+id/back"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
-                    android:contentDescription="a back arow"
-
-
-                    android:layout_marginBottom="10dp"
+                    android:contentDescription="a back arrow"
+                    android:layout_gravity="center_vertical"
                     android:maxWidth="6dp"
-
                     android:src="@drawable/baseline_arrow_back_24" />
+
             </LinearLayout>
 
             <ImageView
@@ -105,7 +102,6 @@
 
         </TextView>
 
-
         <TextView
             android:id="@+id/event_date"
             android:layout_width="match_parent"
@@ -115,9 +111,7 @@
             android:text="Time + Date"
             android:textColor="@color/black"
             android:textSize="20sp">
-
         </TextView>
-
 
         <TextView
             android:id="@+id/locationtext"
@@ -129,14 +123,12 @@
             android:layout_marginBottom="10dp"
             android:text="Location"
             android:textColor="@color/black"
-            android:textSize="20sp"
-
-            />
+            android:textSize="20sp"/>
 
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="#d3d3d3" />
+            android:background="#d3d3d3"/>
 
         <TextView
             android:id="@+id/event_desc"
@@ -144,21 +136,47 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="18dp"
             android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
             android:layout_marginRight="18dp"
             android:text="desc"
             android:textColor="@color/black"
-            android:textSize="20sp"
-
-            >
-
+            android:textSize="20sp">
         </TextView>
 
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
+            android:background="#d3d3d3"
+            android:layout_marginTop="5dp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="18dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="18dp"
+            android:text="Similar Events:"
+            android:textColor="@color/black"
+            android:textSize="30sp"
+            android:layout_marginBottom="10dp"
+            android:textStyle="bold"/>
+
+        <!-- Horizontal RecyclerView -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/similar_events_rv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scrollbars="horizontal"
+            android:orientation="horizontal"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true"
+            tools:listitem="@layout/small_event_container" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
             android:layout_marginBottom="90dp"
-            android:background="#d3d3d3" />
-
-
+            android:background="#d3d3d3"
+            android:layout_marginTop="10dp"/>
     </LinearLayout>
 </ScrollView>

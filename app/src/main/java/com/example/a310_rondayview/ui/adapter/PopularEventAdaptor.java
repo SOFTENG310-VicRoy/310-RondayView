@@ -38,7 +38,7 @@ public class PopularEventAdaptor extends RecyclerView.Adapter<PopularEventAdapto
         Glide.with(context).load(eventList.get(position).getImageURL()).into(holder.popularEventImage);
         holder.titleTextView.setText(eventList.get(position).getTitle());
         holder.placingTextView.setText("#"+(position+1));
-        holder.interestAmountTextView.setText(Integer.toString(eventList.get(position).getInterestedNumber()));
+        holder.interestAmountTextView.setText(Integer.toString(eventList.get(position).getInterestCount()));
     }
 
     @Override

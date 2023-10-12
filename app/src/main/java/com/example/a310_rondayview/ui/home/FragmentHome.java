@@ -36,16 +36,12 @@ import java.util.List;
 public class FragmentHome extends Fragment {
 
     private static class ViewHolder {
-
         LinearLayout buttonContainer;
         LinearLayout emptyEventsLayout;
-
         ViewPager2 popularEventViewPager;
-
         Button nopeButton;
         Button interestedButton;
         Button refreshButton;
-
         Koloda koloda;
 
         public ViewHolder(View rootView) {
@@ -54,6 +50,7 @@ public class FragmentHome extends Fragment {
             emptyEventsLayout = rootView.findViewById(R.id.emptyEventsLayout);
             //Set up UI transition for the popular events list
             popularEventViewPager = rootView.findViewById(R.id.popularEventViewPager);
+
             popularEventViewPager.getChildAt(0).setOverScrollMode(View.OVER_SCROLL_NEVER);
             CompositePageTransformer transformer = new CompositePageTransformer();
             transformer.addTransformer(new MarginPageTransformer(40));
@@ -61,6 +58,7 @@ public class FragmentHome extends Fragment {
                 float r = 1 - Math.abs(position);
                 page.setScaleY(0.3f+r*0.7f);
             });
+
             popularEventViewPager.setPageTransformer(transformer);
             // Set up button click listeners
             nopeButton = rootView.findViewById(R.id.nopeButton);
@@ -76,7 +74,6 @@ public class FragmentHome extends Fragment {
     private PopularEventAdaptor popularEventAdaptor;
     private List<Event> events = new ArrayList<>();
     private List<Event>topTenPopularEvents = new ArrayList<>();
-    private List<Event>allEvents = new ArrayList<>();
     private int currentEventIndex;
     private ViewHolder vh;
 
@@ -91,11 +88,7 @@ public class FragmentHome extends Fragment {
             events = events1;
             adapter = new SwipeAdapter(getContext(), events);
             vh.koloda.setAdapter(adapter);
-        });
-        databaseService.getAllEvents().thenAccept(events1 -> {
-            allEvents = events1;
             //Fetch top 10 interested events
-            fetchTopTenEvent();
             refreshTopTenEvent();
         });
         buttonListeners();
@@ -107,41 +100,42 @@ public class FragmentHome extends Fragment {
             @Override
             public void onNewTopCard(int i) {
             }
-
             @Override
             public void onCardDrag(int i, @NonNull View view, float v) {
             }
-
             @Override
             public void onCardSwipedLeft(int i) {
+                Toast.makeText(getContext(), "Nope!", Toast.LENGTH_SHORT).show();
                 FireBaseUserDataManager.getInstance().addDisinterestedEvent(events.get(currentEventIndex));
                 currentEventIndex++;
             }
-
             @Override
             public void onCardSwipedRight(int i) {
-                FireBaseUserDataManager.getInstance().addInterestedEvent(events.get(currentEventIndex));
-                currentEventIndex++;
+                Toast.makeText(getContext(), "Interested!", Toast.LENGTH_SHORT).show();
+                String eventId = events.get(currentEventIndex).getEventId();
+                DatabaseService databaseService = new DatabaseService();
+                databaseService.getEventById(eventId).thenAccept(event1 -> {
+                    event1.incrementInterestCount();
+                    EventsFirestoreManager.getInstance().updateEvent(event1);
+                    refreshTopTenEvent();
+                    FireBaseUserDataManager.getInstance().addInterestedEvent(event1);
+                    currentEventIndex++;
+                });
             }
-
             @Override
             public void onClickRight(int i) {
+               onCardSwipedRight(i);
             }
-
             @Override
             public void onClickLeft(int i) {
+                onCardSwipedLeft(i);
+
             }
-
-
             @Override
             public void onCardSingleTap(int i) {
-                Toast.makeText(getContext(), "Open detailed view", Toast.LENGTH_SHORT).show();
-                CurrentEventSingleton currentEventSingleton = CurrentEventSingleton.getInstance();
-                currentEventSingleton.setCurrentEvent(events.get(currentEventIndex));
-                getActivity().getSupportFragmentManager().beginTransaction().addToBackStack(null).replace(R.id.frame_layout, new FragmentDetailed()).commit();
-
+                CurrentEventSingleton.getInstance().setCurrentEvent(events.get(currentEventIndex));
+                getActivity().getSupportFragmentManager().beginTransaction().addToBackStack("fragment_home").replace(R.id.frame_layout, new FragmentDetailed()).commit();
             }
-
             @Override
             public void onCardDoubleTap(int i) {
             }
@@ -149,7 +143,6 @@ public class FragmentHome extends Fragment {
             @Override
             public void onCardLongPress(int i) {
             }
-
             @Override
             public void onEmptyDeck() { // events finished - need method of refreshing!
                 vh.emptyEventsLayout.setVisibility(View.VISIBLE);
@@ -162,29 +155,9 @@ public class FragmentHome extends Fragment {
 
     private void buttonListeners() {
         // NOT INTERESTED
-        vh.nopeButton.setOnClickListener(v -> {
-            vh.koloda.onButtonClick(false);
-            FireBaseUserDataManager.getInstance().addDisinterestedEvent(events.get(currentEventIndex));
-            currentEventIndex++;
-
-        });
-
+        vh.nopeButton.setOnClickListener(v -> vh.koloda.onClickLeft());
         // INTERESTED
-        vh.interestedButton.setOnClickListener(view -> {
-            vh.koloda.onButtonClick(true);
-            //Increment likes
-            events.get(currentEventIndex).incrementInterestedNumber();
-            EventsFirestoreManager.getInstance().updateEvent(events.get(currentEventIndex));
-            DatabaseService databaseService = new DatabaseService();
-            databaseService.getAllEvents().thenAccept(events1 -> {
-                allEvents = events1;
-                //Fetch top 10 interested events
-                fetchTopTenEvent();
-                refreshTopTenEvent();
-            });
-            FireBaseUserDataManager.getInstance().addInterestedEvent(events.get(currentEventIndex));
-            currentEventIndex++;
-        });
+        vh.interestedButton.setOnClickListener(v -> vh.koloda.onClickRight());
 
         // REFRESH PAGE
         vh.refreshButton.setOnClickListener(view -> {
@@ -196,11 +169,6 @@ public class FragmentHome extends Fragment {
                 vh.koloda.setVisibility(View.VISIBLE);
                 vh.buttonContainer.setVisibility(View.VISIBLE);
                 currentEventIndex = 0;//Bug where first card messes up count
-            });
-            databaseService.getAllEvents().thenAccept(events1 -> {
-                allEvents = events1;
-                //Fetch top 10 interested events
-                fetchTopTenEvent();
                 refreshTopTenEvent();
             });
 
@@ -208,25 +176,28 @@ public class FragmentHome extends Fragment {
     }
 
     /**
-     * Fetches the top ten event ranked by the amount of interests
+     * Fetches the top ten event ranked by the amount of interests and refreshes the display
      */
-    private void fetchTopTenEvent(){
-        Comparator<Event> descendingComparator = Comparator
-                .comparingInt(Event::getInterestedNumber)
-                .reversed();
-        Collections.sort(allEvents, descendingComparator);
-        topTenPopularEvents.clear();
-        for(Event event : allEvents){
-            topTenPopularEvents.add(event);
-            if(topTenPopularEvents.size()==10){
-                break;
-            }
-        }
-    }
+
     private void refreshTopTenEvent(){
-        popularEventAdaptor = new PopularEventAdaptor(getContext(), topTenPopularEvents);
-        vh.popularEventViewPager.setAdapter(popularEventAdaptor);
+        Comparator<Event> descendingComparator = Comparator
+                .comparingInt(Event::getInterestCount)
+                .reversed();
+        DatabaseService databaseService = new DatabaseService();
+        databaseService.getAllEvents().thenAccept(events1 -> {
+            Collections.sort(events1, descendingComparator);
+            topTenPopularEvents.clear();
+            for(Event event : events1){
+                topTenPopularEvents.add(event);
+                if(topTenPopularEvents.size() == 10) {
+                    break;
+                }
+            }
+            popularEventAdaptor = new PopularEventAdaptor(getContext(), topTenPopularEvents);
+            vh.popularEventViewPager.setAdapter(popularEventAdaptor);
+        });
     }
+
     public List<Event> getEvents() {
         return events;
     }

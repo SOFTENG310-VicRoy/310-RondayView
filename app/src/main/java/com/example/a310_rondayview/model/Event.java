@@ -16,13 +16,13 @@ public class Event {
     private Date dateTime;
     private String imageURL;
     private String eventClubProfilePicture;
-    private int interestedNumber;
+    private int interestCount;
 
     public Event() {
         // Default constructor for Firestore deserialization
     }
 
-    public Event(String clubName, String title, String description, String location, Date dateTime, String imageURL, String eventClubProfilePicture) {
+    public Event(String clubName, String title, String description, String location, Date dateTime, String imageURL, String eventClubProfilePicture, int interestCount) {
         this.clubName = clubName;
         this.title = title;
         this.description = description;
@@ -30,7 +30,7 @@ public class Event {
         this.dateTime = dateTime;
         this.imageURL = imageURL;
         this.eventClubProfilePicture = eventClubProfilePicture;
-        this.interestedNumber = 0;
+        this.interestCount = interestCount;
     }
 
     public String getEventId() {
@@ -65,7 +65,7 @@ public class Event {
         return eventClubProfilePicture;
     }
 
-    public int getInterestedNumber(){ return interestedNumber;}
+    public int getInterestCount(){ return interestCount;}
 
     public void setEventId(String eventId) {
         this.eventId = eventId;
@@ -95,10 +95,10 @@ public class Event {
         this.imageURL = imageURL;
     }
 
-    public void setInterestedNumber(int i){ this.interestedNumber = i;}
+    public void setInterestCount(int i){ this.interestCount = i;}
 
-    public void incrementInterestedNumber(){this.interestedNumber++;}
-    public void decrementInterestedNumber(){if(this.interestedNumber>0){this.interestedNumber--;}}
+    public void incrementInterestCount(){this.interestCount++;}
+    public void decrementInterestCount(){if(this.interestCount>0){this.interestCount--;}}
     public void setEventClubProfilePicture(String eventClubProfilePicture) {
         this.eventClubProfilePicture = eventClubProfilePicture;
     }
@@ -113,7 +113,8 @@ public class Event {
 
         Event otherEvent = (Event) obj;
 
-        return eventId.equals(otherEvent.eventId);
+        return (eventId.equals(otherEvent.eventId) ||
+                (description.equals(otherEvent.description) && title.equals(otherEvent.title) && clubName.equals(otherEvent.clubName)));
     }
 
     @Override
