@@ -12,7 +12,6 @@ import android.view.animation.AnimationUtils;
 import android.view.animation.BounceInterpolator;
 import android.view.animation.ScaleAnimation;
 import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.ToggleButton;
@@ -54,9 +53,9 @@ public class InterestedEventsAdapter extends RecyclerView.Adapter<InterestedEven
             notificationButton = itemView.findViewById(R.id.notification_button);
         }
     }
-    static String DESCRIPTION = "description";
-    static String EVENT_LOCATION = "eventLocation";
-    static String TITLE= "title";
+    static String description = "description";
+    static String eventLocation = "eventLocation";
+    static String title= "title";
     Context context;
     List<Event> eventsList;
     boolean hideHeart;
@@ -149,9 +148,9 @@ public class InterestedEventsAdapter extends RecyclerView.Adapter<InterestedEven
             currentEventSingleton.setCurrentEvent(event);
             Intent intent = new Intent(Intent.ACTION_INSERT)
                     .setData(CalendarContract.Events.CONTENT_URI)
-                    .putExtra(TITLE, event.getTitle())
-                    .putExtra(EVENT_LOCATION, event.getLocation())
-                    .putExtra(DESCRIPTION, event.getDescription())
+                    .putExtra(title, event.getTitle())
+                    .putExtra(eventLocation, event.getLocation())
+                    .putExtra(description, event.getDescription())
                     .putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, event.getDateTime());
             context.startActivity(intent);
         });
