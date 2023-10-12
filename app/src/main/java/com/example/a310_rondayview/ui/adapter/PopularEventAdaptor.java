@@ -8,11 +8,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.a310_rondayview.R;
+import com.example.a310_rondayview.model.CurrentEventSingleton;
 import com.example.a310_rondayview.model.Event;
+import com.example.a310_rondayview.ui.detailed.FragmentDetailed;
 
 import java.util.List;
 
@@ -21,9 +24,14 @@ public class PopularEventAdaptor extends RecyclerView.Adapter<PopularEventAdapto
     private List<Event> eventList;
     private Context context;
 
-    public PopularEventAdaptor(Context contextList, List<Event> eventList){
+    private CurrentEventSingleton currentEventSingleton;
+
+    private FragmentManager fragmentManager;
+
+    public PopularEventAdaptor(Context contextList, List<Event> eventList, FragmentManager fragmentManager){
         this.eventList = eventList;
         this.context = contextList;
+        this.fragmentManager = fragmentManager;
     }
 
     @NonNull
@@ -39,6 +47,12 @@ public class PopularEventAdaptor extends RecyclerView.Adapter<PopularEventAdapto
         holder.titleTextView.setText(eventList.get(position).getTitle());
         holder.placingTextView.setText("#"+(position+1));
         holder.interestAmountTextView.setText(Integer.toString(eventList.get(position).getInterestCount()));
+
+        holder.popularEventImage.setOnClickListener(v -> {
+            currentEventSingleton = CurrentEventSingleton.getInstance();
+            currentEventSingleton.setCurrentEvent(eventList.get(position));
+            fragmentManager.beginTransaction().addToBackStack("fragment_popular_events").replace(R.id.frame_layout, new FragmentDetailed()).commit();
+        });
     }
 
     @Override

@@ -29,9 +29,9 @@
             android:id="@+id/popularEventImage"
             android:layout_width="300dp"
             android:layout_height="300dp"
+            android:contentDescription="@string/image_of_event"
             android:scaleType="centerCrop"
-            app:srcCompat="@drawable/baseline_image_24"
-            android:contentDescription="@string/image_of_event" />
+            app:srcCompat="@drawable/baseline_image_24" />
 
         <LinearLayout
             android:layout_width="match_parent"
