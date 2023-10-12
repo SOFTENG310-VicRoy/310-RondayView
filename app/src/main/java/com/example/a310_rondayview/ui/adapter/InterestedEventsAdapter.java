@@ -2,6 +2,8 @@ package com.example.a310_rondayview.ui.adapter;
 
 import android.content.Context;
 import android.util.Log;
+import android.content.Intent;
+import android.provider.CalendarContract;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +11,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.BounceInterpolator;
 import android.view.animation.ScaleAnimation;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.ToggleButton;
@@ -38,7 +41,7 @@ public class InterestedEventsAdapter extends RecyclerView.Adapter<InterestedEven
         TextView descriptionTextView;
         ToggleButton heartButton;
 
-        ImageView eventImage;
+        Button notificationButton;
 
 
         public InterestedEventsViewHolder(@NonNull View itemView) {
@@ -47,14 +50,17 @@ public class InterestedEventsAdapter extends RecyclerView.Adapter<InterestedEven
             titleTextView = itemView.findViewById(R.id.titleText);
             descriptionTextView = itemView.findViewById(R.id.descriptionText);
             heartButton = itemView.findViewById(R.id.heart_button);
+            notificationButton = itemView.findViewById(R.id.notification_button);
         }
     }
-
+    static String description = "description";
+    static String eventLocation = "eventLocation";
+    static String title= "title";
     Context context;
     List<Event> eventsList;
     boolean hideHeart;
 
-    private CurrentEventSingleton currentEvent;
+    private CurrentEventSingleton currentEventSingleton;
     private FragmentManager fragmentManager;
 
     public InterestedEventsAdapter(Context context, List<Event> eventsList) {
@@ -136,10 +142,19 @@ public class InterestedEventsAdapter extends RecyclerView.Adapter<InterestedEven
         Glide.with(holder.itemView.getContext()).load(event.getImageURL()).into(holder.eventImageView);
         holder.titleTextView.setText(event.getTitle());
         holder.descriptionTextView.setText(event.getDescription());
-        holder.eventImageView.setOnClickListener(v -> {
-            currentEvent = CurrentEventSingleton.getInstance();
-            currentEvent.setCurrentEvent(event);
+        holder.notificationButton.setOnClickListener(v -> {
+            currentEventSingleton = CurrentEventSingleton.getInstance();
 
+            currentEventSingleton.setCurrentEvent(event);
+            Intent intent = new Intent(Intent.ACTION_INSERT)
+                    .setData(CalendarContract.Events.CONTENT_URI)
+                    .putExtra(title, event.getTitle())
+                    .putExtra(eventLocation, event.getLocation())
+                    .putExtra(description, event.getDescription())
+                    .putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, event.getDateTime());
+            context.startActivity(intent);
+        });
+        holder.eventImageView.setOnClickListener(v -> {
             fragmentManager.beginTransaction().addToBackStack("fragment_interested_events").replace(R.id.frame_layout, new FragmentDetailed()).commit();
         });
     }
@@ -148,7 +163,6 @@ public class InterestedEventsAdapter extends RecyclerView.Adapter<InterestedEven
     public int getItemCount() {
         return eventsList.size();
     }
-
 
 
 }
