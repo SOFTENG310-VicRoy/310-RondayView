@@ -1,66 +1,83 @@
 package com.example.a310_rondayview.ui.popular;
 
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.fragment.app.Fragment;
+import androidx.viewpager2.widget.CompositePageTransformer;
+import androidx.viewpager2.widget.MarginPageTransformer;
+import androidx.viewpager2.widget.ViewPager2;
+
 import com.example.a310_rondayview.R;
+import com.example.a310_rondayview.data.event.DatabaseService;
+import com.example.a310_rondayview.model.Event;
+import com.example.a310_rondayview.ui.adapter.PopularEventAdaptor;
+
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 
 /**
- * A simple {@link Fragment} subclass.
- * Use the {@link PopularEventsFragment#newInstance} factory method to
- * create an instance of this fragment.
+]
  */
 public class PopularEventsFragment extends Fragment {
+private static class ViewHolder {
+    ViewPager2 popularEventViewPager;
+    public ViewHolder(View rootView) {
+        popularEventViewPager = rootView.findViewById(R.id.popularEventViewPager);
+    }
+}
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private ViewHolder vh;
+    private PopularEventAdaptor popularEventAdaptor;
+    private final List<Event> topTenPopularEvents = new ArrayList<>();
 
     public PopularEventsFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment PopularEventsFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static PopularEventsFragment newInstance(String param1, String param2) {
-        PopularEventsFragment fragment = new PopularEventsFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_popular_events, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_popular_events, container, false);
+        refreshTopTenEvent();
+        vh = new ViewHolder(rootView);
+        vh.popularEventViewPager.getChildAt(0).setOverScrollMode(View.OVER_SCROLL_NEVER);
+        CompositePageTransformer transformer = new CompositePageTransformer();
+        transformer.addTransformer(new MarginPageTransformer(40));
+        transformer.addTransformer((page, position) -> {
+            float r = 1 - Math.abs(position);
+            page.setScaleY(0.3f+r*0.7f);
+        });
+        vh.popularEventViewPager.setPageTransformer(transformer);
+        //Fetch top 10 interested events
+
+
+        return rootView;
+    }
+
+    /**
+     * Fetches the top ten event ranked by the amount of interests and refreshes the display
+     */
+
+    private void refreshTopTenEvent(){
+        Comparator<Event> descendingComparator = Comparator
+                .comparingInt(Event::getInterestCount)
+                .reversed();
+        DatabaseService databaseService = new DatabaseService();
+        databaseService.getAllEvents().thenAccept(events1 -> {
+            events1.sort(descendingComparator);
+            topTenPopularEvents.clear();
+            for(Event event : events1){
+                topTenPopularEvents.add(event);
+                if(topTenPopularEvents.size() == 10) {
+                    break;
+                }
+            }
+            popularEventAdaptor = new PopularEventAdaptor(getContext(), topTenPopularEvents);
+            vh.popularEventViewPager.setAdapter(popularEventAdaptor);
+        });
     }
 }

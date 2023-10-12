@@ -2,7 +2,6 @@ package com.example.a310_rondayview;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.ImageButton;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -50,11 +49,9 @@ public class MainActivity extends AppCompatActivity {
                 replaceFragment(new FragmentHome());
             } else if (item.getItemId() == R.id.account) {
                 replaceFragment(new ProfileFragment());
-            }
-            else if (item.getItemId() == R.id.interested) {
+            } else if (item.getItemId() == R.id.interested) {
                 replaceFragment(new InterestedEventsFragment());
-            }
-            else if (item.getItemId() == R.id.popular) {
+            } else if (item.getItemId() == R.id.popular) {
                 replaceFragment(new PopularEventsFragment());
             }
 
