@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.viewpager2.widget.CompositePageTransformer;
 import androidx.viewpager2.widget.MarginPageTransformer;
 import androidx.viewpager2.widget.ViewPager2;
@@ -76,7 +77,8 @@ private static class ViewHolder {
                     break;
                 }
             }
-            popularEventAdaptor = new PopularEventAdaptor(getContext(), topTenPopularEvents);
+            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+            popularEventAdaptor = new PopularEventAdaptor(getContext(), topTenPopularEvents,fragmentManager);
             vh.popularEventViewPager.setAdapter(popularEventAdaptor);
         });
     }

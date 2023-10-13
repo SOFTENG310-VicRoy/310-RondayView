@@ -155,6 +155,8 @@ public class InterestedEventsAdapter extends RecyclerView.Adapter<InterestedEven
             context.startActivity(intent);
         });
         holder.eventImageView.setOnClickListener(v -> {
+            currentEventSingleton = CurrentEventSingleton.getInstance();
+            currentEventSingleton.setCurrentEvent(event);
             fragmentManager.beginTransaction().addToBackStack("fragment_interested_events").replace(R.id.frame_layout, new FragmentDetailed()).commit();
         });
     }
