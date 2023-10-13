@@ -8,22 +8,28 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.a310_rondayview.R;
+import com.example.a310_rondayview.model.CurrentEventSingleton;
 import com.example.a310_rondayview.model.Event;
+import com.example.a310_rondayview.ui.detailed.FragmentDetailed;
 
 import java.util.List;
 
 public class PopularEventAdaptor extends RecyclerView.Adapter<PopularEventAdaptor.PopularEventHolder>{
 
-    private List<Event> eventList;
-    private Context context;
+    private final FragmentManager fragmentManager;
+    private final List<Event> eventList;
+    private final Context context;
+    private CurrentEventSingleton currentEvent;
 
-    public PopularEventAdaptor(Context contextList, List<Event> eventList){
+    public PopularEventAdaptor(Context contextList, List<Event> eventList, FragmentManager fragmentManager){
         this.eventList = eventList;
         this.context = contextList;
+        this.fragmentManager = fragmentManager;
     }
 
     @NonNull
@@ -39,6 +45,12 @@ public class PopularEventAdaptor extends RecyclerView.Adapter<PopularEventAdapto
         holder.titleTextView.setText(eventList.get(position).getTitle());
         holder.placingTextView.setText("#"+(position+1));
         holder.interestAmountTextView.setText(Integer.toString(eventList.get(position).getInterestCount()));
+        holder.popularEventImage.setOnClickListener(v -> {
+            Event event = eventList.get(position);
+            currentEvent = CurrentEventSingleton.getInstance();
+            currentEvent.setCurrentEvent(event);
+            fragmentManager.beginTransaction().addToBackStack("fragment_interested_events").replace(R.id.frame_layout, new FragmentDetailed()).commit();
+        });
     }
 
     @Override
@@ -46,7 +58,7 @@ public class PopularEventAdaptor extends RecyclerView.Adapter<PopularEventAdapto
         return eventList.size();
     }
 
-    public class PopularEventHolder extends RecyclerView.ViewHolder {
+    public static class PopularEventHolder extends RecyclerView.ViewHolder {
         ImageView popularEventImage;
         TextView titleTextView;
         TextView placingTextView;
