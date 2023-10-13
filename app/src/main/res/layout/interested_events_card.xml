@@ -18,6 +18,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
+
             <LinearLayout
                 android:id="@+id/linearLayout"
                 android:layout_width="match_parent"
@@ -59,6 +60,17 @@
 
              </LinearLayout>
 
+            <Button
+                android:id="@+id/notification_button"
+                android:layout_width="90dp"
+                android:layout_height="90dp"
+                android:padding="20dp"
+                android:checked="true"
+                android:layout_marginRight="180dp"
+                app:layout_constraintRight_toLeftOf="@+id/heart_button"
+                app:layout_constraintTop_toTopOf="parent"
+                android:background="@drawable/notification" />
+
             <ToggleButton
                 android:id="@+id/heart_button"
                 android:layout_width="100dp"
@@ -71,6 +83,8 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 android:background="@drawable/interested_button" />
+
+
 
             <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/guideline2"
