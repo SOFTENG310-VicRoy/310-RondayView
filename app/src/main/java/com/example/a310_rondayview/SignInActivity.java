@@ -3,6 +3,7 @@ package com.example.a310_rondayview;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -17,6 +18,10 @@ import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.HashMap;
+import java.util.Map;
 
 // Represents the activity for user sign-in
 public class SignInActivity extends AppCompatActivity {
@@ -96,9 +101,22 @@ public class SignInActivity extends AppCompatActivity {
 
     private void nextPage(FirebaseUser user) {
         if(user != null){
-            Intent intent = new Intent(SignInActivity.this, MainActivity.class);
-            startActivity(intent);
-            finish();
+            // Store user details in Firestore
+            Map<String, Object> userMap = new HashMap<>();
+            userMap.put("email", user.getEmail());
+            // Add any other details, for example:
+            // userMap.put("name", name);
+
+            FirebaseFirestore.getInstance().collection("users").document(user.getUid())
+                    .set(userMap)
+                    .addOnSuccessListener(aVoid -> {
+                        // Navigate to main activity after successful data storage
+                        Intent intent = new Intent(SignInActivity.this, MainActivity.class);
+                        startActivity(intent);
+                        finish();
+                    })
+                    .addOnFailureListener(e -> Toast.makeText(SignInActivity.this, "Error saving user details.", Toast.LENGTH_SHORT).show());
+
         }
 
     }
