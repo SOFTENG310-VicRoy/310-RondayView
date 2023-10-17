@@ -22,7 +22,15 @@
           }
         },
         {
-          "client_id": "99359334524-48coohj0uijsf8n67fr55v4qqekoefl5.apps.googleusercontent.com",
+          "client_id": "99359334524-qsbkb9s8rsr0ud5s39g2vrrs69hcg8mt.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.a310_rondayview",
+            "certificate_hash": "48094db42550e577ea359b2dc1f2d71a95a26193"
+          }
+        },
+        {
+          "client_id": "99359334524-hv07e823cf6e41f77u4b6utkujnj9ujd.apps.googleusercontent.com",
           "client_type": 3
         }
       ],

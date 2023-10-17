@@ -60,6 +60,7 @@ task jacocoTestReport(type: JacocoReport) {
 
 dependencies {
     implementation 'androidx.recyclerview:recyclerview:1.2.1'
+    implementation('com.google.android.gms:play-services-auth:20.7.0')
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.12.0'
