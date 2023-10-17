@@ -62,7 +62,7 @@ public class SignInActivity extends AppCompatActivity {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
+        // Result returned from launching the Intent
         if (requestCode == RC_SIGN_IN) {
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
             try {
@@ -105,7 +105,6 @@ public class SignInActivity extends AppCompatActivity {
             Map<String, Object> userMap = new HashMap<>();
             userMap.put("email", user.getEmail());
             // Add any other details, for example:
-            // userMap.put("name", name);
 
             FirebaseFirestore.getInstance().collection("users").document(user.getUid())
                     .set(userMap)
