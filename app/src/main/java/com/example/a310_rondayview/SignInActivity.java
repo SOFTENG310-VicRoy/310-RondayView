@@ -2,72 +2,121 @@ package com.example.a310_rondayview;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TextView;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.SignInButton;
+import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.HashMap;
+import java.util.Map;
 
 // Represents the activity for user sign-in
 public class SignInActivity extends AppCompatActivity {
 
-    // Firebase Authentication instance
+    private static final String TAG = "GoogleSignInActivity";
+    private static final int RC_SIGN_IN = 9001;
     private FirebaseAuth mAuth;
+    private GoogleSignInClient mGoogleSignInClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signin);
+        // Configure Google Sign In
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.default_web_client_id))
+                .requestEmail()
+                .build();
 
-        // Initialize Firebase Authentication
+        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+
         mAuth = FirebaseAuth.getInstance();
 
-        // Get references to UI elements
-        EditText editTextEmail = findViewById(R.id.editTextEmail);
-        EditText editTextPassword = findViewById(R.id.editTextPassword);
-        Button btnSignIn = findViewById(R.id.btnSignIn);
-        TextView tvSignUp = findViewById(R.id.tvSignUp);
+        SignInButton signInButton = findViewById(R.id.googleSignInButton);
 
-        // Handle sign-in button click
-        btnSignIn.setOnClickListener(v -> {
-            // Extract email and password from input fields
-            String email = editTextEmail.getText().toString().trim();
-            String password = editTextPassword.getText().toString().trim();
-
-            // Attempt to sign in with provided credentials
-            signIn(email, password);
-        });
-
-        // Handle sign-up text click for navigation
-        tvSignUp.setOnClickListener(v -> {
-            // Navigate to SignUpActivity
-            Intent intent = new Intent(SignInActivity.this, SignUpActivity.class);
-            startActivity(intent);
-        });
+        signInButton.setOnClickListener(v -> signIn());
     }
 
-    // Method to sign in using Firebase authentication
-    private void signIn(String email, String password) {
-        mAuth.signInWithEmailAndPassword(email, password)
+    @Override
+    public void onStart() {
+        super.onStart();
+        // Check if user is signed in (non-null) and update UI accordingly.
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        nextPage(currentUser);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        // Result returned from launching the Intent
+        if (requestCode == RC_SIGN_IN) {
+            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+            try {
+                // Google Sign In was successful, authenticate with Firebase
+                GoogleSignInAccount account = task.getResult(ApiException.class);
+                Log.d(TAG, "firebaseAuthWithGoogle:" + account.getId());
+                firebaseAuthWithGoogle(account.getIdToken());
+            } catch (ApiException e) {
+                // Google Sign In failed, update UI appropriately
+                Log.w(TAG, "Google sign in failed", e);
+            }
+        }
+    }
+
+    private void firebaseAuthWithGoogle(String idToken) {
+        AuthCredential credential = GoogleAuthProvider.getCredential(idToken, null);
+        mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(this, task -> {
                     if (task.isSuccessful()) {
-                        // Sign in was successful
+                        // Sign in success, update UI with the signed-in user's information
+                        Log.d(TAG, "signInWithCredential:success");
                         FirebaseUser user = mAuth.getCurrentUser();
-                        Toast.makeText(SignInActivity.this, "Authentication successful.", Toast.LENGTH_SHORT).show();
-
-                        // Navigate to main activity after successful sign-in
-                        Intent intent = new Intent(SignInActivity.this, MainActivity.class);
-                        startActivity(intent);
-                        finish(); // Remove SignInActivity from back stack
+                        nextPage(user);
                     } else {
-                        // Sign in failed, display an error message
-                        Toast.makeText(SignInActivity.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
+                        // If sign in fails, display a message to the user.
+                        Log.w(TAG, "signInWithCredential:failure", task.getException());
+                        nextPage(null);
                     }
                 });
     }
 
+    private void signIn() {
+        Intent signInIntent = mGoogleSignInClient.getSignInIntent();
+        startActivityForResult(signInIntent, RC_SIGN_IN);
+    }
+
+    private void nextPage(FirebaseUser user) {
+        if(user != null){
+            // Store user details in Firestore
+            Map<String, Object> userMap = new HashMap<>();
+            userMap.put("email", user.getEmail());
+            // Add any other details, for example:
+
+            FirebaseFirestore.getInstance().collection("users").document(user.getUid())
+                    .set(userMap)
+                    .addOnSuccessListener(aVoid -> {
+                        // Navigate to main activity after successful data storage
+                        Intent intent = new Intent(SignInActivity.this, MainActivity.class);
+                        startActivity(intent);
+                        finish();
+                    })
+                    .addOnFailureListener(e -> Toast.makeText(SignInActivity.this, "Error saving user details.", Toast.LENGTH_SHORT).show());
+
+        }
+
+    }
 }

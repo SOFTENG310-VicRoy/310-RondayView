@@ -16,9 +16,9 @@ import com.example.a310_rondayview.ui.friends.FriendsFragment;
 import com.example.a310_rondayview.ui.home.FragmentHome;
 import com.example.a310_rondayview.ui.interestedevents.InterestedEventsFragment;
 import com.example.a310_rondayview.ui.popular.PopularEventsFragment;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.firebase.FirebaseApp;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -28,9 +28,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         FirebaseApp.initializeApp(this);
-        FirebaseAuth mAuth = FirebaseAuth.getInstance();
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        if (currentUser == null) {
+        GoogleSignInAccount user = GoogleSignIn.getLastSignedInAccount(this);
+        if (user == null) {
             // User is not signed in, redirect to login
             startActivity(new Intent(MainActivity.this, SignInActivity.class));
             finish(); // Prevents users from coming back to this activity when back button is pressed

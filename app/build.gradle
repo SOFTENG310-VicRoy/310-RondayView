@@ -12,6 +12,12 @@ android {
         baseline = file("lint-baseline.xml")
     }
 
+    signingConfigs {
+        debug {
+            storeFile file("debug.keystore")
+        }
+    }
+
     defaultConfig {
         applicationId "com.example.a310_rondayview"
         minSdk 24
@@ -24,8 +30,7 @@ android {
 
     buildTypes {
         release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.debug
         }
         debug {
             testCoverageEnabled = true
@@ -60,6 +65,7 @@ task jacocoTestReport(type: JacocoReport) {
 
 dependencies {
     implementation 'androidx.recyclerview:recyclerview:1.2.1'
+    implementation('com.google.android.gms:play-services-auth:20.7.0')
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.12.0'
