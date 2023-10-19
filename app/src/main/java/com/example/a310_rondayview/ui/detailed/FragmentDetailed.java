@@ -70,8 +70,8 @@ public class FragmentDetailed extends Fragment {
     CurrentEventSingleton currentEvent;
     ViewHolder vh;
 
-    public static final int MATCH_PARENT = LinearLayout.LayoutParams.MATCH_PARENT;
-    public static final int WRAP_CONTENT = LinearLayout.LayoutParams.WRAP_CONTENT;
+    public static final int matchParent = LinearLayout.LayoutParams.MATCH_PARENT;
+    public static final int wrapContent = LinearLayout.LayoutParams.WRAP_CONTENT;
 
     public FragmentDetailed() {
         // Required empty public constructor
@@ -138,8 +138,6 @@ public class FragmentDetailed extends Fragment {
         return view;
     }
     private void addComment(Comment comment){
-        int matchParent = MATCH_PARENT;
-        int wrapContent = WRAP_CONTENT;
         LinearLayout commentLayout = new LinearLayout(getContext());
         commentLayout.setOrientation(LinearLayout.HORIZONTAL);
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
