@@ -1,7 +1,6 @@
 package com.example.a310_rondayview.data.user;
 
 import android.util.Log;
-
 import com.example.a310_rondayview.model.Event;
 import com.example.a310_rondayview.model.User;
 import com.google.android.gms.tasks.Task;
@@ -108,7 +107,6 @@ public class FireBaseUserDataManager {
                 event.setImageURL(document.getString("imageURL"));
                 event.setLocation(document.getString("location"));
                 event.setTitle(document.getString("title"));
-
                 Object interestCountObject = document.get("interestCount");
                 if (interestCountObject != null) {
                     int interestCount = ((Number) interestCountObject).intValue();

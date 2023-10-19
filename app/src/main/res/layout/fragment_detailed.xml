@@ -2,6 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:scrollbars="none"
     tools:context=".ui.detailed.FragmentDetailed">
 
@@ -172,11 +173,64 @@
             android:layout_centerHorizontal="true"
             tools:listitem="@layout/small_event_container" />
 
+
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:layout_marginBottom="90dp"
             android:background="#d3d3d3"
             android:layout_marginTop="10dp"/>
+
+
+        <LinearLayout
+            android:id="@+id/comment_edit_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="10dp"
+            >
+
+            <!-- EditText for Adding Comment -->
+            <EditText
+                android:id="@+id/comment_edit_text"
+                android:layout_width="250dp"
+                android:layout_height="wrap_content"
+                android:visibility="visible"
+                android:hint="Your Comment"
+                android:padding="8dp" />
+
+            <!-- Small Button to Add Comment -->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/comment_card"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:cardBackgroundColor="@color/light_grey"
+                android:layout_gravity="end"
+                android:layout_marginTop="10dp">
+
+                <TextView
+                    android:id="@+id/add_comment_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Add Comment"
+                    android:textSize="15sp"
+                    android:textColor="@color/black"
+                    android:paddingStart="8dp"
+                    android:paddingEnd="8dp"
+                    android:paddingTop="6dp"
+                    android:paddingBottom="6dp" />
+
+
+            </androidx.cardview.widget.CardView>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/comments_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp"
+            android:layout_marginTop="10dp">
+
+        </LinearLayout>
     </LinearLayout>
 </ScrollView>

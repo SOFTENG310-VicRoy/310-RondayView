@@ -135,8 +135,6 @@ public class InterestedEventsAdapter extends RecyclerView.Adapter<InterestedEven
 
                 }, fadeOut.getDuration());
             }
-
-
         });
 
         Glide.with(holder.itemView.getContext()).load(event.getImageURL()).into(holder.eventImageView);
@@ -155,10 +153,14 @@ public class InterestedEventsAdapter extends RecyclerView.Adapter<InterestedEven
             context.startActivity(intent);
         });
         holder.eventImageView.setOnClickListener(v -> {
-            currentEventSingleton = CurrentEventSingleton.getInstance();
-            currentEventSingleton.setCurrentEvent(event);
-            fragmentManager.beginTransaction().addToBackStack("fragment_interested_events").replace(R.id.frame_layout, new FragmentDetailed()).commit();
+            DatabaseService databaseService = new DatabaseService();
+            databaseService.getEventById(event.getEventId()).thenAccept(updatedEvent -> {
+                currentEventSingleton = CurrentEventSingleton.getInstance();
+                currentEventSingleton.setCurrentEvent(updatedEvent);
+                fragmentManager.beginTransaction().addToBackStack("fragment_interested_events").replace(R.id.frame_layout, new FragmentDetailed()).commit();
+            });
         });
+
     }
 
     @Override

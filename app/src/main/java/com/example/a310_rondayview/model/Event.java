@@ -2,7 +2,9 @@ package com.example.a310_rondayview.model;
 
 import com.google.firebase.firestore.DocumentId;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 public class Event {
@@ -18,11 +20,13 @@ public class Event {
     private String eventClubProfilePicture;
     private int interestCount;
 
+    private List<Comment> comments;
+
     public Event() {
         // Default constructor for Firestore deserialization
     }
 
-    public Event(String clubName, String title, String description, String location, Date dateTime, String imageURL, String eventClubProfilePicture, int interestCount) {
+    public Event(String clubName, String title, String description, String location, Date dateTime, String imageURL, String eventClubProfilePicture, int interestCount, List<Comment> comments) {
         this.clubName = clubName;
         this.title = title;
         this.description = description;
@@ -31,6 +35,11 @@ public class Event {
         this.imageURL = imageURL;
         this.eventClubProfilePicture = eventClubProfilePicture;
         this.interestCount = interestCount;
+        this.comments = comments;
+    }
+
+    public List<Comment> getComments() {
+        return comments;
     }
 
     public String getEventId() {
@@ -96,6 +105,24 @@ public class Event {
     }
 
     public void setInterestCount(int i){ this.interestCount = i;}
+
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
+    }
+    public void deleteComment(Comment commentToDelete) {
+        for (Comment comment : comments) {
+            if (comment.equals(commentToDelete)) {
+                comments.remove(comment);
+                return;
+            }
+        }
+    }
+    public void addComment(Comment comment) {
+        if (comments == null) {
+            comments = new ArrayList<>();
+        }
+        comments.add(comment);
+    }
 
     public void incrementInterestCount(){this.interestCount++;}
     public void decrementInterestCount(){if(this.interestCount>0){this.interestCount--;}}
