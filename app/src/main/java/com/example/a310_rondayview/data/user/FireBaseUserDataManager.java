@@ -1,8 +1,6 @@
 package com.example.a310_rondayview.data.user;
 
 import android.util.Log;
-
-import com.example.a310_rondayview.model.Comment;
 import com.example.a310_rondayview.model.Event;
 import com.example.a310_rondayview.model.User;
 import com.google.android.gms.tasks.Task;
@@ -16,7 +14,6 @@ import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.google.protobuf.Internal;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -110,7 +107,6 @@ public class FireBaseUserDataManager {
                 event.setImageURL(document.getString("imageURL"));
                 event.setLocation(document.getString("location"));
                 event.setTitle(document.getString("title"));
-//                event.setComments(new ArrayList<>());
                 Object interestCountObject = document.get("interestCount");
                 if (interestCountObject != null) {
                     int interestCount = ((Number) interestCountObject).intValue();

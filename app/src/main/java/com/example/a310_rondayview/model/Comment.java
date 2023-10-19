@@ -3,8 +3,6 @@ package com.example.a310_rondayview.model;
 public class Comment {
     private String username;
     private String commentText;
-
-    // Default constructor for Firestore deserialization
     public Comment() {
     }
 

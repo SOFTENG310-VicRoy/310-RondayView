@@ -71,6 +71,9 @@ public class FragmentDetailed extends Fragment {
     CurrentEventSingleton currentEvent;
     ViewHolder vh;
 
+    public static final int MATCH_PARENT = LinearLayout.LayoutParams.MATCH_PARENT;
+    public static final int WRAP_CONTENT = LinearLayout.LayoutParams.WRAP_CONTENT;
+
     public FragmentDetailed() {
         // Required empty public constructor
     }
@@ -139,24 +142,23 @@ public class FragmentDetailed extends Fragment {
         LinearLayout commentLayout = new LinearLayout(getContext());
         commentLayout.setOrientation(LinearLayout.HORIZONTAL);
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                MATCH_PARENT, WRAP_CONTENT);
 
         layoutParams.setMargins(0, 20, 0, 20);
 
-//        commentLayout.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.light_grey));
         TextView commentTextView = new TextView(getContext());
         commentTextView.setTag(comment);
         commentTextView.setText(comment.getUsername() + ": " + comment.getCommentText());
         commentTextView.setTextColor(ContextCompat.getColor(getContext(), R.color.black));
         commentTextView.setTextSize(16);
         commentTextView.setLayoutParams(new LinearLayout.LayoutParams(
-                0, LinearLayout.LayoutParams.WRAP_CONTENT, 1
+                0, WRAP_CONTENT, 1
         ));
 
         // Create a "delete" button (CardView) for each comment
         CardView deleteButton = new CardView(getContext());
         deleteButton.setLayoutParams(new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT
+                WRAP_CONTENT, WRAP_CONTENT
         ));
         deleteButton.setCardBackgroundColor(Color.RED);
         deleteButton.setCardElevation(8);
@@ -187,19 +189,10 @@ public class FragmentDetailed extends Fragment {
         vh.commentsLayout.addView(commentLayout,layoutParams);
         View separator = new View(getContext());
         separator.setLayoutParams(new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT, 1 // Set the height you want for the separator
+                MATCH_PARENT, 1 // Set the height you want for the separator
         ));
         separator.setBackgroundColor(Color.argb(128, 0, 0, 0));
         vh.commentsLayout.addView(separator);
-    }
-
-    private String getUser(){
-        FirebaseUser user = mAuth.getCurrentUser();
-        String userName = user.getEmail();
-        userName = userName.replace("@gmail.com", "");
-        userName = userName.replace("@aucklanduni.ac.nz", "");
-        return userName;
-
     }
 
     private String removeAtGmail(String username){
