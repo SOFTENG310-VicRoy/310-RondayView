@@ -30,7 +30,6 @@ import com.example.a310_rondayview.ui.detailed.FragmentDetailed;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class InterestedEventsAdapter extends RecyclerView.Adapter<InterestedEventsAdapter.InterestedEventsViewHolder> {
@@ -60,7 +59,6 @@ public class InterestedEventsAdapter extends RecyclerView.Adapter<InterestedEven
     Context context;
     List<Event> eventsList;
     boolean hideHeart;
-    private List<Event> events = new ArrayList<>();
 
     private CurrentEventSingleton currentEventSingleton;
     private FragmentManager fragmentManager;

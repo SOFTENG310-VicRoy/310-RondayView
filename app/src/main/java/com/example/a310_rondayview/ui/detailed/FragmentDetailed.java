@@ -28,7 +28,6 @@ import com.example.a310_rondayview.model.CurrentEventSingleton;
 import com.example.a310_rondayview.model.Event;
 import com.example.a310_rondayview.ui.adapter.SimilarEventAdapter;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -71,8 +70,8 @@ public class FragmentDetailed extends Fragment {
     CurrentEventSingleton currentEvent;
     ViewHolder vh;
 
-    public static final int MATCH_PARENT = LinearLayout.LayoutParams.MATCH_PARENT;
-    public static final int WRAP_CONTENT = LinearLayout.LayoutParams.WRAP_CONTENT;
+    public static int MATCH_PARENT = LinearLayout.LayoutParams.MATCH_PARENT;
+    public static int WRAP_CONTENT = LinearLayout.LayoutParams.WRAP_CONTENT;
 
     public FragmentDetailed() {
         // Required empty public constructor
