@@ -32,8 +32,6 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import org.w3c.dom.Text;
-
 import java.util.Collections;
 import java.util.List;
 
@@ -82,6 +80,8 @@ public class FragmentDetailed extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+        mAuth = FirebaseAuth.getInstance();
+        db = FirebaseFirestore.getInstance();
         View view = inflater.inflate(R.layout.fragment_detailed, container, false);
         vh = new ViewHolder(view);
         currentEvent = CurrentEventSingleton.getInstance();
@@ -93,25 +93,14 @@ public class FragmentDetailed extends Fragment {
         vh.addCommentText.setOnClickListener(v -> {
             String commentText = vh.commentEditText.getText().toString();
             if (!commentText.isEmpty()) {
-                mAuth = FirebaseAuth.getInstance();
-                db = FirebaseFirestore.getInstance();
-                FirebaseUser user = mAuth.getCurrentUser();
-                if (user != null) {
-                    DocumentReference docRef = db.collection("users").document(user.getUid());
-                    docRef.get().addOnSuccessListener(documentSnapshot -> {
-                        if (documentSnapshot.exists()) {
-                            String currentUsername = documentSnapshot.getString("email");
-                            currentUsername = currentUsername.replace("@gmail.com", "");
-                            currentUsername = currentUsername.replace("@aucklanduni.ac.nz", "");
-                            Comment comment = new Comment(currentUsername, commentText);
-
-                            currentEvent.getCurrentEvent().addComment(comment);
-                            EventsFirestoreManager.getInstance().updateEvent(currentEvent.getCurrentEvent());
-
-                            addComment(comment);
-                        }
-                    });
-                }
+                DocumentReference docRef = db.collection("users").document(mAuth.getCurrentUser().getUid());
+                docRef.get().addOnSuccessListener(documentSnapshot -> {
+                    String currentUsername = removeAtGmail(documentSnapshot.getString("email"));
+                    Comment comment = new Comment(currentUsername, commentText);
+                    currentEvent.getCurrentEvent().addComment(comment);
+                    EventsFirestoreManager.getInstance().updateEvent(currentEvent.getCurrentEvent());
+                    addComment(comment);
+                });
 
                 // Clear the EditText after adding the comment
                 vh.commentEditText.setText("");
@@ -186,29 +175,19 @@ public class FragmentDetailed extends Fragment {
         });
         commentLayout.addView(commentTextView);
         commentLayout.addView(deleteButton);
-
         deleteButton.setVisibility(View.INVISIBLE);
-        mAuth = FirebaseAuth.getInstance();
-        db = FirebaseFirestore.getInstance();
-        FirebaseUser user = mAuth.getCurrentUser();
-        if (user != null) {
-            DocumentReference docRef = db.collection("users").document(user.getUid());
-            docRef.get().addOnSuccessListener(documentSnapshot -> {
-                if (documentSnapshot.exists()) {
-                    String currentUsername = documentSnapshot.getString("email");
-                    currentUsername = currentUsername.replace("@gmail.com", "");
-                    currentUsername = currentUsername.replace("@aucklanduni.ac.nz", "");
+        DocumentReference docRef = db.collection("users").document(mAuth.getCurrentUser().getUid());
+        docRef.get().addOnSuccessListener(documentSnapshot -> {
+            String currentUsername = removeAtGmail(documentSnapshot.getString("email"));
+            if (comment.getUsername().equals(currentUsername)){
+                deleteButton.setVisibility(View.VISIBLE);
+            }
+        });
 
-                    if (comment.getUsername().equals(currentUsername)){
-                        deleteButton.setVisibility(View.VISIBLE);
-                    }
-                }
-            });
-        }
         vh.commentsLayout.addView(commentLayout,layoutParams);
         View separator = new View(getContext());
         separator.setLayoutParams(new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT, 2 // Set the height you want for the separator
+                LinearLayout.LayoutParams.MATCH_PARENT, 1 // Set the height you want for the separator
         ));
         separator.setBackgroundColor(Color.argb(128, 0, 0, 0));
         vh.commentsLayout.addView(separator);
@@ -221,6 +200,12 @@ public class FragmentDetailed extends Fragment {
         userName = userName.replace("@aucklanduni.ac.nz", "");
         return userName;
 
+    }
+
+    private String removeAtGmail(String username){
+        username = username.replace("@gmail.com", "");
+        username = username.replace("@aucklanduni.ac.nz", "");
+        return username;
     }
 
 
