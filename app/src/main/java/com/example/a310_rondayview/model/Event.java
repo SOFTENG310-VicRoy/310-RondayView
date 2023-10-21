@@ -22,11 +22,14 @@ public class Event {
 
     private List<Comment> comments;
 
+    private String privacyTag;
+
     public Event() {
         // Default constructor for Firestore deserialization
     }
 
-    public Event(String clubName, String title, String description, String location, Date dateTime, String imageURL, String eventClubProfilePicture, int interestCount, List<Comment> comments) {
+    public Event(String clubName, String title, String description, String location, Date dateTime, String imageURL,
+                 String eventClubProfilePicture, int interestCount, List<Comment> comments, String privacyTag) {
         this.clubName = clubName;
         this.title = title;
         this.description = description;
@@ -36,6 +39,7 @@ public class Event {
         this.eventClubProfilePicture = eventClubProfilePicture;
         this.interestCount = interestCount;
         this.comments = comments;
+        this.privacyTag = privacyTag;
     }
 
     public List<Comment> getComments() {

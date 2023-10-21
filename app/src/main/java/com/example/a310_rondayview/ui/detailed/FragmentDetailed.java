@@ -21,7 +21,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.a310_rondayview.R;
-import com.example.a310_rondayview.data.event.DatabaseService;
+import com.example.a310_rondayview.data.event.EventDatabaseService;
 import com.example.a310_rondayview.data.event.EventsFirestoreManager;
 import com.example.a310_rondayview.model.Comment;
 import com.example.a310_rondayview.model.CurrentEventSingleton;
@@ -122,8 +122,8 @@ public class FragmentDetailed extends Fragment {
 
         // load in the events from the database and sort them based on their similarity to
         // the current event dispalyed. (show a max of 10 events)
-        DatabaseService databaseService = new DatabaseService();
-        databaseService.getAllEvents().thenAccept(events -> {
+        EventDatabaseService eventDatabaseService = new EventDatabaseService();
+        eventDatabaseService.getAllEvents().thenAccept(events -> {
             events.remove(currentEvent.getCurrentEvent());
             similarEvents = events;
             // setup the similar event recycler view

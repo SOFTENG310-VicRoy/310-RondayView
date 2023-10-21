@@ -12,7 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import com.example.a310_rondayview.R;
-import com.example.a310_rondayview.data.event.DatabaseService;
+import com.example.a310_rondayview.data.event.EventDatabaseService;
 import com.example.a310_rondayview.data.event.EventsFirestoreManager;
 import com.example.a310_rondayview.data.user.FireBaseUserDataManager;
 import com.example.a310_rondayview.model.CurrentEventSingleton;
@@ -61,8 +61,8 @@ public class FragmentHome extends Fragment {
         vh = new ViewHolder(rootView);
         currentEventIndex = 0;
         // fetching event data
-        DatabaseService databaseService = new DatabaseService();
-        databaseService.getApplicableEvents().thenAccept(events1 -> {
+        EventDatabaseService eventDatabaseService = new EventDatabaseService();
+        eventDatabaseService.getApplicableEvents().thenAccept(events1 -> {
             events = events1;
             adapter = new SwipeAdapter(getContext(), events);
             vh.koloda.setAdapter(adapter);
@@ -89,8 +89,8 @@ public class FragmentHome extends Fragment {
             public void onCardSwipedRight(int i) {
                 Toast.makeText(getContext(), "Interested!", Toast.LENGTH_SHORT).show();
                 String eventId = events.get(currentEventIndex).getEventId();
-                DatabaseService databaseService = new DatabaseService();
-                databaseService.getEventById(eventId).thenAccept(event1 -> {
+                EventDatabaseService eventDatabaseService = new EventDatabaseService();
+                eventDatabaseService.getEventById(eventId).thenAccept(event1 -> {
                     event1.incrementInterestCount();
                     EventsFirestoreManager.getInstance().updateEvent(event1);
                     FireBaseUserDataManager.getInstance().addInterestedEvent(event1);
@@ -136,8 +136,8 @@ public class FragmentHome extends Fragment {
 
         // REFRESH PAGE
         vh.refreshButton.setOnClickListener(view -> {
-            DatabaseService databaseService = new DatabaseService();
-            databaseService.getApplicableEvents().thenAccept(events1 -> {
+            EventDatabaseService eventDatabaseService = new EventDatabaseService();
+            eventDatabaseService.getApplicableEvents().thenAccept(events1 -> {
                 events = events1;
                 vh.koloda.reloadAdapterData();
                 vh.emptyEventsLayout.setVisibility(View.GONE);

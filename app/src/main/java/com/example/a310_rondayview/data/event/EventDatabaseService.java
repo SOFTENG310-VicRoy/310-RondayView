@@ -12,7 +12,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import java.util.ArrayList;
 import java.util.concurrent.CompletableFuture;
 
-public class DatabaseService {
+public class EventDatabaseService {
     private static final String DATABASE_ERROR_TAG = "Database error";
 
     /**
@@ -87,4 +87,5 @@ public class DatabaseService {
 
         return futureEvent;
     }
+
 }

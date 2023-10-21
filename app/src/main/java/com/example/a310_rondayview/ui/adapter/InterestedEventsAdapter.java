@@ -21,7 +21,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.a310_rondayview.R;
-import com.example.a310_rondayview.data.event.DatabaseService;
+import com.example.a310_rondayview.data.event.EventDatabaseService;
 import com.example.a310_rondayview.data.event.EventsFirestoreManager;
 import com.example.a310_rondayview.data.user.FireBaseUserDataManager;
 import com.example.a310_rondayview.model.CurrentEventSingleton;
@@ -117,8 +117,8 @@ public class InterestedEventsAdapter extends RecyclerView.Adapter<InterestedEven
                     Log.d("test", "Event count:" + event.getInterestCount());
 
                     String eventId = event.getEventId();
-                    DatabaseService databaseService = new DatabaseService();
-                    databaseService.getEventById(eventId).thenAccept(event1 -> {
+                    EventDatabaseService eventDatabaseService = new EventDatabaseService();
+                    eventDatabaseService.getEventById(eventId).thenAccept(event1 -> {
                         event1.decrementInterestCount();
                         EventsFirestoreManager.getInstance().updateEvent(event1);
                         FireBaseUserDataManager.getInstance().removeInterestedEvent(event1);
@@ -153,8 +153,8 @@ public class InterestedEventsAdapter extends RecyclerView.Adapter<InterestedEven
             context.startActivity(intent);
         });
         holder.eventImageView.setOnClickListener(v -> {
-            DatabaseService databaseService = new DatabaseService();
-            databaseService.getEventById(event.getEventId()).thenAccept(updatedEvent -> {
+            EventDatabaseService eventDatabaseService = new EventDatabaseService();
+            eventDatabaseService.getEventById(event.getEventId()).thenAccept(updatedEvent -> {
                 currentEventSingleton = CurrentEventSingleton.getInstance();
                 currentEventSingleton.setCurrentEvent(updatedEvent);
                 fragmentManager.beginTransaction().addToBackStack("fragment_interested_events").replace(R.id.frame_layout, new FragmentDetailed()).commit();

@@ -12,7 +12,7 @@ import androidx.viewpager2.widget.MarginPageTransformer;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.a310_rondayview.R;
-import com.example.a310_rondayview.data.event.DatabaseService;
+import com.example.a310_rondayview.data.event.EventDatabaseService;
 import com.example.a310_rondayview.model.Event;
 import com.example.a310_rondayview.ui.adapter.PopularEventAdaptor;
 
@@ -67,8 +67,8 @@ private static class ViewHolder {
         Comparator<Event> descendingComparator = Comparator
                 .comparingInt(Event::getInterestCount)
                 .reversed();
-        DatabaseService databaseService = new DatabaseService();
-        databaseService.getAllEvents().thenAccept(events1 -> {
+        EventDatabaseService eventDatabaseService = new EventDatabaseService();
+        eventDatabaseService.getAllEvents().thenAccept(events1 -> {
             events1.sort(descendingComparator);
             topTenPopularEvents.clear();
             for(Event event : events1){

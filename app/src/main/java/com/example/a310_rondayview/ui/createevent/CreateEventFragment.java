@@ -5,11 +5,14 @@ import android.app.TimePickerDialog;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.InputType;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -20,7 +23,12 @@ import androidx.fragment.app.Fragment;
 
 import com.example.a310_rondayview.R;
 import com.example.a310_rondayview.data.event.EventsFirestoreManager;
+import com.example.a310_rondayview.data.group.GroupDatabaseService;
+import com.example.a310_rondayview.data.group.GroupFirestoreManager;
 import com.example.a310_rondayview.model.Event;
+import com.example.a310_rondayview.model.Group;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -29,7 +37,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
+import java.util.NoSuchElementException;
 
 public class CreateEventFragment extends Fragment {
 
@@ -41,6 +51,7 @@ public class CreateEventFragment extends Fragment {
     private int minute;
     private Date date;
     private DatePickerDialog datePickerDialog;
+    private Boolean isPrivate;
     ActivityResultLauncher<String> selectPhoto;
 
 
@@ -55,6 +66,8 @@ public class CreateEventFragment extends Fragment {
         ImageView eventImage;
         Button chooseImageBtn;
         Button postBtn;
+        CheckBox privacyCheckBox;
+        EditText groupNameEditText;
 
 
         public ViewHolder(View view) {
@@ -67,6 +80,8 @@ public class CreateEventFragment extends Fragment {
             eventImage = view.findViewById(R.id.event_image);
             chooseImageBtn = view.findViewById(R.id.choose_image_btn);
             postBtn = view.findViewById(R.id.post_btn);
+            privacyCheckBox = view.findViewById(R.id.privacyCheckBox);
+            groupNameEditText = view.findViewById(R.id.groupNameEditText);
         }
     }
 
@@ -120,9 +135,20 @@ public class CreateEventFragment extends Fragment {
 
         vh.chooseImageBtn.setOnClickListener(chooseImageView -> selectPhoto.launch("image/*"));
 
+        vh.privacyCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    vh.groupNameEditText.setVisibility(View.VISIBLE); // Show the text field
+                } else {
+                    vh.groupNameEditText.setVisibility(View.GONE); // Hide the text field
+                    vh.groupNameEditText.setText(""); // Clear the text
+                }
+            }
+        });
+
         vh.postBtn.setOnClickListener(postView -> {
             if (!validateForm()) return;
-
             // Take the Date and Time and convert it to a single Date object
             SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
             SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
@@ -143,6 +169,63 @@ public class CreateEventFragment extends Fragment {
                 return;
             }
 
+            //Check if set to private event
+            String groupNameTag;
+            if(vh.privacyCheckBox.isChecked()){
+                if(!hasText(vh.groupNameEditText)){
+                    Toast.makeText(getActivity(), "Group name is empty", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                groupNameTag = vh.groupNameEditText.getText().toString();
+                //Check if group exist
+                GroupDatabaseService groupDatabaseService = new GroupDatabaseService();
+                try {
+                    //To be removed
+                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                    groupDatabaseService.getAllGroups().thenAccept(groups -> {
+                                if(!groups.isEmpty()){
+                                    StringBuilder text = new StringBuilder();
+                                    for(Group g : groups){
+                                        text.append(" "+g.getGroupName());
+                                    }
+                                    Log.e("Result", text.toString());
+                                } else {
+                                    Log.e("No groups found", "No groups found in database");
+                                }
+                            });
+                    //To be removed
+                    groupDatabaseService.getGroupByName(groupNameTag).thenAccept(group -> {
+                        if(group!=null){
+                            //If group exist and user not part of group, show toast and drop task
+                            if(!group.getUserIdList().contains(user.getUid())){
+                                throw new NoSuchElementException();
+                            }
+                            //Else proceed to event creation with group tag
+                            Toast.makeText(getActivity(), "Added event to existing group "+groupNameTag, Toast.LENGTH_SHORT).show();
+                        } else {
+                            ArrayList<String> userIdList = new ArrayList<>();
+                            userIdList.add(user.getUid());
+                            Group newGroup = new Group(groupNameTag, userIdList, new ArrayList<String>());
+                            //Automatically create new group if group doesn't exist
+                            GroupFirestoreManager.getInstance().addGroup(newGroup, task -> {
+                                if (task.isSuccessful()) {
+                                    Toast.makeText(getActivity(), "Created new group "+groupNameTag, Toast.LENGTH_SHORT).show();
+                                    // not good practice to switch within fragments but for now:
+                                } else {
+                                    Toast.makeText(getActivity(), "Could not create new group", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                        }
+                    });
+                } catch (NoSuchElementException e){
+                    Toast.makeText(getActivity(), "You do not have access to "+groupNameTag, Toast.LENGTH_SHORT).show();
+                    return;
+                }
+            } else {
+                groupNameTag = null;
+            }
+
+
             final StorageReference ref = mStorageRef.child("eventImages/");
             ref.putFile(localImageUri)
                     .addOnSuccessListener(taskSnapshot -> ref.getDownloadUrl().addOnSuccessListener(uri -> {
@@ -156,7 +239,10 @@ public class CreateEventFragment extends Fragment {
                                 vh.location.getText().toString(),
                                 date,
                                 downloadImageUri.toString(),
-                                "https://cdn.discordapp.com/attachments/1144469565179433131/1144469584573906964/image.png", 0, new ArrayList<>()
+                                "https://cdn.discordapp.com/attachments/1144469565179433131/1144469584573906964/image.png",
+                                0,
+                                new ArrayList<>(),
+                                groupNameTag
                         );
                         EventsFirestoreManager.getInstance().addEvent(event, task -> {
                             if (task.isSuccessful()) {
