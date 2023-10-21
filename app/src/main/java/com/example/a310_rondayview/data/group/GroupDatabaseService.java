@@ -41,7 +41,6 @@ public class GroupDatabaseService {
     public CompletableFuture<Group> getGroupByName(String groupName){
         CompletableFuture<Group> futureEvent = new CompletableFuture<>();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-
         Query fetchQuery = db.collection("groups").whereEqualTo("groupName", groupName);
         fetchQuery.get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {

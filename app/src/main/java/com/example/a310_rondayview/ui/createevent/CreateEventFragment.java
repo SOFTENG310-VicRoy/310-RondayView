@@ -37,9 +37,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
-import java.util.NoSuchElementException;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class CreateEventFragment extends Fragment {
 
@@ -94,16 +93,12 @@ public class CreateEventFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        StorageReference mStorageRef;
-        FirebaseStorage storage;
+
 
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_create_event, container, false);
 
         vh = new ViewHolder(view);
-
-        storage = FirebaseStorage.getInstance();
-        mStorageRef = storage.getReference();
 
         // Set up the Date Dialog Picker
         initDatePicker();
@@ -171,6 +166,7 @@ public class CreateEventFragment extends Fragment {
 
             //Check if set to private event
             String groupNameTag;
+            GroupDatabaseService groupDatabaseService = new GroupDatabaseService();
             if(vh.privacyCheckBox.isChecked()){
                 if(!hasText(vh.groupNameEditText)){
                     Toast.makeText(getActivity(), "Group name is empty", Toast.LENGTH_SHORT).show();
@@ -178,86 +174,85 @@ public class CreateEventFragment extends Fragment {
                 }
                 groupNameTag = vh.groupNameEditText.getText().toString();
                 //Check if group exist
-                GroupDatabaseService groupDatabaseService = new GroupDatabaseService();
-                try {
-                    //To be removed
-                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                    groupDatabaseService.getAllGroups().thenAccept(groups -> {
-                                if(!groups.isEmpty()){
-                                    StringBuilder text = new StringBuilder();
-                                    for(Group g : groups){
-                                        text.append(" "+g.getGroupName());
-                                    }
-                                    Log.e("Result", text.toString());
-                                } else {
-                                    Log.e("No groups found", "No groups found in database");
-                                }
-                            });
-                    //To be removed
-                    groupDatabaseService.getGroupByName(groupNameTag).thenAccept(group -> {
-                        if(group!=null){
-                            //If group exist and user not part of group, show toast and drop task
-                            if(!group.getUserIdList().contains(user.getUid())){
-                                throw new NoSuchElementException();
-                            }
-                            //Else proceed to event creation with group tag
-                            Toast.makeText(getActivity(), "Added event to existing group "+groupNameTag, Toast.LENGTH_SHORT).show();
-                        } else {
-                            ArrayList<String> userIdList = new ArrayList<>();
-                            userIdList.add(user.getUid());
-                            Group newGroup = new Group(groupNameTag, userIdList, new ArrayList<String>());
-                            //Automatically create new group if group doesn't exist
-                            GroupFirestoreManager.getInstance().addGroup(newGroup, task -> {
-                                if (task.isSuccessful()) {
-                                    Toast.makeText(getActivity(), "Created new group "+groupNameTag, Toast.LENGTH_SHORT).show();
-                                    // not good practice to switch within fragments but for now:
-                                } else {
-                                    Toast.makeText(getActivity(), "Could not create new group", Toast.LENGTH_SHORT).show();
-                                }
-                            });
+                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                groupDatabaseService.getGroupByName(groupNameTag).thenAccept(group -> {
+                    if(group!=null){
+                        //If group exist and user not part of group, show toast and drop task
+                        if(!group.getUserIdList().contains(user.getUid())){
+                            Log.e("Unauthorised user", "Current user "+ user.getUid()+" has no access to group "+ groupNameTag);
+                            Toast.makeText(getActivity(), "You are not member of the group: "+groupNameTag, Toast.LENGTH_SHORT).show();
+                            return;
                         }
-                    });
-                } catch (NoSuchElementException e){
-                    Toast.makeText(getActivity(), "You do not have access to "+groupNameTag, Toast.LENGTH_SHORT).show();
-                    return;
-                }
-            } else {
-                groupNameTag = null;
-            }
-
-
-            final StorageReference ref = mStorageRef.child("eventImages/");
-            ref.putFile(localImageUri)
-                    .addOnSuccessListener(taskSnapshot -> ref.getDownloadUrl().addOnSuccessListener(uri -> {
-                        downloadImageUri = uri;
-                        // all data needed to create event is ready
-                        // placeholder image for profile picture (should fill from account)
-                        Event event = new Event(
-                                vh.clubName.getText().toString(),
-                                vh.eventTitle.getText().toString(),
-                                vh.description.getText().toString(),
-                                vh.location.getText().toString(),
-                                date,
-                                downloadImageUri.toString(),
-                                "https://cdn.discordapp.com/attachments/1144469565179433131/1144469584573906964/image.png",
-                                0,
-                                new ArrayList<>(),
-                                groupNameTag
-                        );
-                        EventsFirestoreManager.getInstance().addEvent(event, task -> {
+                        //Else proceed to event creation with group tag
+                        Toast.makeText(getActivity(), "Added event to existing group "+groupNameTag, Toast.LENGTH_SHORT).show();
+                        createEvent(groupNameTag);
+                    } else {
+                        ArrayList<String> userIdList = new ArrayList<>();
+                        userIdList.add(user.getUid());
+                        Group newGroup = new Group(groupNameTag, userIdList, new ArrayList<String>());
+                        //Automatically create new group if group doesn't exist
+                        GroupFirestoreManager.getInstance().addGroup(newGroup, task -> {
                             if (task.isSuccessful()) {
-                                Toast.makeText(getActivity(), "Event created", Toast.LENGTH_SHORT).show();
-                                // not good practice to switch within fragments but for now:
-                                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.frame_layout, new CreateEventFragment()).commit();
+                                Toast.makeText(getActivity(), "Created new group "+groupNameTag, Toast.LENGTH_SHORT).show();
+                                createEvent(groupNameTag);
                             } else {
-                                Toast.makeText(getActivity(), "Could not create event", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getActivity(), "Could not create new group", Toast.LENGTH_SHORT).show();
                             }
                         });
-                    }))
-                    .addOnFailureListener(e -> Toast.makeText(getActivity(), "Could not create event", Toast.LENGTH_LONG).show());
+                    }
+                });
+            } else {
+                groupNameTag = "";
+                createEvent(groupNameTag);
+            }
         });
-
         return view;
+    }
+
+    private void createEvent(String groupNameTag){
+        StorageReference mStorageRef;
+        FirebaseStorage storage;
+
+        storage = FirebaseStorage.getInstance();
+        mStorageRef = storage.getReference();
+        final StorageReference ref = mStorageRef.child("eventImages/");
+        ref.putFile(localImageUri)
+                .addOnSuccessListener(taskSnapshot -> ref.getDownloadUrl().addOnSuccessListener(uri -> {
+                    downloadImageUri = uri;
+                    // all data needed to create event is ready
+                    // placeholder image for profile picture (should fill from account)
+                    Event event = new Event(
+                            vh.clubName.getText().toString(),
+                            vh.eventTitle.getText().toString(),
+                            vh.description.getText().toString(),
+                            vh.location.getText().toString(),
+                            date,
+                            downloadImageUri.toString(),
+                            "https://cdn.discordapp.com/attachments/1144469565179433131/1144469584573906964/image.png",
+                            0,
+                            new ArrayList<>(),
+                            groupNameTag
+                    );
+                    EventsFirestoreManager.getInstance().addEvent(event, task -> {
+                        if (task.isSuccessful()) {
+                            Toast.makeText(getActivity(), "Event created", Toast.LENGTH_SHORT).show();
+                            //Update the group:
+                            if(event.getGroupNameTag()!=null){
+                                GroupDatabaseService groupDatabaseService = new GroupDatabaseService();
+                                groupDatabaseService.getGroupByName(event.getGroupNameTag()).thenAccept(group -> {
+                                    group.getEventIdList().add(event.getEventId());
+                                    GroupFirestoreManager.getInstance().updateGroup(group);
+                                });
+
+                            }
+                            // not good practice to switch within fragments but for now:
+                            getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.frame_layout, new CreateEventFragment()).commit();
+                        } else {
+                            Toast.makeText(getActivity(), "Could not create event", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }))
+                .addOnFailureListener(e -> Toast.makeText(getActivity(), "Could not create event", Toast.LENGTH_LONG).show());
     }
 
     private boolean hasText(EditText editText) {
