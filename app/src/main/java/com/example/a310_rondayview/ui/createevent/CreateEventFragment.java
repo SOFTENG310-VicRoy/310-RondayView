@@ -25,6 +25,7 @@ import com.example.a310_rondayview.R;
 import com.example.a310_rondayview.data.event.EventsFirestoreManager;
 import com.example.a310_rondayview.data.group.GroupDatabaseService;
 import com.example.a310_rondayview.data.group.GroupFirestoreManager;
+import com.example.a310_rondayview.data.user.FireBaseUserDataManager;
 import com.example.a310_rondayview.model.Event;
 import com.example.a310_rondayview.model.Group;
 import com.google.firebase.auth.FirebaseAuth;
@@ -185,6 +186,7 @@ public class CreateEventFragment extends Fragment {
                         }
                         //Else proceed to event creation with group tag
                         Toast.makeText(getActivity(), "Added event to existing group "+groupNameTag, Toast.LENGTH_SHORT).show();
+                        FireBaseUserDataManager.getInstance().addParticipatedGroupName(groupNameTag);
                         createEvent(groupNameTag);
                     } else {
                         ArrayList<String> userIdList = new ArrayList<>();
@@ -194,6 +196,7 @@ public class CreateEventFragment extends Fragment {
                         GroupFirestoreManager.getInstance().addGroup(newGroup, task -> {
                             if (task.isSuccessful()) {
                                 Toast.makeText(getActivity(), "Created new group "+groupNameTag, Toast.LENGTH_SHORT).show();
+                                FireBaseUserDataManager.getInstance().addParticipatedGroupName(groupNameTag);
                                 createEvent(groupNameTag);
                             } else {
                                 Toast.makeText(getActivity(), "Could not create new group", Toast.LENGTH_SHORT).show();

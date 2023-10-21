@@ -10,6 +10,7 @@ public class User {
     private String userId;
     private String email;
     private List<Event> interestedEvents;
+    private List<String> groupNames;
 
     public User() {
     }
@@ -37,6 +38,14 @@ public class User {
 
     public void setInterestedEvents(List<Event> interestedEvents) {
         this.interestedEvents = interestedEvents;
+    }
+
+    public void setGroupNames(List<String> groupNames){
+        this.groupNames = groupNames;
+    }
+
+    public List<String> getGroupNames() {
+        return groupNames;
     }
 
     @Override
