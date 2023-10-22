@@ -108,8 +108,8 @@ public class FragmentDetailed extends Fragment {
                     addComment(comment);
                 });
 
-                // Clear the EditText after adding the comment
-                vh.ratingBar.setRating((float) 5);
+                // Clear the EditText and the ratingBar after adding the comment
+                vh.ratingBar.setRating(5);
                 vh.commentEditText.setText("");
             }
         });
@@ -151,11 +151,43 @@ public class FragmentDetailed extends Fragment {
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                 matchParent, wrapContent);
 
+        LinearLayout ratingLayout = new LinearLayout(getContext());
+        ratingLayout.setOrientation(LinearLayout.HORIZONTAL);
+        LinearLayout.LayoutParams ratingLayoutParams = new LinearLayout.LayoutParams(300, 100);
+
         layoutParams.setMargins(0, 20, 0, 20);
+
+        //create an image view for stars of rating
+        ImageView ratingStar = new ImageView(getContext());
+        //setting image for stars according to the rating from the user
+        if (rating == 0){
+            ratingStar.setImageResource(R.drawable.no_star);
+        }else if (rating == 0.5){
+            ratingStar.setImageResource(R.drawable.half_star);
+        }else if (rating == 1){
+            ratingStar.setImageResource(R.drawable.one_star);
+        }else if (rating == 1.5){
+            ratingStar.setImageResource(R.drawable.one_half_star);
+        }else if (rating == 2){
+            ratingStar.setImageResource(R.drawable.two_star);
+        }else if (rating == 2.5){
+            ratingStar.setImageResource(R.drawable.two_half_star);
+        }else if (rating == 3){
+            ratingStar.setImageResource(R.drawable.three_star);
+        }else if (rating == 3.5){
+            ratingStar.setImageResource(R.drawable.three_half_star);
+        }else if (rating == 4){
+            ratingStar.setImageResource(R.drawable.four_star);
+        }else if (rating == 4.5){
+            ratingStar.setImageResource(R.drawable.four_half_star);
+        }else if (rating == 5){
+            ratingStar.setImageResource(R.drawable.five_star);
+        }
+        ratingStar.setLayoutParams(new LinearLayout.LayoutParams(matchParent, wrapContent));
 
         TextView commentTextView = new TextView(getContext());
         commentTextView.setTag(comment);
-        commentTextView.setText("Rating: " + rating + "/5" + "\n" + comment.getUsername() + ": " + comment.getCommentText());
+        commentTextView.setText(comment.getUsername() + ": " + comment.getCommentText());
         commentTextView.setTextColor(ContextCompat.getColor(getContext(), R.color.black));
         commentTextView.setTextSize(16);
         commentTextView.setLayoutParams(new LinearLayout.LayoutParams(
@@ -181,9 +213,11 @@ public class FragmentDetailed extends Fragment {
             currentEvent.getCurrentEvent().deleteComment(comment);
             EventsFirestoreManager.getInstance().updateEvent(currentEvent.getCurrentEvent());
             vh.commentsLayout.removeView(commentLayout);
+            vh.commentsLayout.removeView(ratingLayout);
         });
         commentLayout.addView(commentTextView);
         commentLayout.addView(deleteButton);
+        ratingLayout.addView(ratingStar);
         deleteButton.setVisibility(View.INVISIBLE);
         DocumentReference docRef = db.collection("users").document(mAuth.getCurrentUser().getUid());
         docRef.get().addOnSuccessListener(documentSnapshot -> {
@@ -193,6 +227,7 @@ public class FragmentDetailed extends Fragment {
             }
         });
 
+        vh.commentsLayout.addView(ratingLayout,ratingLayoutParams);
         vh.commentsLayout.addView(commentLayout,layoutParams);
         View separator = new View(getContext());
         separator.setLayoutParams(new LinearLayout.LayoutParams(
