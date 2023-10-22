@@ -38,6 +38,7 @@ public class InterestedEventsAdapter extends RecyclerView.Adapter<InterestedEven
 
         ImageView eventImageView;
         TextView titleTextView;
+        TextView publicityTextView;
         TextView descriptionTextView;
         ToggleButton heartButton;
 
@@ -48,6 +49,7 @@ public class InterestedEventsAdapter extends RecyclerView.Adapter<InterestedEven
             super(itemView);
             eventImageView = itemView.findViewById(R.id.coverImage);
             titleTextView = itemView.findViewById(R.id.titleText);
+            publicityTextView = itemView.findViewById(R.id.publicity_title);
             descriptionTextView = itemView.findViewById(R.id.descriptionText);
             heartButton = itemView.findViewById(R.id.heart_button);
             notificationButton = itemView.findViewById(R.id.notification_button);
@@ -139,6 +141,12 @@ public class InterestedEventsAdapter extends RecyclerView.Adapter<InterestedEven
 
         Glide.with(holder.itemView.getContext()).load(event.getImageURL()).into(holder.eventImageView);
         holder.titleTextView.setText(event.getTitle());
+        String groupName = event.getGroupNameTag();
+        if(groupName==null||groupName.equals("")){
+            holder.publicityTextView.setText("Public event");
+        } else {
+            holder.publicityTextView.setText("Group: "+groupName);
+        }
         holder.descriptionTextView.setText(event.getDescription());
         holder.notificationButton.setOnClickListener(v -> {
             currentEventSingleton = CurrentEventSingleton.getInstance();

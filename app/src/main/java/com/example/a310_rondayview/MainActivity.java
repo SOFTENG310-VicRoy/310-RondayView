@@ -56,8 +56,6 @@ public class MainActivity extends AppCompatActivity {
             } else if (item.getItemId() == R.id.popular) {
                 replaceFragment(new PopularEventsFragment());
             }
-
-
             return true;
         });
         binding.bottomNavigationView.getMenu().findItem(R.id.browse).setChecked(true);

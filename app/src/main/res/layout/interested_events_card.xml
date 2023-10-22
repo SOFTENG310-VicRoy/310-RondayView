@@ -46,7 +46,15 @@
                          android:text="Title"
                          android:textColor="@android:color/white" />
 
-                     <TextView
+                    <TextView
+                        android:id="@+id/publicity_title"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:padding="10dp"
+                        android:text="Public event"
+                        android:textColor="@android:color/white" />
+
+                    <TextView
                          android:id="@+id/descriptionText"
                          android:layout_width="wrap_content"
                          android:layout_height="wrap_content"

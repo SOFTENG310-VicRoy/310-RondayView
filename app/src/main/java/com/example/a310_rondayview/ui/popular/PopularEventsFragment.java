@@ -72,9 +72,11 @@ private static class ViewHolder {
             events1.sort(descendingComparator);
             topTenPopularEvents.clear();
             for(Event event : events1){
-                topTenPopularEvents.add(event);
-                if(topTenPopularEvents.size() == 10) {
-                    break;
+                if(event.getGroupNameTag()==null||event.getGroupNameTag().equals("")){
+                    topTenPopularEvents.add(event);
+                    if(topTenPopularEvents.size() == 10) {
+                        break;
+                    }
                 }
             }
             FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
