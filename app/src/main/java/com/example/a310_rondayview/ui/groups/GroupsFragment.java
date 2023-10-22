@@ -47,6 +47,8 @@ public class GroupsFragment extends Fragment {
     }
     private GroupsFragment.ViewHolder vh;
     private GroupsAdaptor groupsAdaptor;
+
+    private List<String> currentGroupNames;
     public GroupsFragment(){
         //Required empty constructor
     }
@@ -72,6 +74,8 @@ public class GroupsFragment extends Fragment {
                         Toast.makeText(getActivity(), "Joined group "+groupName, Toast.LENGTH_SHORT).show();
                         group.getUserIdList().add(user.getUid());
                         FireBaseUserDataManager.getInstance().addParticipatedGroupName(groupName);
+                        currentGroupNames.add(groupName);
+                        groupsAdaptor.updateGroupList(currentGroupNames);
                     }
                 } else {
                     //Else create new group
@@ -83,6 +87,8 @@ public class GroupsFragment extends Fragment {
                         if (task.isSuccessful()) {
                             Toast.makeText(getActivity(), "Created new group "+groupName, Toast.LENGTH_SHORT).show();
                             FireBaseUserDataManager.getInstance().addParticipatedGroupName(groupName);
+                            currentGroupNames.add(groupName);
+                            groupsAdaptor.updateGroupList(currentGroupNames);
                         } else {
                             Toast.makeText(getActivity(), "Could not create new group", Toast.LENGTH_SHORT).show();
                         }
@@ -97,12 +103,13 @@ public class GroupsFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         FireBaseUserDataManager.getInstance().getParticipatedGroupNames(participatedGroups -> {
+            currentGroupNames = participatedGroups;
             vh.groupList.setLayoutManager(new LinearLayoutManager(getContext()));
             vh.groupList.setHasFixedSize(true);
             // populate the recycler view
             Log.d("View created", "view created");
             FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-            groupsAdaptor = new GroupsAdaptor(getContext(), participatedGroups, fragmentManager);
+            groupsAdaptor = new GroupsAdaptor(getContext(), currentGroupNames, fragmentManager);
             vh.groupList.setAdapter(groupsAdaptor);
             groupsAdaptor.notifyDataSetChanged();
         });
