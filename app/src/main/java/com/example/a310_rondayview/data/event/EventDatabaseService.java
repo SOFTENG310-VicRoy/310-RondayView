@@ -55,11 +55,12 @@ public class EventDatabaseService {
         FireBaseUserDataManager.getInstance().getParticipatedGroupNames(participatedGroups->{
             ArrayList<Event> applicableEvents = new ArrayList<>();
             fireBaseUserDataManager.getEvents(true).thenAccept(interestedEvents -> getAllEvents().thenAccept(events -> {
+                Log.d("GET EVENT", "User is in group: "+participatedGroups);
                 for (Event event: events) {
                     if(!interestedEvents.contains(event)){
                         String groupNameTag = event.getGroupNameTag();
-                        //Log.d("GET EVENT", "EVENT GROUP IS "+event.getGroupNameTag());
                         if(groupNameTag==null||participatedGroups.contains(groupNameTag)||groupNameTag.equals("")){
+                            Log.d("GET EVENT", "CURRENT EVENT GROUP IS FROM: "+event.getGroupNameTag());
                             applicableEvents.add(event);
                         }
                     }
