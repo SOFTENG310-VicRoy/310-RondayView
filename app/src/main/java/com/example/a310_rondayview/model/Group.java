@@ -61,7 +61,7 @@ public class Group {
         return (groupId.equals(otherGroup.groupId) || (groupName.equals(otherGroup.groupName)));
     }
 
-//    @Override
-//    public int hashCode(){return Objects.hash(groupId, groupName);}
+    @Override
+    public int hashCode(){return Objects.hash(groupId, groupName);}
 
 }
