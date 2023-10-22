@@ -82,6 +82,7 @@
                 android:background="@color/black"
                 android:textColor="#F44336"
                 android:textOff="Leave"
+                android:textOn="Leave"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
