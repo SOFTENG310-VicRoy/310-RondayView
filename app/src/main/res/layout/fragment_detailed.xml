@@ -181,6 +181,22 @@
             android:layout_marginTop="10dp"/>
 
 
+
+        <LinearLayout
+            android:id="@+id/rating_bar_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="10dp"
+        >
+            <RatingBar
+                android:id="@+id/rating_bar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:numStars="5"
+                android:rating="5"
+                />
+        </LinearLayout>
         <LinearLayout
             android:id="@+id/comment_edit_layout"
             android:layout_width="match_parent"

@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import androidx.cardview.widget.CardView;
@@ -48,6 +49,7 @@ public class FragmentDetailed extends Fragment {
         TextView addCommentText;
         EditText commentEditText;
         LinearLayout commentsLayout;
+        RatingBar ratingBar;
 
         public ViewHolder(View view) {
             eventImage = view.findViewById(R.id.event_image);
@@ -62,6 +64,7 @@ public class FragmentDetailed extends Fragment {
             addCommentText = view.findViewById(R.id.add_comment_text);
             commentEditText = view.findViewById(R.id.comment_edit_text);
             commentsLayout = view.findViewById(R.id.comments_layout);
+            ratingBar = view.findViewById(R.id.rating_bar);
         }
     }
     private FirebaseAuth mAuth;
@@ -94,17 +97,19 @@ public class FragmentDetailed extends Fragment {
         vh.eventDescText.setText(currentEvent.getCurrentEvent().getDescription());
         vh.addCommentText.setOnClickListener(v -> {
             String commentText = vh.commentEditText.getText().toString();
+            float userRating = vh.ratingBar.getRating();
             if (!commentText.isEmpty()) {
                 DocumentReference docRef = db.collection("users").document(mAuth.getCurrentUser().getUid());
                 docRef.get().addOnSuccessListener(documentSnapshot -> {
                     String currentUsername = removeAtGmail(documentSnapshot.getString("email"));
-                    Comment comment = new Comment(currentUsername, commentText);
+                    Comment comment = new Comment(currentUsername, commentText, userRating);
                     currentEvent.getCurrentEvent().addComment(comment);
                     EventsFirestoreManager.getInstance().updateEvent(currentEvent.getCurrentEvent());
                     addComment(comment);
                 });
 
                 // Clear the EditText after adding the comment
+                vh.ratingBar.setRating((float) 5);
                 vh.commentEditText.setText("");
             }
         });
@@ -140,6 +145,7 @@ public class FragmentDetailed extends Fragment {
     private void addComment(Comment comment){
         int matchParent = MATCH_PARENT;
         int wrapContent = WRAP_CONTENT;
+        float rating = comment.getRating();
         LinearLayout commentLayout = new LinearLayout(getContext());
         commentLayout.setOrientation(LinearLayout.HORIZONTAL);
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
@@ -149,7 +155,7 @@ public class FragmentDetailed extends Fragment {
 
         TextView commentTextView = new TextView(getContext());
         commentTextView.setTag(comment);
-        commentTextView.setText(comment.getUsername() + ": " + comment.getCommentText());
+        commentTextView.setText("Rating: " + rating + "/5" + "\n" + comment.getUsername() + ": " + comment.getCommentText());
         commentTextView.setTextColor(ContextCompat.getColor(getContext(), R.color.black));
         commentTextView.setTextSize(16);
         commentTextView.setLayoutParams(new LinearLayout.LayoutParams(
