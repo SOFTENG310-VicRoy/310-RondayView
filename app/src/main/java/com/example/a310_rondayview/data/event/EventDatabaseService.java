@@ -2,17 +2,22 @@ package com.example.a310_rondayview.data.event;
 
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+
 import com.example.a310_rondayview.data.user.FireBaseUserDataManager;
 import com.example.a310_rondayview.model.Event;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-public class DatabaseService {
+public class EventDatabaseService {
     private static final String DATABASE_ERROR_TAG = "Database error";
 
     /**
@@ -43,19 +48,25 @@ public class DatabaseService {
      * @return applicable events to show the user
      */
     public CompletableFuture<ArrayList<Event>> getApplicableEvents(){
-        CompletableFuture<ArrayList<Event>> futureApplicableEvents = new CompletableFuture<>();
         FireBaseUserDataManager fireBaseUserDataManager = FireBaseUserDataManager.getInstance();
 
-        ArrayList<Event> applicableEvents = new ArrayList<>();
-        fireBaseUserDataManager.getEvents(true).thenAccept(interestedEvents -> getAllEvents().thenAccept(events -> {
-            for (Event event: events) {
-                if(!interestedEvents.contains(event)){
-                    applicableEvents.add(event);
+        CompletableFuture<ArrayList<Event>> futureApplicableEvents = new CompletableFuture<>();
+        //Make sure the participated group names are correctly obtained before moving on
+        FireBaseUserDataManager.getInstance().getParticipatedGroupNames(participatedGroups->{
+            ArrayList<Event> applicableEvents = new ArrayList<>();
+            fireBaseUserDataManager.getEvents(true).thenAccept(interestedEvents -> getAllEvents().thenAccept(events -> {
+                for (Event event: events) {
+                    if(!interestedEvents.contains(event)){
+                        String groupNameTag = event.getGroupNameTag();
+                        //Log.d("GET EVENT", "EVENT GROUP IS "+event.getGroupNameTag());
+                        if(groupNameTag==null||participatedGroups.contains(groupNameTag)||groupNameTag.equals("")){
+                            applicableEvents.add(event);
+                        }
+                    }
                 }
-            }
-            futureApplicableEvents.complete(applicableEvents);
-        }));
-
+                futureApplicableEvents.complete(applicableEvents);
+            }));
+        });
         return (futureApplicableEvents);
     }
 
@@ -87,4 +98,5 @@ public class DatabaseService {
 
         return futureEvent;
     }
+
 }

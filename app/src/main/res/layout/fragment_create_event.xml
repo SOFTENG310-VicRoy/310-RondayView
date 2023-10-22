@@ -118,6 +118,19 @@
                     android:lines="5"
                     android:maxLines="5"/>
 
+                <CheckBox
+                    android:id="@+id/privacyCheckBox"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="false"
+                    android:text="Private event"
+                    android:textAlignment="viewStart"></CheckBox>
+                <EditText
+                    android:id="@+id/groupNameEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:hint="Group name"
+                    android:visibility="gone"/>
 
             </LinearLayout>
 

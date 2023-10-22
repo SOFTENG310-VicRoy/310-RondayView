@@ -14,10 +14,15 @@ import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.SetOptions;
+
+import org.checkerframework.checker.units.qual.A;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Consumer;
 
 public class FireBaseUserDataManager {
     private static final String TAG = "FireBaseUserDataManager";
@@ -27,10 +32,12 @@ public class FireBaseUserDataManager {
     private static final String FRIEND_FIELD = "friends";
     private static final String SIGNINERROR = "No user is currently signed in.";
     private static final String FIND_FRIEND_ERROR = "Failed to find friend";
+    private static final String PARTICIPATED_GROUPS = "groupNames";
     private final FirebaseFirestore db;
 
     private List<User> friendsList = new ArrayList<>();
     private ArrayList<Event> eventList = new ArrayList<>();
+    private ArrayList<String> groupNames = new ArrayList<>();
 
     private FireBaseUserDataManager() {
         db = FirebaseFirestore.getInstance();
@@ -365,6 +372,71 @@ public class FireBaseUserDataManager {
         } else {
             // Handle the case where no user is signed in
             Log.e(TAG, SIGNINERROR);
+        }
+    }
+
+    public void updateParticipatedGroupNames(){
+        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+        FirebaseUser currentUser = firebaseAuth.getCurrentUser();
+        String uid = currentUser.getUid();
+        // Use the UID to add the event to the users' Firestore collection
+        HashMap<String, List<String>> data = new HashMap<>();
+        data.put(PARTICIPATED_GROUPS, groupNames);
+        db.collection(USERSCOLLECTION)
+                .document(uid).set(data, SetOptions.merge()).addOnCompleteListener(task -> {
+                    if(task.isSuccessful()){
+                        Log.d("Updated groups", "Updated gorups for user "+uid);
+                        Log.d("Updated groups", "Updated to: "+groupNames);
+                    } else {
+                        Log.e("Updated groups", "Error updating groups");
+                    }
+                });
+    }
+
+
+    public void addParticipatedGroupName(String groupName){
+        // Get the current Firebase Auth instance
+        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+
+        FirebaseUser currentUser = firebaseAuth.getCurrentUser();
+
+        // Check if a user is signed in
+        if (currentUser != null) {
+            getParticipatedGroupNames(newGroupNames->{
+                groupNames = (ArrayList<String>) newGroupNames;
+                groupNames.add(groupName);
+                Log.d("Added group name ", "Added "+groupName+" to group names, now group name is "+groupNames);
+                updateParticipatedGroupNames();
+            });
+        } else {
+            Log.e(TAG, SIGNINERROR);
+        }
+    }
+
+    public void getParticipatedGroupNames(Consumer<List<String>> callback) {
+        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+        // Get the currently signed-in user
+        FirebaseUser currentUser = firebaseAuth.getCurrentUser();
+
+        // Check if a user is signed in
+        if (currentUser != null) {
+            String uid = currentUser.getUid();
+            // Use the UID to fetch all the users disinterested events and store it in a singleton list
+            DocumentReference ref = db.collection(USERSCOLLECTION).document(uid);
+            ref.get().addOnCompleteListener(task -> {
+                Log.d("isNullResult", "isNullResult = "+(task.getResult().get(PARTICIPATED_GROUPS)==null));
+                if (task.isSuccessful()){
+                    groupNames = (ArrayList<String>) task.getResult().get(PARTICIPATED_GROUPS);
+                    if(groupNames!=null){
+                        Log.d("Obtained", "Got group names "+groupNames);
+                        callback.accept(groupNames);
+                    } else {
+                        Log.d("Obtained", "User has no joined groups");
+                        groupNames = new ArrayList<>();
+                        callback.accept(groupNames);
+                    }
+                }
+            });
         }
     }
 }
