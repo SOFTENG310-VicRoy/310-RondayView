@@ -167,31 +167,12 @@ public class FragmentDetailed extends Fragment {
 
         //create an image view for stars of rating
         ImageView ratingStar = new ImageView(getContext());
-        //setting image for stars according to the rating from the user
-        if (rating == 0){
-            ratingStar.setImageResource(R.drawable.no_star);
-        }else if (rating == 0.5){
-            ratingStar.setImageResource(R.drawable.half_star);
-        }else if (rating == 1){
-            ratingStar.setImageResource(R.drawable.one_star);
-        }else if (rating == 1.5){
-            ratingStar.setImageResource(R.drawable.one_half_star);
-        }else if (rating == 2){
-            ratingStar.setImageResource(R.drawable.two_star);
-        }else if (rating == 2.5){
-            ratingStar.setImageResource(R.drawable.two_half_star);
-        }else if (rating == 3){
-            ratingStar.setImageResource(R.drawable.three_star);
-        }else if (rating == 3.5){
-            ratingStar.setImageResource(R.drawable.three_half_star);
-        }else if (rating == 4){
-            ratingStar.setImageResource(R.drawable.four_star);
-        }else if (rating == 4.5){
-            ratingStar.setImageResource(R.drawable.four_half_star);
-        }else if (rating == 5){
-            ratingStar.setImageResource(R.drawable.five_star);
-        }
+        //setting image for stars according to the rating from the user with use of a level list
+        ratingStar.setImageResource(R.drawable.rating_level);
+        //since level list can only take integer, I made level 0 - 10 and doubled the rating
+        ratingStar.setImageLevel((int)rating * 2);
         ratingStar.setLayoutParams(new LinearLayout.LayoutParams(matchParent, wrapContent));
+
 
         TextView commentTextView = new TextView(getContext());
         commentTextView.setTag(comment);
