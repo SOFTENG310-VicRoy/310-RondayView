@@ -10,5 +10,5 @@
     <item android:maxLevel="7" android:drawable="@drawable/three_half_star"/>
     <item android:maxLevel="8" android:drawable="@drawable/four_star"/>
     <item android:maxLevel="9" android:drawable="@drawable/four_half_star"/>
-    <item android:maxLevel="0" android:drawable="@drawable/five_star"/>
+    <item android:maxLevel="10" android:drawable="@drawable/five_star"/>
 </level-list>
