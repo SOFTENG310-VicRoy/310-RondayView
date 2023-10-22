@@ -13,6 +13,7 @@ import com.example.a310_rondayview.databinding.ActivityMainBinding;
 import com.example.a310_rondayview.ui.account.ProfileFragment;
 import com.example.a310_rondayview.ui.createevent.CreateEventFragment;
 import com.example.a310_rondayview.ui.friends.FriendsFragment;
+import com.example.a310_rondayview.ui.groups.GroupsFragment;
 import com.example.a310_rondayview.ui.home.FragmentHome;
 import com.example.a310_rondayview.ui.interestedevents.InterestedEventsFragment;
 import com.example.a310_rondayview.ui.popular.PopularEventsFragment;
@@ -40,14 +41,16 @@ public class MainActivity extends AppCompatActivity {
         replaceFragment(new FragmentHome());
         ImageButton createButton = findViewById(R.id.createButton);
         createButton.setOnClickListener(v -> replaceFragment(new CreateEventFragment()));
+        ImageButton accountButton = findViewById(R.id.account_btn);
+        accountButton.setOnClickListener(v -> replaceFragment(new ProfileFragment()));
 
         binding.bottomNavigationView.setOnItemSelectedListener(item -> {
             if (item.getItemId() == R.id.friends) {
                 replaceFragment(new FriendsFragment());
             } else if (item.getItemId() == R.id.browse) {
                 replaceFragment(new FragmentHome());
-            } else if (item.getItemId() == R.id.account) {
-                replaceFragment(new ProfileFragment());
+            } else if (item.getItemId() == R.id.groups) {
+                replaceFragment(new GroupsFragment());
             } else if (item.getItemId() == R.id.interested) {
                 replaceFragment(new InterestedEventsFragment());
             } else if (item.getItemId() == R.id.popular) {

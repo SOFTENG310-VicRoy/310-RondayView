@@ -413,6 +413,25 @@ public class FireBaseUserDataManager {
         }
     }
 
+    public void removeParticipatedGroupName(String groupName){
+        // Get the current Firebase Auth instance
+        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+
+        FirebaseUser currentUser = firebaseAuth.getCurrentUser();
+
+        // Check if a user is signed in
+        if (currentUser != null) {
+            getParticipatedGroupNames(newGroupNames->{
+                groupNames = (ArrayList<String>) newGroupNames;
+                groupNames.remove(groupName);
+                Log.d("Removed group name ", "Removed"+groupName+" from group names, now group name is "+groupNames);
+                updateParticipatedGroupNames();
+            });
+        } else {
+            Log.e(TAG, SIGNINERROR);
+        }
+    }
+
     public void getParticipatedGroupNames(Consumer<List<String>> callback) {
         FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
         // Get the currently signed-in user

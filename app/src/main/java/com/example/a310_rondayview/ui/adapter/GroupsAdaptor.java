@@ -17,11 +17,14 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.a310_rondayview.R;
 import com.example.a310_rondayview.data.group.GroupDatabaseService;
+import com.example.a310_rondayview.data.group.GroupFirestoreManager;
 import com.example.a310_rondayview.data.user.FireBaseUserDataManager;
 import com.example.a310_rondayview.data.user.FriendCallback;
 import com.example.a310_rondayview.model.CurrentFriendSingleton;
 import com.example.a310_rondayview.model.User;
 import com.example.a310_rondayview.ui.friends.FriendsEventFragment;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -66,9 +69,23 @@ public class GroupsAdaptor extends RecyclerView.Adapter<GroupsAdaptor.GroupsView
             holder.groupEventCount.setText(eventCount.toString());
             holder.groupMemberCount.setText(memberCount.toString());
         });
-
-        //TODO: onclick
-        //fragmentManager.beginTransaction().addToBackStack("fragment_friends_event").replace(R.id.frame_layout, new FriendsEventFragment()).commit();
+        holder.leaveGroupBtn.setOnCheckedChangeListener(((compoundButton, b) -> {
+            //Remove groupname from user's groupname field
+            FireBaseUserDataManager.getInstance().removeParticipatedGroupName(groupName);
+            //Remove user id from group's user id list
+            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+            groupDatabaseService.getGroupByName(groupName).thenAccept(group -> {
+                group.getUserIdList().remove(user.getUid());
+                GroupFirestoreManager.getInstance().updateGroup(group);
+            });
+            //Also remove from local group list and update UI
+            int position1 = groupNames.indexOf(groupName);
+            if (position1 != -1) {
+                groupNames.remove(position1);
+                notifyDataSetChanged();
+            }
+        }));
+        //TODO: onclick switch to group detail page
     }
 
     @Override
@@ -79,7 +96,7 @@ public class GroupsAdaptor extends RecyclerView.Adapter<GroupsAdaptor.GroupsView
     // ViewHolder class to hold references to UI elements for a list item
     public static class GroupsViewHolder extends RecyclerView.ViewHolder {
         TextView groupName;
-//        ToggleButton leaveGroupBtn;
+        ToggleButton leaveGroupBtn;
         TextView groupMemberCount;
         TextView groupEventCount;
 
@@ -87,6 +104,7 @@ public class GroupsAdaptor extends RecyclerView.Adapter<GroupsAdaptor.GroupsView
         public GroupsViewHolder(@org.checkerframework.checker.nullness.qual.NonNull View itemView) {
             super(itemView);
             groupName = itemView.findViewById(R.id.group_name);
+            leaveGroupBtn = itemView.findViewById(R.id.leave_group_btn);
             groupMemberCount = itemView.findViewById(R.id.group_member_count);
             groupEventCount= itemView.findViewById(R.id.group_event_count);
         }
