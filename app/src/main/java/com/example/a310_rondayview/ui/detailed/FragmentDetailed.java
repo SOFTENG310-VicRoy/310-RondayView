@@ -32,8 +32,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import org.w3c.dom.Text;
-
 import java.util.Collections;
 import java.util.List;
 
@@ -44,7 +42,7 @@ public class FragmentDetailed extends Fragment {
         TextView clubNameText;
         TextView eventNameText;
         ImageView profileImage;
-        TextView publicityText;
+        TextView privacyStatusText;
         TextView locationText;
         TextView eventDateText;
         TextView eventDescText;
@@ -61,7 +59,7 @@ public class FragmentDetailed extends Fragment {
             profileImage = view.findViewById(R.id.profileImageView);
             eventNameText = view.findViewById(R.id.event_name);
             eventDateText = view.findViewById(R.id.event_date);
-            publicityText = view.findViewById(R.id.event_publicity);
+            privacyStatusText = view.findViewById(R.id.event_privacy);
             locationText = view.findViewById(R.id.locationtext);
             eventDescText = view.findViewById(R.id.event_desc);
             similarEventRv = view.findViewById(R.id.similar_events_rv);
@@ -98,9 +96,9 @@ public class FragmentDetailed extends Fragment {
         vh.eventNameText.setText(currentEvent.getCurrentEvent().getTitle());
         String groupName = currentEvent.getCurrentEvent().getGroupNameTag();
         if(groupName==null||groupName.equals("")){
-            vh.publicityText.setText("Public event");
+            vh.privacyStatusText.setText("Public event");
         } else {
-            vh.publicityText.setText("Group: "+groupName);
+            vh.privacyStatusText.setText("Group: "+groupName);
         }
         vh.eventDateText.setText(currentEvent.getCurrentEvent().getDateTime().toString());
         vh.locationText.setText(currentEvent.getCurrentEvent().getLocation());

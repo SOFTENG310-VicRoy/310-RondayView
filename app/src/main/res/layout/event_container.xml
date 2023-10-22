@@ -64,7 +64,7 @@
                 android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/publicity_status"
+                android:id="@+id/privacy_status"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Public event"

@@ -47,7 +47,7 @@
                          android:textColor="@android:color/white" />
 
                     <TextView
-                        android:id="@+id/publicity_title"
+                        android:id="@+id/privacy_title"
                         android:layout_width="match_parent"
                         android:layout_height="40dp"
                         android:padding="10dp"

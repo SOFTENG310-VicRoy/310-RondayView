@@ -26,7 +26,7 @@ public class SwipeAdapter extends BaseAdapter {
     private TextView timeTextView;
     private TextView eventDescriptionTextView;
     private ImageView eventImageView;
-    private TextView publicityStatusTextView;
+    private TextView privacyStatusTextView;
     private ImageView eventClubPFPImageView;
 
 
@@ -68,7 +68,7 @@ public class SwipeAdapter extends BaseAdapter {
         eventDescriptionTextView = view.findViewById(R.id.eventDescriptionTextView);
         eventImageView = view.findViewById(R.id.eventImageView);
         eventClubPFPImageView = view.findViewById(R.id.profileImageView);
-        publicityStatusTextView = view.findViewById(R.id.publicity_status);
+        privacyStatusTextView = view.findViewById(R.id.privacy_status);
 
         if (i < events.size()) {
             if (clubNameTextView != null) {
@@ -78,9 +78,9 @@ public class SwipeAdapter extends BaseAdapter {
             locationTextView.setText(event.getLocation());
             String groupName = event.getGroupNameTag();
             if(groupName==null||groupName.equals("")){
-                publicityStatusTextView.setText("Public event");
+                privacyStatusTextView.setText("Public event");
             } else {
-                publicityStatusTextView.setText("Group: "+groupName);
+                privacyStatusTextView.setText("Group: "+groupName);
             }
 
             // Format the date and time as a single string
