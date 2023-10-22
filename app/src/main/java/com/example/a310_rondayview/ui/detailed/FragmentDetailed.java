@@ -42,6 +42,7 @@ public class FragmentDetailed extends Fragment {
         TextView clubNameText;
         TextView eventNameText;
         ImageView profileImage;
+        TextView privacyStatusText;
         TextView locationText;
         TextView eventDateText;
         TextView eventDescText;
@@ -58,6 +59,7 @@ public class FragmentDetailed extends Fragment {
             profileImage = view.findViewById(R.id.profileImageView);
             eventNameText = view.findViewById(R.id.event_name);
             eventDateText = view.findViewById(R.id.event_date);
+            privacyStatusText = view.findViewById(R.id.event_privacy);
             locationText = view.findViewById(R.id.locationtext);
             eventDescText = view.findViewById(R.id.event_desc);
             similarEventRv = view.findViewById(R.id.similar_events_rv);
@@ -92,6 +94,12 @@ public class FragmentDetailed extends Fragment {
         currentEvent = CurrentEventSingleton.getInstance();
         vh.clubNameText.setText(currentEvent.getCurrentEvent().getClubName());
         vh.eventNameText.setText(currentEvent.getCurrentEvent().getTitle());
+        String groupName = currentEvent.getCurrentEvent().getGroupNameTag();
+        if(groupName==null||groupName.equals("")){
+            vh.privacyStatusText.setText("Public event");
+        } else {
+            vh.privacyStatusText.setText("Group: "+groupName);
+        }
         vh.eventDateText.setText(currentEvent.getCurrentEvent().getDateTime().toString());
         vh.locationText.setText(currentEvent.getCurrentEvent().getLocation());
         vh.eventDescText.setText(currentEvent.getCurrentEvent().getDescription());

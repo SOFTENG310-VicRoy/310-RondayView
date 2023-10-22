@@ -104,6 +104,16 @@
         </TextView>
 
         <TextView
+            android:id="@+id/event_privacy"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="18dp"
+            android:layout_marginRight="18dp"
+            android:text="Public event"
+            android:textColor="@color/black"
+            android:textSize="20sp"></TextView>
+
+        <TextView
             android:id="@+id/event_date"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

@@ -114,7 +114,12 @@ public class FireBaseUserDataManager {
                 event.setImageURL(document.getString("imageURL"));
                 event.setLocation(document.getString("location"));
                 event.setTitle(document.getString("title"));
+                Object groupNameTag = document.get("groupNameTag");
                 Object interestCountObject = document.get("interestCount");
+                if(groupNameTag != null){
+                    String groupName = (String)groupNameTag;
+                    event.setGroupNameTag(groupName);
+                }
                 if (interestCountObject != null) {
                     int interestCount = ((Number) interestCountObject).intValue();
                     event.setInterestCount(interestCount);
