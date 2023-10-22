@@ -60,6 +60,14 @@ public class GroupsFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_groups, container, false);
         vh = new GroupsFragment.ViewHolder(view);
         vh.joinGroupBtn.setOnClickListener(view1 -> {
+            //First check if groupname is empty
+            String text = vh.groupNameEditTxt.getText().toString().trim();
+            vh.groupNameEditTxt.setError(null);
+            if (text.length() == 0) {
+                vh.groupNameEditTxt.setError("Required");
+                Toast.makeText(getActivity(), "Group name is empty", Toast.LENGTH_SHORT).show();
+                return;
+            }
             String groupName = vh.groupNameEditTxt.getText().toString();
             GroupDatabaseService groupDatabaseService = new GroupDatabaseService();
             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -73,6 +81,7 @@ public class GroupsFragment extends Fragment {
                         //else update user's group list and group's member
                         Toast.makeText(getActivity(), "Joined group "+groupName, Toast.LENGTH_SHORT).show();
                         group.getUserIdList().add(user.getUid());
+                        GroupFirestoreManager.getInstance().updateGroup(group);
                         FireBaseUserDataManager.getInstance().addParticipatedGroupName(groupName);
                         currentGroupNames.add(groupName);
                         groupsAdaptor.updateGroupList(currentGroupNames);
