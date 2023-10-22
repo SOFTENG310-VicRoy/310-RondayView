@@ -189,6 +189,7 @@
             android:orientation="horizontal"
             android:layout_marginTop="10dp"
         >
+            <!-- RatingBar for adding rate to events -->
             <RatingBar
                 android:id="@+id/rating_bar"
                 android:layout_width="wrap_content"
