@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.a310_rondayview.ui.friends.FriendsFragment;
+import com.example.a310_rondayview.ui.groups.GroupsFragment;
 import com.example.a310_rondayview.ui.interestedevents.InterestedEventsFragment;
 import com.example.a310_rondayview.R;
 
@@ -21,11 +22,13 @@ public class ProfileFragment extends Fragment {
         CardView goToAccountBtn;
         CardView goToLikedEventsBtn;
         CardView goToFriends;
+        CardView goToGroupsBtn;
 
         public ViewHolder(View view){
             goToAccountBtn = view.findViewById(R.id.go_to_account_details);
             goToLikedEventsBtn = view.findViewById(R.id.go_to_liked_events);
             goToFriends = view.findViewById(R.id.go_to_friends);
+            goToGroupsBtn = view.findViewById(R.id.go_to_groups);
         }
     }
 
@@ -64,6 +67,12 @@ public class ProfileFragment extends Fragment {
             FriendsFragment friendsFragment = new FriendsFragment();
 
             replaceFragmentWith(friendsFragment);
+        });
+
+        vh.goToGroupsBtn.setOnClickListener(v->{
+            //Create an instance of fragment groups
+            GroupsFragment groupsFragment = new GroupsFragment();
+            replaceFragmentWith(groupsFragment);
         });
 
         return view;

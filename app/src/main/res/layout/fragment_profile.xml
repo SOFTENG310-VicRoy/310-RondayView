@@ -5,114 +5,147 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.account.ProfileFragment">
-
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:layout_gravity="center|top"
-        android:layout_margin="16dp">
-
-        <androidx.cardview.widget.CardView
+        android:layout_height="match_parent">
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            style="@style/profileButtonsCardStyle"
-            app:cardCornerRadius="16dp"
-            android:id="@+id/go_to_account_details"
-            android:gravity="center"
-            >
+            android:layout_gravity="center|top"
+            android:layout_margin="16dp"
+            android:orientation="vertical">
 
-            <RelativeLayout
+            <androidx.cardview.widget.CardView
+                android:id="@+id/go_to_account_details"
+                style="@style/profileButtonsCardStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:padding="16dp">
+                android:gravity="center"
+                app:cardCornerRadius="16dp">
 
-                <TextView
-                    android:layout_width="wrap_content"
+                <RelativeLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Account Details"
-                    android:textSize="26sp"
-                    android:layout_alignParentLeft="true"
-                    android:layout_centerVertical="true"
-                    android:textStyle="bold"/>
+                    android:orientation="horizontal"
+                    android:padding="16dp">
 
-                <ImageView
-                    android:layout_width="130dp"
-                    android:layout_height="150dp"
-                    android:layout_alignParentRight="true"
-                    android:src="@drawable/baseline_person_24"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_centerVertical="true"
+                        android:text="Account Details"
+                        android:textSize="26sp"
+                        android:textStyle="bold" />
 
-            </RelativeLayout>
+                    <ImageView
+                        android:layout_width="130dp"
+                        android:layout_height="150dp"
+                        android:layout_alignParentRight="true"
+                        android:src="@drawable/baseline_person_24" />
 
-        </androidx.cardview.widget.CardView>
+                </RelativeLayout>
 
-        <androidx.cardview.widget.CardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            style="@style/profileButtonsCardStyle"
-            app:cardCornerRadius="16dp"
-            android:id="@+id/go_to_liked_events"
-            android:gravity="center">
+            </androidx.cardview.widget.CardView>
 
-            <RelativeLayout
+            <androidx.cardview.widget.CardView
+                android:id="@+id/go_to_liked_events"
+                style="@style/profileButtonsCardStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:padding="16dp">
+                android:gravity="center"
+                app:cardCornerRadius="16dp">
 
-                <TextView
-                    android:layout_width="wrap_content"
+                <RelativeLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Liked Events"
-                    android:textSize="26sp"
-                    android:layout_alignParentLeft="true"
-                    android:layout_centerVertical="true"
-                    android:textStyle="bold"/>
+                    android:orientation="horizontal"
+                    android:padding="16dp">
 
-                <ImageView
-                    android:layout_width="130dp"
-                    android:layout_height="150dp"
-                    android:layout_alignParentRight="true"
-                    android:src="@drawable/baseline_calendar_month_24"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_centerVertical="true"
+                        android:text="Liked Events"
+                        android:textSize="26sp"
+                        android:textStyle="bold" />
 
-            </RelativeLayout>
+                    <ImageView
+                        android:layout_width="130dp"
+                        android:layout_height="150dp"
+                        android:layout_alignParentRight="true"
+                        android:src="@drawable/baseline_calendar_month_24" />
 
-        </androidx.cardview.widget.CardView>
+                </RelativeLayout>
 
-        <androidx.cardview.widget.CardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            style="@style/profileButtonsCardStyle"
-            app:cardCornerRadius="16dp"
-            android:id="@+id/go_to_friends"
-            android:gravity="center">
+            </androidx.cardview.widget.CardView>
 
-            <RelativeLayout
+            <androidx.cardview.widget.CardView
+                android:id="@+id/go_to_friends"
+                style="@style/profileButtonsCardStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:padding="16dp">
+                android:gravity="center"
+                app:cardCornerRadius="16dp">
 
-                <TextView
-                    android:layout_width="wrap_content"
+                <RelativeLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Friends"
-                    android:textSize="26sp"
-                    android:layout_alignParentLeft="true"
-                    android:layout_centerVertical="true"
-                    android:textStyle="bold"/>
+                    android:orientation="horizontal"
+                    android:padding="16dp">
 
-                <ImageView
-                    android:layout_width="130dp"
-                    android:layout_height="150dp"
-                    android:layout_alignParentRight="true"
-                    android:src="@drawable/baseline_people_24"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_centerVertical="true"
+                        android:text="Friends"
+                        android:textSize="26sp"
+                        android:textStyle="bold" />
 
-            </RelativeLayout>
+                    <ImageView
+                        android:layout_width="130dp"
+                        android:layout_height="150dp"
+                        android:layout_alignParentRight="true"
+                        android:src="@drawable/baseline_people_24" />
 
-        </androidx.cardview.widget.CardView>
+                </RelativeLayout>
 
-    </LinearLayout>
+            </androidx.cardview.widget.CardView>
 
+            <androidx.cardview.widget.CardView
+                android:id="@+id/go_to_groups"
+                style="@style/profileButtonsCardStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                app:cardCornerRadius="16dp">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_centerVertical="true"
+                        android:text="Groups"
+                        android:textSize="26sp"
+                        android:textStyle="bold" />
+
+                    <ImageView
+                        android:layout_width="130dp"
+                        android:layout_height="150dp"
+                        android:layout_alignParentRight="true"
+                        android:src="@drawable/baseline_groups_24" />
+
+                </RelativeLayout>
+
+            </androidx.cardview.widget.CardView>
+        </LinearLayout>
+    </ScrollView>
 </FrameLayout>

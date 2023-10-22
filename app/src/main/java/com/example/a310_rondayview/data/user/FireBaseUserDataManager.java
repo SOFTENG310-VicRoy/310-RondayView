@@ -375,7 +375,7 @@ public class FireBaseUserDataManager {
         }
     }
 
-    public void updateParticipatedGroupNames(List<String> newGroupNames){
+    public void updateParticipatedGroupNames(){
         FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
         FirebaseUser currentUser = firebaseAuth.getCurrentUser();
         String uid = currentUser.getUid();
@@ -406,7 +406,7 @@ public class FireBaseUserDataManager {
                 groupNames = (ArrayList<String>) newGroupNames;
                 groupNames.add(groupName);
                 Log.d("Added group name ", "Added "+groupName+" to group names, now group name is "+groupNames);
-                updateParticipatedGroupNames(groupNames);
+                updateParticipatedGroupNames();
             });
         } else {
             Log.e(TAG, SIGNINERROR);
@@ -424,7 +424,7 @@ public class FireBaseUserDataManager {
             // Use the UID to fetch all the users disinterested events and store it in a singleton list
             DocumentReference ref = db.collection(USERSCOLLECTION).document(uid);
             ref.get().addOnCompleteListener(task -> {
-                Log.d("isNullResult", "isNullResult = "+(task.getResult().get(PARTICIPATED_GROUPS)!=null));
+                Log.d("isNullResult", "isNullResult = "+(task.getResult().get(PARTICIPATED_GROUPS)==null));
                 if (task.isSuccessful()){
                     groupNames = (ArrayList<String>) task.getResult().get(PARTICIPATED_GROUPS);
                     if(groupNames!=null){

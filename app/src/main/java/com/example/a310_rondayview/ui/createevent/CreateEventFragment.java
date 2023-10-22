@@ -186,7 +186,6 @@ public class CreateEventFragment extends Fragment {
                         }
                         //Else proceed to event creation with group tag
                         Toast.makeText(getActivity(), "Added event to existing group "+groupNameTag, Toast.LENGTH_SHORT).show();
-                        FireBaseUserDataManager.getInstance().addParticipatedGroupName(groupNameTag);
                         createEvent(groupNameTag);
                     } else {
                         ArrayList<String> userIdList = new ArrayList<>();
